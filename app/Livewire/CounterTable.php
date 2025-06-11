@@ -107,7 +107,7 @@ final class CounterTable extends PowerGridComponent
                 ->hidden(isHidden: true, isForceHidden: false)
                 ->searchable(),
 
-            Column::make('Cp', 'cp')
+            Column::make('CP', 'cp')
                 ->sortable()
                 ->searchable(),
 

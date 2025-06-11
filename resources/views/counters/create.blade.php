@@ -1,5 +1,5 @@
 <x-layouts.app :title="__('Crear Contador')">
-    <div class="container mx-auto p-12">
+    <div class="container mx-auto p-10">
         <form action="{{ route('counter.store') }}" method="post">
             @csrf
             <div class="space-y-12">
