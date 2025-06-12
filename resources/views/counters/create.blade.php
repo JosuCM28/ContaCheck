@@ -15,7 +15,7 @@
                                 <flux:label>Nombre <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe los nombres</flux:description>
                                 <flux:input name="name" id="name" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" autocomplete="given-name" />
+                                    oninput="this.value = this.value.toUpperCase();" autocomplete="given-name" required/>
                                 <flux:error name="name" />
                             </flux:field>
                         </div>
@@ -26,7 +26,7 @@
                                 <flux:label>Apellido <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe los apellidos</flux:description>
                                 <flux:input name="last_name" id="last_name" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" autocomplete="family-name" />
+                                    oninput="this.value = this.value.toUpperCase();" autocomplete="family-name" required/>
                                 <flux:error name="last_name" />
                             </flux:field>
                         </div>
@@ -36,7 +36,7 @@
                             <flux:field>
                                 <flux:label>Correo <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe el correo</flux:description>
-                                <flux:input name="email" id="email" type="email" autocomplete="email" />
+                                <flux:input name="email" id="email" type="email" autocomplete="email" required/>
                                 <flux:error name="email" />
                             </flux:field>
                         </div>
@@ -47,7 +47,7 @@
                                 <flux:label>Contraseña <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Verifica o edita la contraseña</flux:description>
 
-                                <flux:input name="password" type="password" value="{{ $password }}" viewable />
+                                <flux:input name="password" type="password" value="{{ $password }}" viewable required />
                                 <flux:error name="password" />
                             </flux:field>
                         </div>
@@ -58,7 +58,7 @@
                                 <flux:label>RFC <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe el RFC</flux:description>
                                 <flux:input name="rfc" id="rfc" type="text" maxlength="13"
-                                    oninput="this.value = this.value.toUpperCase();" />
+                                    oninput="this.value = this.value.toUpperCase();" required/>
                                 <flux:error name="rfc" />
                             </flux:field>
                         </div>
@@ -91,7 +91,7 @@
                                 <flux:label>Dirección <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe la dirección</flux:description>
                                 <flux:input name="address" id="address" type="text" maxlength="150"
-                                    oninput="this.value = this.value.toUpperCase();" />
+                                    oninput="this.value = this.value.toUpperCase();" required/>
                                 <flux:error name="address" />
                             </flux:field>
                         </div>
@@ -113,7 +113,7 @@
                                 <flux:label>CP <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe el CP</flux:description>
                                 <flux:input name="cp" id="cp" type="number"
-                                    oninput="this.value = this.value.slice(0, 5);" />
+                                    oninput="this.value = this.value.slice(0, 5);" required />
                                 <flux:error name="cp" />
                             </flux:field>
                         </div>
@@ -134,7 +134,7 @@
                             <flux:field>
                                 <flux:label>Régimen <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Selecciona un régimen</flux:description>
-                                <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen">
+                                <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen" required>
                                     @foreach ($regimes as $regime)
                                         <flux:select.option value="{{ $regime->id }}">{{ $regime->title }}
                                         </flux:select.option>

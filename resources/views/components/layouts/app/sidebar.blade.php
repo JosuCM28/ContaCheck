@@ -4,7 +4,7 @@
         @include('partials.head')
     </head>
     <body class="min-h-screen bg-white dark:bg-zinc-800">
-        <flux:sidebar sticky stashable class=" border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 w-64" id="sidebar">
+        <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 w-64" id="sidebar">
             <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
 
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
@@ -25,16 +25,17 @@
                     <flux:navlist.item icon="user-group" :href="route('client.index')" :current="request()->routeIs('client.index')" wire:navigate>{{ __('Clientes') }}</flux:navlist.item>
                     <flux:navlist.item icon="user" :href="route('client.create')" :current="request()->routeIs('client.create')" wire:navigate>{{ __('Nuevo Cliente') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Recibos')" class="grid">
+                    <flux:navlist.item icon="receipt-percent" :href="route('receipt.index')" :current="request()->routeIs('receipt.index')" wire:navigate>{{ __('Recibos') }}</flux:navlist.item>
+                    <flux:navlist.item icon="rectangle-stack" :href="route('receipt.create')" :current="request()->routeIs('receipt.create')" wire:navigate>{{ __('Nuevo recibo') }}</flux:navlist.item>
+                </flux:navlist.group>
                 
             </flux:navlist>
 
             <flux:spacer />
 
             <flux:navlist variant="outline">
-                <flux:navlist.item icon="folder-git-2" href="https://github.com/laravel/livewire-starter-kit" target="_blank">
-                {{ __('Repository') }}
-                </flux:navlist.item>
-
                 <flux:navlist.item icon="book-open-text" href="https://laravel.com/docs/starter-kits#livewire" target="_blank">
                 {{ __('Documentation') }}
                 </flux:navlist.item>

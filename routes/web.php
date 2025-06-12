@@ -1,9 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use App\Http\Controllers\PDFMaker;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VerifyReceipt;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
+use App\Http\Controllers\ReceiptController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -40,6 +43,19 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/client/edit/{client}', [ClientController::class, 'edit'])->name('client.edit');
     Route::put('/client/update/{client}/', [ClientController::class, 'update'])->name('client.update');
     Route::delete('/client/destroy/{client}', [ClientController::class, 'destroy'])->name('client.destroy');
+
+    Route::get('/receipt/index', [ReceiptController::class, 'index'])->name('receipt.index');
+    Route::get('/receipt/create', [ReceiptController::class, 'create'])->name('receipt.create');
+    Route::post('/receipt/store', [ReceiptController::class, 'store'])->name('receipt.store');
+    Route::get('/receipt/{identificator}', [ReceiptController::class, 'show'])->name('receipt.show');
+    Route::get('/receipt/edit/{receipt}', [ReceiptController::class, 'edit'])->name('receipt.edit');
+    Route::put('/receipt/update/{identificator}/', [ReceiptController::class, 'update'])->name('receipt.update');
+    Route::delete('/receipt/destroy/{receipt}', [ReceiptController::class, 'destroy'])->name('receipt.destroy');
+    
+    Route::get('/receipt/verify/{identificator}',[VerifyReceipt::class,'__invoke'])->name('receipt.verify');
+
+    Route::get('/sendPDF/{id}',[PDFMaker::class,'sendPDF'])->name('sendPDF');
+    Route::get('/downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');
 });
 
 require __DIR__.'/auth.php';

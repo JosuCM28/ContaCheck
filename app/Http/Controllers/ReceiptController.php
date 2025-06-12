@@ -1,65 +1,126 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\Counter;
+use App\Models\Category;
+use App\Models\Client;
 use App\Models\Receipt;
+use App\Mail\ReceiptMail;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Carbon;
 
 class ReceiptController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+
+        return view('receipts.index');
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $counters = Counter::all();
+        $categories = Category::all();
+        $clients = Client::all();
+        $identificator = Str::uuid();
+
+
+
+        return view('receipts.create', compact('counters', 'categories', 'clients', 'identificator'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    public function show($identificator)
+    {
+        $receipt = Receipt::findOrFail($identificator);
+        return view('receipts.show', compact('receipt'));
+    }
+
+    public function edit($receipt){
+
+        $receipt = Receipt::findOrFail($receipt);
+        $receipt->payment_date = Carbon::parse($receipt->payment_date)->format('Y-m-d');
+        $categories = Category::all();
+        $counters = Counter::all();
+        $clients = Client::all();
+        return view ('receipts.edit', compact('receipt', 'categories','counters','clients'));
+
+    }
+
     public function store(Request $request)
     {
-        //
+
+        $request->validate([
+            'counter_id' => 'required|exists:counters,id',
+            'client_id' => 'required|exists:clients,id',
+            'category_id' => 'required|exists:categories,id',
+            'identificator' => 'required|string|max:255|unique:receipts',
+            'payment_date' => 'required|date',
+            'pay_method' => 'required|string',
+            'mount' => 'required',
+            'concept' => 'required|string',
+            'status' => 'required|string',
+        ]);
+
+        $receipt = Receipt::create([
+            'counter_id' => $request->input('counter_id'),
+            'client_id' => $request->input('client_id'),
+            'category_id' => $request->input('category_id'),
+            'identificator' => $request->input('identificator'),
+            'payment_date' => $request->input('payment_date'),
+            'pay_method' => $request->input('pay_method'),
+            'mount' => $request->input('mount'),
+            'concept' => $request->input('concept'),
+            'status' => $request->input('status'),
+        ]);
+
+        if ($request->input('action') == 'send') {
+            $url = route('receipt.verify', $receipt->identificator);
+            $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))->setPaper('a4', 'landscape')->output();
+
+
+            Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
+
+            return redirect()->route('receipt.create')->with('success', 'Recibo creado y enviado exitosamente.');
+        }
+        return redirect()->route('receipt.create')->with('success', 'Recibo creado exitosamente.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Receipt $receipt)
-    {
-        //
+    public function update(Request $request, Receipt $receipt){
+        
+        $request->validate([
+            'counter_id' => 'required|exists:counters,id',
+            'client_id' => 'required|exists:clients,id',
+            'category_id' => 'required|exists:categories,id',
+            'payment_date' => 'required|string',
+            'pay_method' => 'required|string',
+            'mount' => 'required',
+            'description' => 'required|string',
+            'status' => 'required|string',
+            
+        ]);
+        $receipt->update($request->all());
+        return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('success','Recibo Actualizado Correctamente');
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Receipt $receipt)
-    {
-        //
-    }
+    public function destroy(Receipt $receipt){
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Receipt $receipt)
-    {
-        //
-    }
+        $receipt = Receipt::findOrFail($receipt->id);
+        $receipt->delete();
+        return redirect()->route('receipt.index')->with('success','Recibo Borrado Exitosamente');
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Receipt $receipt)
-    {
-        //
+
     }
+    
+    // public function destroydos(Receipt $receipt2){
+
+    //     $receipt = Receipt::findOrFail($receipt2->id);
+    //     $receipt->delete();
+    //     return redirect()->refresh()->with('success','Recibo Borrado Exitosamente');
+
+    // }
 }
