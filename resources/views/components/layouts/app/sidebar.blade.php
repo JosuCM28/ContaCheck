@@ -25,6 +25,16 @@
                     <flux:navlist.item icon="user-group" :href="route('client.index')" :current="request()->routeIs('client.index')" wire:navigate>{{ __('Clientes') }}</flux:navlist.item>
                     <flux:navlist.item icon="user" :href="route('client.create')" :current="request()->routeIs('client.create')" wire:navigate>{{ __('Nuevo Cliente') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Recibos')" class="grid">
+                    <flux:navlist.item icon="user-group" :href="route('client.index')" :current="request()->routeIs('client.index')" wire:navigate>{{ __('Recibos') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user" :href="route('client.create')" :current="request()->routeIs('client.create')" wire:navigate>{{ __('Nuevo Recibo') }}</flux:navlist.item>
+                </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('Vencimientos')" class="grid">
+                    <flux:navlist.item icon="user-group" :href="route('client.index')" :current="request()->routeIs('client.index')" wire:navigate>{{ __('FIEL') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user" :href="route('client.create')" :current="request()->routeIs('client.create')" wire:navigate>{{ __('SELLO') }}</flux:navlist.item>
+                </flux:navlist.group>
                 
             </flux:navlist>
 

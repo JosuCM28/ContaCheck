@@ -86,18 +86,17 @@ class CounterController extends Controller
     {
 
 
-        return view('counters.edit', [
-            'counter' => $counter->load('regime', 'user'),
-            'user' => $counter->user,
-            'regime' => Regime::all(),
-
-        ]);
+       return view('counters.edit', [
+    'counter' => $counter->load('regime', 'user'),
+    'regimes' => Regime::all(),
+]);
     }
 
     public function update(Request $request, Counter $counter, User $user)
     {
         
         $fullname = $request->name . ' ' . $request->last_name;
+        
         $request->validate([
             'name' => 'required|string|max:255,', 
             'last_name' => 'nullable|string|max:255',
@@ -110,7 +109,7 @@ class CounterController extends Controller
             'address' => 'required|string|max:255',
             'cp' => 'required|string|max:255',
             'state' => 'nullable|string|max:255',
-            'regimen' => 'required',
+            'regime_id' => 'required',
             
 
             
@@ -122,9 +121,10 @@ class CounterController extends Controller
         $counter->update($request->all());
         $user = User::findOrFail($counter->user_id);
         $user->update($request->only(['name', 'email']));
-
+        dd('No pasa');
 
         return redirect()->route('counter.index')->with('success', 'Contador actualizado exitosamente.');
+        
     }
 
     public function destroy(Counter $counter)
