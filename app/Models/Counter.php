@@ -59,6 +59,14 @@ class Counter extends Model
     {
         return $this->belongsTo(Document::class);
     }
-    
+
+    protected static function booted()
+    {
+        static::deleting(function ($counter) {
+            if ($counter->user) {
+                $counter->user->delete();
+            }
+        });
+    }
 
 }

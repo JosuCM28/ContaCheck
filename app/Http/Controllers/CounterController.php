@@ -87,9 +87,9 @@ class CounterController extends Controller
 
 
        return view('counters.edit', [
-    'counter' => $counter->load('regime', 'user'),
-    'regimes' => Regime::all(),
-]);
+            'counter' => $counter->load('regime', 'user'),
+            'regimes' => Regime::all(),
+        ]);
     }
 
     public function update(Request $request, Counter $counter, User $user)
@@ -110,10 +110,6 @@ class CounterController extends Controller
             'cp' => 'required|string|max:255',
             'state' => 'nullable|string|max:255',
             'regime_id' => 'required',
-            
-
-            
-
         ]);
         
         $request->merge(['full_name' => $fullname]);

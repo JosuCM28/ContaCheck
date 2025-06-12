@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\User;
+use App\Models\Client;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
     public string $email = '';
     public string $password = '';
     public string $password_confirmation = '';
+    public string $token = '';
 
     /**
      * Handle an incoming registration request.
@@ -23,9 +25,16 @@ new #[Layout('components.layouts.auth')] class extends Component {
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+            'token' => ['required', 'string', 'max:255'],
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+
+        $client = Client::where('token', $validated['token'])->first();
+        if (!$client || $client->user_id) {
+            $this->addError('token', __('Invalid token or taken.'));
+            return;
+        }
 
         event(new Registered(($user = User::create($validated))));
 
@@ -83,6 +92,17 @@ new #[Layout('components.layouts.auth')] class extends Component {
             autocomplete="new-password"
             :placeholder="__('Confirm password')"
             viewable
+        />
+
+        <!-- Token -->
+        <flux:input
+            wire:model="token"
+            :label="__('Token')"
+            type="text"
+            required
+            autofocus
+            autocomplete="token"
+            :placeholder="__('Token')"
         />
 
         <div class="flex items-center justify-end">
