@@ -121,11 +121,11 @@
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                     <a href="#" onclick="history.back()">
-                        <flux:button>Cancelar</flux:button>
+                        <flux:button class="cursor-pointer">Cancelar</flux:button>
                     </a>
                     {{-- <flux:button variant="primary" type="button" data-overlay="#modal-confirm">Guardar</flux:button> --}}
                     <flux:modal.trigger name="confirm-modal">
-                        <flux:button variant="primary" type="button">Guardar</flux:button>
+                        <flux:button variant="primary" type="button" class="cursor-pointer">Guardar</flux:button>
                     </flux:modal.trigger>
                 </div>
             </div>
@@ -141,10 +141,10 @@
                     <div class="flex gap-2">
                         <flux:spacer />
                         <flux:modal.close>
-                            <flux:button type="submit" variant="ghost">Solo guardar</flux:button>
+                            <flux:button type="submit" variant="ghost" class="cursor-pointer">Solo guardar</flux:button>
                         </flux:modal.close>
                         <flux:modal.close>
-                            <flux:button type="submit" name="action" value="send" variant="primary">Enviar por correo</flux:button>
+                            <flux:button type="submit" name="action" value="send" variant="primary" class="cursor-pointer">Enviar por correo</flux:button>
                         </flux:modal.close>
                     </div>
                 </div>

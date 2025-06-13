@@ -7,6 +7,8 @@ use App\Http\Controllers\VerifyReceipt;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\FielSello;
 
 Route::get('/', function () {
     return view('welcome');
@@ -44,6 +46,12 @@ Route::middleware(['auth'])->group(function () {
     Route::put('/client/update/{client}/', [ClientController::class, 'update'])->name('client.update');
     Route::delete('/client/destroy/{client}', [ClientController::class, 'destroy'])->name('client.destroy');
 
+    Route::get('/user', [ClientController::class, 'final'])->name('client.final');
+
+    #SELLOS Y FIELES
+    Route::get('/sello/fecha', [FielSello::class, 'indexsello'])->name('sello.indexsello');
+    Route::get('/fiel/fecha', [FielSello::class, 'indexfiel'])->name('fiel.indexfiel');
+
     Route::get('/receipt/index', [ReceiptController::class, 'index'])->name('receipt.index');
     Route::get('/receipt/create', [ReceiptController::class, 'create'])->name('receipt.create');
     Route::post('/receipt/store', [ReceiptController::class, 'store'])->name('receipt.store');
@@ -57,5 +65,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/sendPDF/{id}',[PDFMaker::class,'sendPDF'])->name('sendPDF');
     Route::get('/downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');
 });
+
+ #Administrar PDF que se pueden subir
+        Route::delete('/file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
+        Route::post('/file/{client}', [FileController::class, 'store'])->name('file.store');
+        Route::get('/file/download/{document}', [FileController::class, 'download'])->name('file.download');
 
 require __DIR__.'/auth.php';

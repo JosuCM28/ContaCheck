@@ -22,8 +22,10 @@ class CounterDestroy extends Component
     {
         $counter = Counter::findOrFail($this->counterId);
         $counter->delete();
+        session()->flash('success', 'Contador borrado exitosamente.');
         $this->dispatch('pg:eventRefresh');
         Flux::modal('counter-destroy')->close();
+        return $this->redirect(route('counter.index'), navigate: true);
     }
 
     public function render()

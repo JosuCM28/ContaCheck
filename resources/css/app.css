@@ -54,6 +54,15 @@
     }
 }
 
+#success-message {
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+#success-message.fade-out {
+    opacity: 0;
+}
+
 @layer base {
 
     *,
@@ -70,7 +79,7 @@
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],

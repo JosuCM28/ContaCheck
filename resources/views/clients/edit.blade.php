@@ -1,519 +1,400 @@
-<x-layouts.app :title="__('Actualizar Contador')" :subheading="__('Información personal')">
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="container mx-auto p-14">
-                    <form action="{{ route('client.update', $client->id) }}" method="post">
-                        @method('put')
-                        @csrf
-                        <div class="space-y-12">
-                            <div class="border-b border-gray-900/10 pb-12">
-                                <h2 class="text-base font-semibold leading-7 text-gray-900">Actualiza Información personal
-                                </h2>
-                                <p class="mt-1 text-sm leading-6 text-gray-600">Ingresa los datos del cliente que deseas
-                                    actualizar</p>
-                                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                                    <div class="sm:col-span-3">
-                                        <label for="name"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Nombre<span class="text-red-500">*</span></label>
-                                        <div class="mt-2">
-                                            <input type="text" name="name" id="name" autocomplete="given-name"
-                                                oninput="this.value = this.value.toUpperCase();"
-                                                value="{{ $client->name ?? '' }}"
-                                                placeholder="{{ $client->name ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+<x-layouts.app :title="__('Actualizar Cliente')" :subheading="__('Información personal')">
+    <div class="container mx-auto p-14">
+        <form action="{{ route('client.update', $client->id) }}" method="post">
+            @method('put')
+            @csrf
+            <div class="space-y-12">
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">
+                        Actualiza Información personal
+                    </h2>
+                    <p class="mt-1 text-sm leading-6 text-gray-600">
+                        Ingresa los datos del cliente que deseas actualizar
+                    </p>
 
-                                            @error('name')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                    <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
-                                    <div class="sm:col-span-3">
-                                        <label for="last_name"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Apellido<span class="text-red-500">*</span></label>
-                                        <div class="mt-2">
-                                            <input type="text" name="last_name" id="last_name" autocomplete="family-name"
-                                                oninput="this.value = this.value.toUpperCase();"
-                                                value="{{ $client->last_name ?? '' }}"
-                                                placeholder="{{ $client->last_name ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            @error('last_name')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Nombre -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>Nombre <span class="text-red-500">*</span></flux:label>
+                                <flux:description>{{ $client->name ? '' : 'No hay datos existentes' }}
+                                </flux:description>
+                                <flux:input name="name" id="name" type="text" autocomplete="given-name"
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('name', $client->name) }}" placeholder="Escribe el nombre" />
+                                <flux:error name="name" />
+                            </flux:field>
+                        </div>
 
+                        <!-- Apellido -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>Apellido <span class="text-red-500">*</span></flux:label>
+                                <flux:description>{{ $client->last_name ? '' : 'No hay datos existentes' }}
+                                </flux:description>
+                                <flux:input name="last_name" id="last_name" type="text" autocomplete="family-name"
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('last_name', $client->last_name) }}"
+                                    placeholder="Escribe el apellido" />
+                                <flux:error name="last_name" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-3">
-                                        <label for="email"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Correo</label>
-                                        <div class="mt-2">
-                                            <input id="email" name="email" type="email" autocomplete="email"
-                                                value="{{ $client->email ?? '' }}"
-                                                placeholder="{{ $client->email ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- Correo -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>Correo</flux:label>
+                                <flux:description>{{ $client->email ? '' : 'No hay datos existentes' }}
+                                </flux:description>
+                                <flux:input name="email" id="email" type="email" autocomplete="email"
+                                    value="{{ old('email', $client->email) }}" placeholder="Escribe el correo" />
+                                <flux:error name="email" />
+                            </flux:field>
+                        </div>
 
-                                            @error('email')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Token (readonly) -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>Token</flux:label>
+                                <flux:input name="token" id="token" type="text" readonly
+                                    value="{{ $client->token }}" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-3">
-                                        <label for="token"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Token</label>
-                                        <div class="mt-2">
-                                            <input id="token" name="token" type="text" readonly value="{{ $client->token }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- FIEL - Fecha de Inicio -->
+<div class="sm:col-span-3">
+    <flux:field>
+        <flux:label>FIEL - Fecha de Inicio</flux:label>
+        <flux:input
+            name="iniciofiel"
+            id="iniciofiel"
+            type="date"
+            class="w-full"
+            value="{{ old('iniciofiel', optional($client->credentials)->iniciofiel) }}"
+        />
+        <flux:error name="iniciofiel" />
+    </flux:field>
+</div>
 
-                                            @error('token')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+<!-- FIEL - Fecha de Vencimiento -->
+<div class="sm:col-span-3">
+    <flux:field>
+        <flux:label>FIEL - Fecha de Vencimiento</flux:label>
+        <flux:input
+            name="finfiel"
+            id="finfiel"
+            type="date"
+            class="w-full"
+            value="{{ old('finfiel', optional($client->credentials)->finfiel) }}"
+        />
+        <flux:error name="finfiel" />
+    </flux:field>
+</div>
 
-                                    <fieldset class="col-span-3">
-                                        <legend>FIEL</legend>
-                                        <div class="sm:col-span-3">
-                                            <label for="iniciofiel"
-                                                class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                                                Inicio</label>
-                                            <div class="mt-2">
-                                                <input name="iniciofiel" type="date" autocomplete="email"
-                                                    value="{{ $client->credentials->iniciofiel ?? '' }}"
-                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+<!-- SELLO - Fecha de Inicio -->
+<div class="sm:col-span-3">
+    <flux:field>
+        <flux:label>SELLO - Fecha de Inicio</flux:label>
+        <flux:input
+            name="iniciosello"
+            id="iniciosello"
+            type="date"
+            class="w-full"
+            value="{{ old('iniciosello', optional($client->credentials)->iniciosello) }}"
+        />
+        <flux:error name="iniciosello" />
+    </flux:field>
+</div>
 
-                                                @error('email')
-                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+<!-- SELLO - Fecha de Vencimiento -->
+<div class="sm:col-span-3">
+    <flux:field>
+        <flux:label>SELLO - Fecha de Vencimiento</flux:label>
+        <flux:input
+            name="finsello"
+            id="finsello"
+            type="date"
+            class="w-full"
+            value="{{ old('finsello', optional($client->credentials)->finsello) }}"
+        />
+        <flux:error name="finsello" />
+    </flux:field>
+</div>
 
-                                        <div class="sm:col-span-3">
-                                            <label for="finfiel"
-                                                class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                                                vencimiento</label>
-                                            <div class="mt-2">
-                                                <input name="finfiel" type="date"
-                                                    value="{{ $client->credentials->finfiel ?? '' }}"
-                                                    placeholder="Cambia Contraseña (opcional)"
-                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                                @error('finfiel')
-                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                        <!-- RFC -->
+                        <div class="sm:col-span-2 sm:col-start-1">
+                            <flux:field>
+                                <flux:label>RFC <span class="text-red-500">*</span></flux:label>
+                                <flux:input name="rfc" id="rfc" type="text" maxlength="13"
+                                    autocomplete="address-level2" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('rfc', $client->rfc) }}" placeholder="Escribe el RFC" />
+                                <flux:error name="rfc" />
+                            </flux:field>
+                        </div>
 
-                                    </fieldset>
+                        <!-- CURP -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>CURP</flux:label>
+                                <flux:input name="curp" id="curp" type="text" maxlength="18"
+                                    autocomplete="curp" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('curp', $client->curp) }}" placeholder="Escribe el CURP" />
+                                <flux:error name="curp" />
+                            </flux:field>
+                        </div>
 
+                        <!-- Contraseña SIEC -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Contraseña SIEC</flux:label>
+                                <flux:input name="siec" id="siec" type="text"
+                                    value="{{ old('siec', $client->credentials->siec) }}"
+                                    placeholder="Escribe la contraseña SIEC" />
+                                <flux:error name="siec" />
+                            </flux:field>
+                        </div>
 
-                                    <fieldset class="col-span-3 bg-gray-190">
-                                        <legend>SELLO</legend>
-                                        <div class="sm:col-span-3">
-                                            <label for="iniciosello"
-                                                class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                                                Inicio</label>
-                                            <div class="mt-2">
-                                                <input id="email" name="iniciosello" type="date" autocomplete="email"
-                                                    value="{{ $client->credentials->iniciosello ?? '' }}"
-                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- Usuario IDSE -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Usuario IDSE</flux:label>
+                                <flux:input name="useridse" id="useridse" type="text" maxlength="18"
+                                    value="{{ old('useridse', $client->credentials->useridse) }}"
+                                    placeholder="Escribe usuario IDSE" />
+                                <flux:error name="useridse" />
+                            </flux:field>
+                        </div>
 
-                                                @error('iniciosello')
-                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                        <!-- Contraseña IDSE -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Contraseña IDSE</flux:label>
+                                <flux:input name="idse" id="idse" type="text" maxlength="18"
+                                    value="{{ old('idse', $client->credentials->idse) }}"
+                                    placeholder="Escribe contraseña IDSE" />
+                                <flux:error name="idse" />
+                            </flux:field>
+                        </div>
 
-                                        <div class="sm:col-span-3">
-                                            <label for="finsello"
-                                                class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                                                vencimiento</label>
-                                            <div class="mt-2">
-                                                <input id="password" name="finsello" type="date"
-                                                    value="{{ $client->credentials->finsello ?? '' }}"
-                                                    placeholder="Cambia Contraseña (opcional)"
-                                                    class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- Régimen -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Régimen <spanclass="text-red-500">*</span></flux:label>
+                                <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen">
+                                    @foreach ($regimes as $regime)
+                                        @if (old('regime_id', $client->regime_id) == $regime->id)
+                                            <flux:select.option value="{{ $regime->id }}" selected>
+                                                {{ $regime->title }}</flux:select.option>
+                                        @else
+                                            <flux:select.option value="{{ $regime->id }}">{{ $regime->title }}
+                                            </flux:select.option>
+                                        @endif
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="regime_id" />
+                            </flux:field>
+                        </div>
 
-                                                @error('finsello')
-                                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                                @enderror
-                                            </div>
-                                        </div>
+                        <!-- Usuario SIPARE -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Usuario SIPARE</flux:label>
+                                <flux:input name="usersipare" id="usersipare" type="text" maxlength="18"
+                                    value="{{ old('usersipare', $client->credentials->usersipare) }}"
+                                    placeholder="Escribe usuario SIPARE" />
+                                <flux:error name="usersipare" />
+                            </flux:field>
+                        </div>
 
-                                    </fieldset>
+                        <!-- Contraseña SIPARE -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Contraseña SIPARE</flux:label>
+                                <flux:input name="sipare" id="sipare" type="text" maxlength="18"
+                                    value="{{ old('sipare', $client->credentials->sipare) }}"
+                                    placeholder="Escribe contraseña SIPARE" />
+                                <flux:error name="sipare" />
+                            </flux:field>
+                        </div>
 
+                        <!-- Teléfono -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Teléfono</flux:label>
+                                <flux:input name="phone" id="phone" type="text" maxlength="10"
+                                    oninput="this.value = this.value.slice(0, 10);"
+                                    value="{{ old('phone', $client->phone) }}" placeholder="Escribe el teléfono" />
+                                <flux:error name="phone" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-2 sm:col-start-1">
-                                        <label for="rfc"
-                                            class="block text-sm font-medium leading-6 text-gray-900">RFC<span class="text-blue-500">*</span></label>
-                                        <div class="mt-2">
-                                            <input type="text" name="rfc" id="rfc"
-                                                oninput="this.value = this.value.toUpperCase();"
-                                                autocomplete="address-level2" value="{{ $client->rfc ?? '' }}"
-                                                placeholder="{{ $client->rfc ? '' : 'No hay datos existentes' }}"
-                                                maxlength="13"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- Dirección -->
+                        <div class="sm:col-span-2 sm:col-start-1">
+                            <flux:field>
+                                <flux:label>Dirección <span class="text-red-500">*</span></flux:label>
+                                <flux:input name="address" id="address" type="text" class="w-full"
+                                    maxlength="150" autocomplete="address-level2"
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('address', $client->address) }}"
+                                    placeholder="{{ $client->address ? 'Escribe la dirección' : 'No hay datos existentes' }}" />
+                                <flux:error name="address" />
+                            </flux:field>
+                        </div>
 
-                                            @error('rfc')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Ciudad -->
+                        <div class="sm:col-span-2">
 
-                                    <div class="sm:col-span-2">
-                                        <label for="curp"
-                                            class="block text-sm font-medium leading-6 text-gray-900">CURP</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="curp" id="curp" autocomplete="curp"
-                                                oninput="this.value = this.value.toUpperCase();" maxlength="18"
-                                                value="{{ $client->curp ?? '' }}"
-                                                placeholder="{{ $client->curp ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                            <flux:field>
+                                <flux:label>Ciudad</flux:label>
+                                <flux:input name="city" id="city" type="text" class="w-full"
+                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('city', $client->city) }}"
+                                    placeholder="{{ $client->city ? 'Escribe la ciudad' : 'No hay datos existentes' }}" />
+                                <flux:error name="city" />
+                            </flux:field>
+                        </div>
 
-                                            @error('curp')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- CP -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>CP <span class="text-red-500">*</span></flux:label>
+                                <flux:input name="cp" id="cp" type="text" class="w-full"
+                                    maxlength="5" oninput="this.value = this.value.slice(0, 5);"
+                                    value="{{ old('cp', $client->cp) }}"
+                                    placeholder="{{ $client->cp ? 'Escribe el CP' : 'No hay datos existentes' }}" />
+                                <flux:error name="cp" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-2">
-                                        <label for="siec"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Contraseña
-                                            SIEC</label>
-                                        <div class="mt-2">
-                                            <input name="siec" type="text"
-                                                value="{{ $client->credentials->siec ?? '' }}"
-                                                placeholder="{{ $client->credentials->siec ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            @error('siec')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Estado -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Estado</flux:label>
+                                <flux:input name="state" id="state" type="text"
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('state', $client->state) }}" placeholder="Escribe el estado" />
+                                <flux:error name="state" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-2">
-                                        <label for="useridse"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Usuario IDSE</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="useridse" 
-                                                
-                                                value="{{ $client->credentials->useridse ?? '' }}"
-                                                placeholder="{{ $client->credentials->useridse ? '' : 'No hay datos existentes' }}"
-                                                maxlength="18"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- NSS -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>NSS</flux:label>
+                                <flux:input name="nss" id="nss" type="text" class="w-full"
+                                    maxlength="18" autocomplete="nss" value="{{ old('nss', $client->nss) }}"
+                                    placeholder="{{ $client->nss ? 'Escribe el NSS' : 'No hay datos existentes' }}" />
+                                <flux:error name="nss" />
+                            </flux:field>
+                        </div>
 
-                                            @error('useridse')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Fecha de Nacimiento -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Fecha de Nacimiento</flux:label>
+                                <flux:input name="birthdate" id="birthdate" type="date" min="1900-01-01"
+                                    value="{{ old('birthdate', $client->birthdate) }}" />
+                                <flux:error name="birthdate" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-2">
-                                        <label for="idse"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Contraseña
-                                            IDSE</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="idse" value="{{ $client->credentials->idse ?? '' }}"
-                                                placeholder="{{ $client->credentials->idse ? '' : 'No hay datos existentes' }}"
-                                                maxlength="18"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- Contador -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Contador <span class="text-red-500">*</span></flux:label>
+                                <flux:select name="counter_id" id="counter_id" placeholder="Selecciona un contador">
+                                    @foreach ($counters as $counter)
+                                        @if (old('counter_id', $client->counter_id) == $counter->id)
+                                            <flux:select.option value="{{ $counter->id }}" selected>
+                                                {{ $counter->full_name }}</flux:select.option>
+                                        @else
+                                            <flux:select.option value="{{ $counter->id }}">{{ $counter->full_name }}
+                                            </flux:select.option>
+                                        @endif
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="counter_id" />
+                            </flux:field>
+                        </div>
 
-                                            @error('idse')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Nota -->
+                        <!-- Nota -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Nota</flux:label>
+                                <flux:input name="note" id="note" type="text" class="w-full"
+                                    maxlength="255" value="{{ old('note', $client->note) }}"
+                                    placeholder="{{ $client->note ? 'Escribe una nota' : 'No hay datos existentes' }}" />
+                                <flux:error name="note" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-2">
-                                        <label for="regimen"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Regimen<span class="text-red-500">*</span></label>
-                                        <div class="mt-2">
-                                            <select name="regime_id"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                                @foreach ($regimes as $regime)
-                                                    <option value="{{ $regime->id }}"
-                                                        {{ $client->regime_id == $regime->id ? 'selected' : '' }}>
-                                                        {{ $regime->title }}
-                                                    </option>
-                                                @endforeach
+                        <!-- Estatus -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Estatus <span class="text-red-500">*</span></flux:label>
+                                <flux:select name="status" id="status" placeholder="Selecciona estatus">
+                                    @foreach (['active' => 'Activo', 'inactive' => 'Inactivo'] as $value => $label)
+                                        @if (old('status', $client->status) === $value)
+                                            <flux:select.option value="{{ $value }}" selected>
+                                                {{ $label }}</flux:select.option>
+                                        @else
+                                            <flux:select.option value="{{ $value }}">{{ $label }}
+                                            </flux:select.option>
+                                        @endif
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="status" />
+                            </flux:field>
+                        </div>
 
-                                            </select>
+                        <!-- Extra 1 -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Extra 1</flux:label>
+                                <flux:input name="auxone" id="auxone" type="text"
+                                    value="{{ old('auxone', $client->credentials->auxone) }}"
+                                    placeholder="Campo Extra 1" />
+                                <flux:error name="auxone" />
+                            </flux:field>
+                        </div>
 
-                                            @error('regimen')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                        <!-- Extra 2 -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Extra 2</flux:label>
+                                <flux:input name="auxtwo" id="auxtwo" type="text"
+                                    value="{{ old('auxtwo', $client->credentials->auxtwo) }}"
+                                    placeholder="Campo Extra 2" />
+                                <flux:error name="auxtwo" />
+                            </flux:field>
+                        </div>
 
-                                    <div class="sm:col-span-2">
-                                        <label for="usersipare"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Usuario
-                                            SIPARE</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="usersipare" id="regime_id"
-                                                autocomplete="regime_id"
-                                                value="{{ $client->credentials->usersipare ?? '' }}"
-                                                placeholder="{{ $client->credentials->usersipare ? '' : 'No hay datos existentes' }}"
-                                                maxlength="18"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        <!-- Extra 3 -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Extra 3</flux:label>
+                                <flux:input name="auxthree" id="auxthree" type="text"
+                                    value="{{ old('auxthree', $client->credentials->auxthree) }}"
+                                    placeholder="Campo Extra 3" />
+                                <flux:error name="auxthree" />
+                            </flux:field>
+                        </div>
 
-                                            @error('usersipare')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
+                    </div>
+                </div>
 
-                                    <div class="sm:col-span-2">
-                                        <label for="sipare"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Contraseña
-                                            SIPARE</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="sipare"
-                                                value="{{ $client->credentials->sipare ?? '' }}"
-                                                placeholder="{{ $client->credentials->sipare ? '' : 'No hay datos existentes' }}"
-                                                maxlength="18"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('sipare')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="phone"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Telefono</label>
-                                        <div class="mt-2">
-                                            <input id="phone" name="phone" type="number"
-                                                oninput="this.value = this.value.slice(0, 10);"
-                                                value="{{ $client->phone ?? '' }}"
-                                                placeholder="{{ $client->phone ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            @error('phone')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-
-                                    <div class="sm:col-span-2 sm:col-start-1">
-                                        <label for="address"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Direccion<span class="text-blue-500">*</span></label>
-                                        <div class="mt-2">
-                                            <input type="text" name="address" id="address"
-                                                oninput="this.value = this.value.toUpperCase();"
-                                                autocomplete="address-level2" value="{{ $client->address ?? '' }}"
-                                                placeholder="{{ $client->address ? '' : 'No hay datos existentes' }}"
-                                                maxlength="13"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('address')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="city"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Ciudad</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="city" id="city" autocomplete="city"
-                                                oninput="this.value = this.value.toUpperCase();" maxlength="18"
-                                                value="{{ $client->city ?? '' }}"
-                                                placeholder="{{ $client->city ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('city')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="cp"
-                                            class="block text-sm font-medium leading-6 text-gray-900">CP<span class="text-blue-500">*</span></label>
-                                        <div class="mt-2">
-                                            <input name="cp" type="number"
-                                                oninput="this.value = this.value.slice(0, 5);"
-                                                value="{{ $client->cp ?? '' }}"
-                                                placeholder="{{ $client->cp ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            @error('cp')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="sm:col-span-2">
-                                        <label for="state"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Estado</label>
-                                        <div class="mt-2">
-                                            <input id="state" name="state" type="text"
-                                                oninput="this.value = this.value.toUpperCase();"
-                                                value="{{ $client->state ?? '' }}"
-                                                placeholder="{{ $client->state ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            @error('state')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="nss"
-                                            class="block text-sm font-medium leading-6 text-gray-900">NSS</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="nss" autocomplete="nss"
-                                                value="{{ $client->nss ?? '' }}"
-                                                placeholder="{{ $client->nss ? '' : 'No hay datos existentes' }}"
-                                                maxlength="18"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('nss')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="birthdate"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                                            Nacimiento</label>
-                                        <div class="mt-2">
-                                            <input type="date" name="birthdate" id="birthdate" min="1900-1-1"
-                                                value="{{ $client->birthdate ?? '' }}"
-                                                placeholder="{{ $client->birthdate ? '' : 'No hay datos existentes' }}"
-                                                autocomplete="postal-code"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('birthdate')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="counter"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Contador<span class="text-red-500">*</span></label>
-                                        <div class="mt-2">
-                                            <select name="counter_id"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                                @foreach ($counters as $counter)
-                                                    <option value="{{ $counter->id }}"
-                                                        {{ $client->counter_id == $counter->id ? 'selected' : '' }}>
-                                                        {{ $counter->full_name }}
-                                                    </option>
-                                                @endforeach
-
-                                            </select>
-                                            @error('counter')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="note"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Nota</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="note" autocomplete="note"
-                                                value="{{ $client->note ?? '' }}"
-                                                placeholder="{{ $client->note ? '' : 'No hay datos existentes' }}"
-                                                maxlength="255"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('note')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="status"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Estatus<span class="text-red-500">*</span></label>
-                                        <div class="mt-2">
-                                            <select name="status" id="" class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            <option value="active">Activo</option>
-                                            <option value="inactive">Inactivo</option>
-                                            </select>
-
-
-                                            @error('status')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="auxone"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Extra 1</label>
-                                        <div class="mt-2">
-                                            <input id="state" name="auxone" type="text"
-                                                value="{{ $client->credentials->auxone ?? '' }}"
-                                                placeholder="{{ $client->credentials->auxone ? '' : 'No hay datos existentes' }}"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                            @error('auxone')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="nss"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Extra 2</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="auxtwo"
-                                                value="{{ $client->credentials->auxtwo ?? '' }}"
-                                                placeholder="{{ $client->credentials->auxtwo ? '' : 'No hay datos existentes' }}"
-                                                maxlength="18"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('auxtwo')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="sm:col-span-2">
-                                        <label for="birthdate"
-                                            class="block text-sm font-medium leading-6 text-gray-900">Extra 3</label>
-                                        <div class="mt-2">
-                                            <input type="text" name="auxthree"
-                                                value="{{ $client->credentials->auxthree ?? '' }}"
-                                                placeholder="{{ $client->credentials->auxthree ? '' : 'No hay datos existentes' }}"
-                                                autocomplete="postal-code"
-                                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
-
-                                            @error('auxthree')
-                                                <span class="text-red-500 text-sm">{{ $message }}</span>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div class="mt-6 flex items-center justify-end gap-x-6">
-                                <a href="{{ url()->previous() }}"
-                                    class="text-sm font-semibold leading-6 text-gray-900">Cancelar</a>
-                                <button type="submit"
-                                    class="rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                                    Actualizar
-                                </button>
-                            </div>
-
-                    </form>
+                <div class="mt-6 flex items-center justify-end gap-x-6">
+                    <a href="{{ url()->previous() }}">
+                        <flux:button class="cursor-pointer">Cancelar</flux:button>
+                    </a>
+                    <button type="submit">
+                        <flux:button variant="primary" type="submit" class="cursor-pointer">Actualizar
+                        </flux:button>
+                    </button>
                 </div>
             </div>
-        </div>
-        <script>
-            const togglePassword = document.getElementById("togglePassword");
-            const password = document.getElementById("password");
-            togglePassword.addEventListener("click", (e) => {
-                const type =
-                    password.getAttribute("type") === "password" ? "text" : "password";
-                password.setAttribute("type", type);
-                e.target.classList.toggle("fa-eye");
-            });
-        </script>
+        </form>
+    </div>
 </x-layouts.app>

@@ -30,6 +30,11 @@
                     <flux:navlist.item icon="receipt-percent" :href="route('receipt.index')" :current="request()->routeIs('receipt.index')" wire:navigate>{{ __('Recibos') }}</flux:navlist.item>
                     <flux:navlist.item icon="rectangle-stack" :href="route('receipt.create')" :current="request()->routeIs('receipt.create')" wire:navigate>{{ __('Nuevo recibo') }}</flux:navlist.item>
                 </flux:navlist.group>
+
+                <flux:navlist.group :heading="__('e.Firma y Sellos')" class="grid">
+                    <flux:navlist.item icon="calendar-date-range" :href="route('fiel.indexfiel')" :current="request()->routeIs('fiel.indexfiel')" wire:navigate>{{ __('FIEL') }}</flux:navlist.item>
+                    <flux:navlist.item icon="calendar-date-range" :href="route('sello.indexsello')" :current="request()->routeIs('sello.indexsello')" wire:navigate>{{ __('SELLO') }}</flux:navlist.item>
+                </flux:navlist.group>
                 
             </flux:navlist>
 

@@ -1,11 +1,11 @@
 <div>
-    <flux:modal name="counter-destroy" class="min-w-[22rem]">
+    <flux:modal name="client-destroy" class="min-w-[22rem]">
         <div class="space-y-6">
             <div>
-                <flux:heading size="lg">Eliminar contador</flux:heading>
+                <flux:heading size="lg">Eliminar cliente</flux:heading>
 
                 <flux:text class="mt-2">
-                    <p>Estas seguro de que deseas eliminar el contador?</p>
+                    <p>Estas seguro de que deseas eliminar el cliente?</p>
                     <p>Esta acción no se puede deshacer.</p>
                 </flux:text>
             </div>

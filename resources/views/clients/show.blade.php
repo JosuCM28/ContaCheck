@@ -1,4 +1,4 @@
-<x-layouts.app :title="__('Actualizar Contador')" :subheading="__('Información personal')">
+<x-layouts.app :title="__('Actualizar Cliente')" :subheading="__('Información personal')">
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg ">
@@ -19,13 +19,13 @@
                             {{ $client->full_name }} </p>
 
 
-                        <div class="flex justify-center"><span class="label-text-alt ">
-                                @if ($client->counter)
+                        <div class="flex justify-center">
+                        <flux:link href="{{route('counter.show',$client->counter->id)}}" variant="subtle"> @if ($client->counter)
                                     Cliente de {{ $client->counter->full_name }}
                                 @else
                                     No tiene contador asociado
-                                @endif
-                            </span>
+                                @endif</flux:link>
+
                         </div>
 
                     </div>
@@ -40,12 +40,9 @@
 
 
                     <div class="space-y-12">
-                        <div class="border-b border-gray-900/10 pb-12">
+                        <div class="border-b border-gray-900/10 pb-8">
 
                             <div class="flex gap-1">
-                                <div class="items-center gap-x-3">
-                                    <h2 class="text-base font-semibold leading-7 text-gray-900">Informacion personal</h2>
-                                </div>
                                 <div class="dropdown relative inline-flex rtl:[--placement:bottom-end] mt-0.5">
                                     <button id="dropdown-menu-icon " type="button"
                                         class="dropdown-toggle btn btn-square btn-text btn-xs" aria-haspopup="menu"
@@ -440,12 +437,19 @@
                             </div>
                         </div>
 
-                        <div class="mt-4 flex items-center justify-end gap-x-6 pb-4 pr-3">
-                            <a href="{{ url()->previous() }}" class="btn btn-soft btn-secondary">Cancelar</a>
-                            <a href="{{ route('client.edit', $client->id) }}" class="btn btn-soft btn-accent">Editar</a>
-                        </div>
+                        <div class="mt-6 pb-2 flex items-center justify-between">
+                    <flux:button id="showReceipts" class="cursor-pointer" value="Ver Clientes">Ver Clientes</flux:button>
+                    <div class="flex gap-4 items-center">
+                        {{-- <flux:icon.trash variant="solid" class="text-red-500" /> --}}
+                        <flux:button icon="trash" class="cursor-pointer text-red-500 fill-red-500 bg-red-500"/>
+                        <a href="{{ url()->previous() }}">
+                            <flux:button class="cursor-pointer">Cancelar</flux:button>
+                        </a>
+                        <flux:button variant="primary" href="{{ route('client.edit', $client->id) }}">Editar</flux:button>
+                    </div>
+                </div>
+                
 
-                        <input type="button" id="showReceipts" value="Ver Recibos" class="btn btn-soft btn-info">
                         <div class="hidden" id="tableClients">
                             <livewire:receipt-table :client="$client->id" />
                         </div>

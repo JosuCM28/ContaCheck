@@ -255,9 +255,9 @@
 
                 <div class="mt-6 pb-2 flex items-center justify-end gap-x-6">
                     <a href="#" onclick="history.back()">
-                        <flux:button>Cancelar</flux:button>
+                        <flux:button class="cursor-pointer">Cancelar</flux:button>
                     </a>
-                    <flux:button variant="primary" type="submit">Guardar</flux:button>
+                    <flux:button variant="primary" type="submit" class="cursor-pointer">Guardar</flux:button>
                 </div>
             </div>
         </form>
