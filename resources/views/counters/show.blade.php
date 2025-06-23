@@ -115,8 +115,6 @@
                 <div class="mt-6 pb-2 flex items-center justify-between">
                     <flux:button id="showClients" class="cursor-pointer" value="Ver Clientes">Ver Clientes</flux:button>
                     <div class="flex gap-4 items-center">
-                        {{-- <flux:icon.trash variant="solid" class="text-red-500" /> --}}
-                        <flux:button icon="trash" class="cursor-pointer text-red-500 fill-red-500 bg-red-500"/>
                         <a href="{{ url()->previous() }}">
                             <flux:button class="cursor-pointer">Cancelar</flux:button>
                         </a>

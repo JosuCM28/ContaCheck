@@ -4,6 +4,7 @@ use Livewire\Volt\Volt;
 use App\Http\Controllers\PDFMaker;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VerifyReceipt;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
@@ -64,6 +65,11 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/sendPDF/{id}',[PDFMaker::class,'sendPDF'])->name('sendPDF');
     Route::get('/downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');
+
+
+    Route::delete('/file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
+    Route::post('/file/{client}', [FileController::class, 'store'])->name('file.store');
+    Route::get('/file/download/{document}', [FileController::class, 'download'])->name('file.download');
 });
 
  #Administrar PDF que se pueden subir
