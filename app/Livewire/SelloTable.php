@@ -19,6 +19,10 @@ final class SelloTable extends PowerGridComponent
 {
     public string $tableName = 'sello-table-kyyfkb-table';
     use WithExport;
+    public function boot()
+    {
+        Carbon::setLocale('es');
+    }
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -87,13 +91,21 @@ final class SelloTable extends PowerGridComponent
                 $finsello = Carbon::parse($model->finsello);
 
 
-                return number_format($currentDate->diffInDays($finsello, false), 2);// `false` para obtener valores negativos
+                return $finsello->diffForHumans($currentDate, [
+                    'syntax' => Carbon::DIFF_RELATIVE_TO_NOW,
+                    'parts' => 1,
+                    'short' => false, // Puedes poner true si quieres algo tipo “3d”
+                ]);
             })
             ->add('status', function (Credential $model) {
                 $currentDate = now(); // Fecha actual
                 $finfiel = Carbon::parse($model->finsello); // Fecha de fin
                 $diferenciaDias = $currentDate->diffInDays($finfiel, false);
 
+
+                if ($model->created_at == $model->updated_at) {
+                    return '<span class="bg-yellow-100 p-2 rounded">Aún no se ha actualizado</span>';
+                }
 
                 switch (true) {
                     case $diferenciaDias <= 0:
@@ -103,6 +115,7 @@ final class SelloTable extends PowerGridComponent
                     default:
                         return '<span class="bg-green-200 p-2 rounded">Vigente</span>';
                 }
+
             });
     }
 

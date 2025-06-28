@@ -134,11 +134,11 @@
                 {{-- Botones --}}
                 <div class="col-span-4 flex justify-end gap-4 mt-4">
                     <a href="{{ url()->previous() }}">
-                        <flux:button>Cancelar</flux:button>
+                        <flux:button class="cursor-pointer" >Cancelar</flux:button>
                     </a>
 
                     <button type="submit" @if($receipt->status != 'PENDIENTE') disabled @endif>
-                        <flux:button variant="primary">Actualizar</flux:button>
+                        <flux:button variant="primary" class="cursor-pointer" type="submit">Actualizar</flux:button>
                     </button>
                 </div>
 

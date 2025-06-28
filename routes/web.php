@@ -8,14 +8,14 @@ use App\Http\Controllers\FileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\FileController;
 use App\Http\Controllers\FielSello;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -58,7 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/receipt/store', [ReceiptController::class, 'store'])->name('receipt.store');
     Route::get('/receipt/{identificator}', [ReceiptController::class, 'show'])->name('receipt.show');
     Route::get('/receipt/edit/{receipt}', [ReceiptController::class, 'edit'])->name('receipt.edit');
-    Route::put('/receipt/update/{identificator}/', [ReceiptController::class, 'update'])->name('receipt.update');
+    Route::put('/receipt/update/{receipt}/', [ReceiptController::class, 'update'])->name('receipt.update');
     Route::delete('/receipt/destroy/{receipt}', [ReceiptController::class, 'destroy'])->name('receipt.destroy');
     
     Route::get('/receipt/verify/{identificator}',[VerifyReceipt::class,'__invoke'])->name('receipt.verify');
@@ -72,7 +72,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/file/download/{document}', [FileController::class, 'download'])->name('file.download');
 });
 
- #Administrar PDF que se pueden subir
+#Administrar PDF que se pueden subir
         Route::delete('/file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
         Route::post('/file/{client}', [FileController::class, 'store'])->name('file.store');
         Route::get('/file/download/{document}', [FileController::class, 'download'])->name('file.download');

@@ -117,7 +117,6 @@ class CounterController extends Controller
         $counter->update($request->all());
         $user = User::findOrFail($counter->user_id);
         $user->update($request->only(['name', 'email']));
-        dd('No pasa');
 
         return redirect()->route('counter.index')->with('success', 'Contador actualizado exitosamente.');
         

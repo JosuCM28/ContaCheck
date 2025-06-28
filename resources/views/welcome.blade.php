@@ -21,7 +21,7 @@
     <!-- Navbar -->
     <nav x-data="{ open: false }" class="bg-white shadow-sm fixed w-full z-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="#inicio" class="text-xl font-semibold text-black">Despacho Contable BM</a>
+            <a href="#inicio" class="text-xl font-bold text-black montecarlo-regular">Despacho Contable BM</a>
             <div class="hidden lg:flex space-x-6 items-center text-sm">
                 <a href="#inicio" class="nav-link text-gray-700 hover:text-black">Inicio</a>
                 <a href="#nosotros" class="nav-link text-gray-700 hover:text-black">Acerca de</a>

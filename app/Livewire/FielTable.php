@@ -20,6 +20,10 @@ final class FielTable extends PowerGridComponent
 {
     public string $tableName = 'fiel-table-cfxm7t-table';
     use WithExport;
+    public function boot()
+    {
+        Carbon::setLocale('es');
+    }
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -45,27 +49,29 @@ final class FielTable extends PowerGridComponent
     public function datasource(): Builder
     {
         return Credential::query()
-        ->with(['client' => function ($query) {
-            $query->where(function ($q) {
-                $q->whereNull('user_id') // Permitir si user_id es NULL
-                  ->orWhere('user_id', '!=', 1); // Permitir si es diferente de 1
-            });
-        }])
-        ->whereHas('client', function ($query) {
-            $query->where(function ($q) {
-                $q->whereNull('user_id') // Permitir si user_id es NULL
-                  ->orWhere('user_id', '!=', 1); // Permitir si es diferente de 1
-            });
-        })
-        ->addSelect([
-            'client_full_name' => Client::select('full_name')
-                ->whereColumn('clients.id', 'credentials.client_id')
-                ->where(function ($q) {
-                    $q->whereNull('clients.user_id') // Permitir si user_id es NULL
-                      ->orWhere('clients.user_id', '!=', 1); // Permitir si es diferente de 1
-                })
-                ->limit(1),
-        ]);
+            ->with([
+                'client' => function ($query) {
+                    $query->where(function ($q) {
+                        $q->whereNull('user_id') // Permitir si user_id es NULL
+                            ->orWhere('user_id', '!=', 1); // Permitir si es diferente de 1
+                    });
+                }
+            ])
+            ->whereHas('client', function ($query) {
+                $query->where(function ($q) {
+                    $q->whereNull('user_id') // Permitir si user_id es NULL
+                        ->orWhere('user_id', '!=', 1); // Permitir si es diferente de 1
+                });
+            })
+            ->addSelect([
+                'client_full_name' => Client::select('full_name')
+                    ->whereColumn('clients.id', 'credentials.client_id')
+                    ->where(function ($q) {
+                        $q->whereNull('clients.user_id') // Permitir si user_id es NULL
+                            ->orWhere('clients.user_id', '!=', 1); // Permitir si es diferente de 1
+                    })
+                    ->limit(1),
+            ]);
     }
 
     public function relationSearch(): array
@@ -86,7 +92,11 @@ final class FielTable extends PowerGridComponent
                 $finfiel = Carbon::parse($model->finfiel); // Fecha de fin
     
                 // Si la fecha actual está después de `finfiel`, retorna negativo
-                return number_format($currentDate->diffInDays($finfiel, false), 2);
+                return $finfiel->diffForHumans($currentDate, [
+                    'syntax' => Carbon::DIFF_RELATIVE_TO_NOW,
+                    'parts' => 1,
+                    'short' => false, // Puedes poner true si quieres algo tipo “3d”
+                ]);
             })
             ->add('status', function (Credential $model) {
                 $currentDate = now(); // Fecha actual
@@ -94,6 +104,9 @@ final class FielTable extends PowerGridComponent
                 $diferenciaDias = ($currentDate->diffInDays($finfiel, false));
 
 
+                if ($model->created_at == $model->updated_at) {
+                    return '<span class="bg-yellow-100 p-2 rounded">Aún no se ha actualizado</span>';
+                }
                 switch (true) {
                     case $diferenciaDias <= 0:
                         return '<span class="bg-red-200 p-2 rounded">Expirado</span>';
@@ -119,11 +132,12 @@ final class FielTable extends PowerGridComponent
 
             Column::make('Fecha de vencimiento', 'finfiel_formatted', 'finfiel')
                 ->sortable(),
-                
-                Column::make('Diferencia en Días', 'days_remaining', 'days'),
 
             Column::make('Status', 'status')
                 ->searchable(),
+
+            Column::make('Diferencia en Días', 'days_remaining', 'days'),
+
 
 
 
@@ -139,8 +153,8 @@ final class FielTable extends PowerGridComponent
             Filter::datepicker('finfiel'),
             Filter::datepicker('iniciosello'),
             Filter::datepicker('finsello'),
-            
-            
+
+
 
         ];
     }
@@ -163,7 +177,7 @@ final class FielTable extends PowerGridComponent
                 ->class('')
                 ->route('client.show', ['client' => $row->id]),
 
-                Button::add('edit')
+            Button::add('edit')
                 ->slot('<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L6.832 19.82a4.5 4.5 0 0 1-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 0 1 1.13-1.897L16.863 4.487Zm0 0L19.5 7.125" />
                     </svg>')
