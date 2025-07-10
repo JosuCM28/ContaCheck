@@ -76,7 +76,6 @@ class ClientController extends Controller
             'finsello' => 'nullable',
         ]);
 
-
         $fullname = $request->name . ' ' . $request->last_name;
         $client = Client::create([
             'user_id' => $request->user_id,

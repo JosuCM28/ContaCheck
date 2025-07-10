@@ -18,6 +18,7 @@ class FileController extends Controller
             'file_path' => 'required',
         ]);
 
+
         $path = $request->file('file_path')->store('files','public');
         $clientId = $client->id;
         $document = new Document();

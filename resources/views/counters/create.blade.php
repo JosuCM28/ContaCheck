@@ -47,8 +47,7 @@
                                 <flux:label>Contraseña <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Verifica o edita la contraseña</flux:description>
 
-                                <flux:input name="password" type="password" value="{{ $password }}" viewable 
-                                oninput="this.value = this.value.toUpperCase();" required />
+                                <flux:input name="password" type="password" value="{{ $password }}" viewable required />
                                 <flux:error name="password" />
                             </flux:field>
                         </div>

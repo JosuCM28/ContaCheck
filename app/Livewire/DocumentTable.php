@@ -4,7 +4,6 @@ namespace App\Livewire;
 
 use App\Models\Document;
 use Livewire\Attributes\On;
-use Illuminate\Support\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
@@ -16,6 +15,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 #[On('pg:eventRefresh')]
 final class DocumentTable extends PowerGridComponent
 {
+    public \App\Models\Client $client;
     public string $tableName = 'document-table-gqauou-table';
 
     public function setUp(): array
@@ -34,7 +34,8 @@ final class DocumentTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-        return Document::query();
+        return Document::query()
+        ->where('client_id', $this->client->id);
     }
 
     public function relationSearch(): array

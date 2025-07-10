@@ -1,6 +1,5 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
-
+    <div class="flex h-[calc(100vh-112px)] w-full flex-1 flex-col gap-4 rounded-xl">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
             <div
                 class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
@@ -92,10 +91,8 @@
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-
-            <div
-                class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
-                <h3 class="text-xl font-semibold text-neutral-800 mb-4">Últimos 10 Recibos</h3>
+            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
+                <h3 class="text-base font-semibold text-neutral-800 mb-4">Últimos 10 Recibos</h3>
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-100 text-gray-700">
                         <tr>
@@ -133,8 +130,6 @@
                 class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
                 <div class="flex items-center justify-center w-full h-full">Centradoooooooooooooooooooo</div>
             </div>
-
         </div>
-
     </div>
 </x-layouts.app>

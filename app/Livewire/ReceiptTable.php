@@ -24,10 +24,12 @@ final class ReceiptTable extends PowerGridComponent
     public string $tableName = 'receipt-table-2gepz9-table';
     use WithExport;
     public int $client = 0;
+
     public function __mount(int $client): void
     {
         $this->client = $client;
     }
+
     public function setUp(): array
     {
         $this->showCheckBox();
@@ -47,8 +49,6 @@ final class ReceiptTable extends PowerGridComponent
                 ->showRecordCount(),
         ];
     }
-
-
 
     public function datasource(): Builder
     {
@@ -128,8 +128,6 @@ final class ReceiptTable extends PowerGridComponent
             Column::make('Monto', 'mount')
                 ->sortable()
                 ->searchable(),
-
-
 
             Column::make('Estado', 'status')
                 ->sortable()
@@ -234,17 +232,23 @@ final class ReceiptTable extends PowerGridComponent
                 ->class('')
                 ->confirmPrompt('¿Estas seguro que deseas enviarlo por correo?', 'Enviar')
                 ->route('sendPDF', ['id' => $row->id]),
-
         ];
     }
 
     public function actionRules($row): array
     {
         return [
-            // Ocultar el botón 'edit' si el estado del recibo no es 'PENDIENTE'
             Rule::button('edit')
                 ->when(fn($row) => $row->status !== 'PENDIENTE')
-                ->hide()
+                ->hide(),
+
+            Rule::button('send')
+                ->when(fn () => auth()->user()->rol === 'cliente')
+                ->hide(),
+
+            Rule::button('show')
+                ->when(fn () => auth()->user()->rol === 'cliente')
+                ->hide(),
         ];
     }
 }

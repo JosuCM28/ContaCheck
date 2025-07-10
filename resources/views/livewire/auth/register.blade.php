@@ -36,12 +36,28 @@ new #[Layout('components.layouts.auth')] class extends Component {
             return;
         }
 
-        event(new Registered(($user = User::create($validated))));
+        // Crear usuario con valores validados (rol = 'cliente' por default en DB)
+        $user = User::create($validated);
+        $user->refresh(); // Forzar que Laravel recargue el valor por defecto de 'rol' desde la BD
 
+        // Asociar cliente al nuevo usuario
+        $client->user_id = $user->id;
+        $client->save();
+
+        // Disparar evento y autenticar
+        event(new Registered($user));
         Auth::login($user);
 
-        $this->redirectIntended(route('dashboard', absolute: false), navigate: true);
+        // Redirigir según rol
+        $redirectTo = match ($user->rol) {
+            'cliente' => route('client.dashboard', absolute: false),
+            'contador' => route('dashboard', absolute: false),
+            default => '/',
+        };
+
+        $this->redirectIntended(default: $redirectTo, navigate: true);
     }
+
 }; ?>
 
 <div class="flex flex-col gap-6">

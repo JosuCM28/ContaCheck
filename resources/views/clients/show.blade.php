@@ -63,9 +63,9 @@
                                 @enderror
                             </div>
                             
-                            <div class="flex">
+                            <div class="flex mt-4">
                                 <flux:spacer />
-                                <flux:button type="submit" variant="primary">Save changes</flux:button>
+                                <flux:button type="submit" variant="primary" class="cursor-pointer">Subir documento</flux:button>
                             </div>
                         </form>
                     </div>
@@ -326,9 +326,9 @@
             <!-- Tabla de documentos -->
             <div class="hidden" id="tableDocuments">
                 <flux:modal.trigger name="document-store">
-                    <flux:button icon="plus" class="mb-4">Agregar Documento</flux:buttom>
+                    <flux:button icon="plus" class="mb-4 cursor-pointer">Agregar Documento</flux:buttom>
                 </flux:modal.trigger>
-                <livewire:document-table :client="$client->id" />
+                <livewire:document-table :client="$client" />
             </div>
         </div>
     </div>
