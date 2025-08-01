@@ -67,7 +67,8 @@ final class ReceiptTable extends PowerGridComponent
                 'category_name' => Category::select('name')
                     ->whereColumn('categories.id', 'receipts.category_id')
                     ->limit(1),
-            ]);
+            ])
+            ->orderBy('created_at', 'desc');
         if ($this->client !== 0) {
             $receipt->where('client_id', $this->client);
         }
@@ -106,27 +107,23 @@ final class ReceiptTable extends PowerGridComponent
             Column::add()
                 ->title('Contador')
                 ->field('counter_name')
-                ->sortable()
                 ->hidden(isHidden: true, isForceHidden: false),
 
             Column::add()
                 ->title('Cliente')
-                ->field('client_name')
-                ->sortable(),
+                ->field('client_name'),
 
             Column::add()
                 ->title('Categoría')
-                ->field('category_name')
-                ->sortable(),
+                ->field('category_name'),
 
 
             Column::make('Metodo de Pago', 'pay_method')
-                ->sortable()
+                
                 ->hidden(isHidden: true, isForceHidden: false)
                 ->searchable(),
 
             Column::make('Monto', 'mount')
-                ->sortable()
                 ->searchable(),
 
             Column::make('Estado', 'status')
@@ -134,7 +131,6 @@ final class ReceiptTable extends PowerGridComponent
                 ->searchable(),
 
             Column::make('Concepto', 'concept')
-                ->sortable()
                 ->searchable(),
 
             Column::make('Fecha de Pago', 'payment_date_formatted', 'payment_date')

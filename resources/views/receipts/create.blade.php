@@ -31,22 +31,6 @@
                             </flux:field>
                         </div>
 
-                        {{-- Realizado por --}}
-                        <div class="sm:col-span-3">
-                            <flux:field>
-                                <flux:label>Realizado por <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Seleccione el contador que realiza el recibo</flux:description>
-                                <flux:select name="counter_id" id="counter_id" placeholder="Selecciona un contador"
-                                    required>
-                                    @foreach ($counters as $counter)
-                                        <flux:select.option value="{{ $counter->id }}">{{ $counter->full_name }}
-                                        </flux:select.option>
-                                    @endforeach
-                                </flux:select>
-                                <flux:error name="counter_id" />
-                            </flux:field>
-                        </div>
-
                         {{-- Contribuyente --}}
                         <div class="sm:col-span-3">
                             <flux:field>
@@ -55,13 +39,25 @@
                                 <flux:select name="client_id" id="client_id" placeholder="Selecciona un cliente"
                                     required>
                                     @foreach ($clients as $client)
-                                        <flux:select.option value="{{ $client->id }}">{{ $client->full_name }}
+                                        <flux:select.option value="{{ $client->id }}" data-counter-name="{{ $client->counter->full_name }}" data-counter-id="{{ $client->counter->id }}">{{ $client->full_name }}
                                         </flux:select.option>
                                     @endforeach
                                 </flux:select>
                                 <flux:error name="client_id" />
                             </flux:field>
                         </div>
+
+                        {{-- Realizado por --}}
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>Realizado por <span class="text-red-500">*</span></flux:label>
+                                <flux:description>Seleccione el contador que realiza el recibo</flux:description>
+                                <flux:input name="counter_name" id="counter_name" type="text" readonly />
+                                <input type="hidden" name="counter_id" id="counter_id">
+                                <flux:error name="counter_id" />
+                            </flux:field>
+                        </div>
+
 
                         {{-- Método de Pago --}}
                         <div class="sm:col-span-3">
@@ -174,4 +170,14 @@
             </flux:modal>
         </form>
     </div>
+    <script>
+        document.getElementById('client_id').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var counterName = selectedOption.getAttribute('data-counter-name');
+            var counterId = selectedOption.getAttribute('data-counter-id');
+            document.getElementById('counter_name').value = counterName;
+            document.getElementById('counter_id').value = counterId;
+            console.log(counterId)
+        });
+    </script>
 </x-layouts.app>

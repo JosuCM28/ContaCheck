@@ -25,7 +25,7 @@ class ReceiptController extends Controller
     {
         $counters = Counter::all();
         $categories = Category::all();
-        $clients = Client::all();
+        $clients = Client::with('counter')->get();
         $identificator = Str::uuid();
 
 

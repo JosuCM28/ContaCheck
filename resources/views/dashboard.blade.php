@@ -92,7 +92,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
-                <h3 class="text-base font-semibold text-neutral-800 mb-4">Últimos 10 Recibos</h3>
+                <h3 class="text-base font-semibold text-neutral-800 mb-4">Últimos Recibos</h3>
                 <table class="min-w-full divide-y divide-gray-200 text-sm">
                     <thead class="bg-gray-100 text-gray-700">
                         <tr>

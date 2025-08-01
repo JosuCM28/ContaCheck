@@ -105,7 +105,7 @@ final class FielTable extends PowerGridComponent
 
 
                 if ($model->created_at == $model->updated_at) {
-                    return '<span class="bg-yellow-100 p-2 rounded">Aún no se ha actualizado</span>';
+                    return '<span class="bg-yellow-100 p-2 rounded">Sin actualizar</span>';
                 }
                 switch (true) {
                     case $diferenciaDias <= 0:
@@ -133,10 +133,11 @@ final class FielTable extends PowerGridComponent
             Column::make('Fecha de vencimiento', 'finfiel_formatted', 'finfiel')
                 ->sortable(),
 
+            Column::make('Diferencia en Días', 'days_remaining', 'days'),
+            
             Column::make('Status', 'status')
                 ->searchable(),
 
-            Column::make('Diferencia en Días', 'days_remaining', 'days'),
 
 
 
@@ -151,10 +152,6 @@ final class FielTable extends PowerGridComponent
         return [
             Filter::datepicker('iniciofiel'),
             Filter::datepicker('finfiel'),
-            Filter::datepicker('iniciosello'),
-            Filter::datepicker('finsello'),
-
-
 
         ];
     }

@@ -270,21 +270,30 @@
             <div x-data="{ open: 'faq1' }" class="mt-12 max-w-2xl mx-auto">
                 <div class="border-b border-gray-200">
                     <button @click="open = open === 'faq1' ? null : 'faq1'" class="w-full text-left py-4 flex justify-between items-center">
-                        <span class="text-lg font-medium text-black">¿Cómo agendar una consulta?</span>
+                        <span class="text-lg font-medium text-black">¿Cómo agendar una consulta o una asesoría?</span>
                         <svg :class="{ 'rotate-180': open === 'faq1' }" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div x-show="open === 'faq1'" class="accordion-content open pb-4 text-gray-700">A través de nuestro formulario, teléfono o correo electrónico.</div>
+                    <div x-show="open === 'faq1'" class="accordion-content open pb-4 text-gray-700">Puedes agendar una cita a través de nuestro contacto en la página web, llamando por teléfono o enviándonos un correo electrónico. Nos pondremos en contacto contigo a la mayor brevedad posible.</div>
                 </div>
                 <div class="border-b border-gray-200">
                     <button @click="open = open === 'faq2' ? null : 'faq2'" class="w-full text-left py-4 flex justify-between items-center">
-                        <span class="text-lg font-medium text-black">¿Qué información necesito?</span>
+                        <span class="text-lg font-medium text-black">¿Qué información necesito proporcionar para iniciar los servicios contables?</span>
                         <svg :class="{ 'rotate-180': open === 'faq2' }" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div x-show="open === 'faq2'" class="accordion-content open pb-4 text-gray-700">Facturas, estados de cuenta, registros y declaraciones previas.</div>
+                    <div x-show="open === 'faq2'" class="accordion-content open pb-4 text-gray-700">Dependiendo del servicio que necesites, te solicitaremos documentos como facturas, estados de cuenta, registros de ingresos y egresos, declaraciones fiscales anteriores, entre otros.</div>
+                </div>
+                <div class="border-b border-gray-200">
+                    <button @click="open = open === 'faq3' ? null : 'faq3'" class="w-full text-left py-4 flex justify-between items-center">
+                        <span class="text-lg font-medium text-black">¿Qué diferencia hay en su despacho a otros servicios contables?</span>
+                        <svg :class="{ 'rotate-180': open === 'faq3' }" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </button>
+                    <div x-show="open === 'faq3'" class="accordion-content open pb-4 text-gray-700">Contamos con más de 30 años de experiencia, ofrecemos un servicio personalizado, garantizamos transparencia, seguridad y nos mantenemos actualizados con las últimas normativas fiscales.</div>
                 </div>
             </div>
         </div>

@@ -10,6 +10,7 @@ use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\FielSello;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InventorieController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -61,6 +62,8 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::get('receipt/verify/{identificator}',[VerifyReceipt::class,'__invoke'])->name('receipt.verify');
 
     Route::get('sendPDF/{id}',[PDFMaker::class,'sendPDF'])->name('sendPDF');
+
+    Route::resource('inventories', InventorieController::class);
 });
 
 Route::get('downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');

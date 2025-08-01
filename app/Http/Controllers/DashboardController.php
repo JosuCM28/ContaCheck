@@ -32,7 +32,7 @@ class DashboardController extends Controller
 
         $ultimosRecibos = Receipt::with('client', 'category')
             ->latest()
-            ->take(10)
+            ->take(8)
             ->get();
 
         return view('dashboard', compact(

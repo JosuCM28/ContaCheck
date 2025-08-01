@@ -104,7 +104,7 @@ final class SelloTable extends PowerGridComponent
 
 
                 if ($model->created_at == $model->updated_at) {
-                    return '<span class="bg-yellow-100 p-2 rounded">Aún no se ha actualizado</span>';
+                    return '<span class="bg-yellow-100 p-2 rounded">Sin actualizar</span>';
                 }
 
                 switch (true) {
@@ -146,10 +146,9 @@ final class SelloTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::datepicker('iniciosello'),
-            Filter::datepicker('finfiel'),
-            Filter::datepicker('iniciosello'),
+            Filter::datepicker('iniciosello_formatted','iniciosello'),
             Filter::datepicker('finsello'),
+
         ];
     }
 
