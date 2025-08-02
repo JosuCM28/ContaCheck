@@ -152,11 +152,15 @@
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                     <a href="#" onclick="history.back()">
-                        <flux:button class="cursor-pointer">Cancelar</flux:button>
+                        <flux:button class="cursor-pointer">Regresar</flux:button>
                     </a>
                     {{-- <flux:button variant="primary" type="button" data-overlay="#modal-confirm">Guardar</flux:button> --}}
                     <flux:modal.trigger name="confirm-modal">
-                        <flux:button variant="primary" type="button" class="cursor-pointer">Guardar</flux:button>
+                        
+                        <flux:button variant="primary" type="button" class="cursor-pointer" id="saveButton">
+                            <flux:icon.loading class="size-4 hidden" id="saveButtonIcon" />
+                            <span id="saveButtonText">Guardar</span> 
+                        </flux:button>
                     </flux:modal.trigger>
                 </div>
             </div>
@@ -215,5 +219,10 @@
             }
         });
 
+        document.getElementById('form').addEventListener('submit', function () {
+            document.getElementById('saveButton').disabled = true;
+            document.getElementById('saveButtonText').classList.add('hidden');
+            document.getElementById('saveButtonIcon').classList.remove('hidden');
+        });
     </script>
 </x-layouts.app>

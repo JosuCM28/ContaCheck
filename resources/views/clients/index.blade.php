@@ -1,4 +1,9 @@
 <x-layouts.app :title="__('Clientes')" :subheading="__('Lista de todos los clientes existentes')">
+    <div class="flex items-center gap-2 mb-4">
+        <flux:heading size="lg" level="1">Clientes</flux:heading>
+    </div>
+        <flux:subheading class="mb-4">Lista de todos los clientes existentes</flux:subheading>
+    <flux:separator variant="subtle" class="mb-4" />
     <div class="relative mb-6 w-full">
         <livewire:client-destroy />
         @if (session('success'))

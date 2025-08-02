@@ -20,7 +20,7 @@ class TimbradoService
         $this->data = $data;
     }
 
-    public function timbrar(): string
+    public function timbrar(): array
     {
         try {
             $datos = $this->generarCadena(); 
@@ -48,18 +48,39 @@ class TimbradoService
             }
 
             $xml = simplexml_load_string($response);
+
+            // Registrar namespaces
             $xml->registerXPathNamespace('cfdi', 'http://www.sat.gob.mx/cfd/4');
             $xml->registerXPathNamespace('tfd', 'http://www.sat.gob.mx/TimbreFiscalDigital');
 
-            // Buscar el nodo TimbreFiscalDigital dentro del Complemento
+            // 1. UUID
             $timbre = $xml->xpath('//cfdi:Complemento/tfd:TimbreFiscalDigital');
-
             if (!$timbre || !isset($timbre[0]['UUID'])) {
-                throw new Exception("No se pudo encontrar el UUID en el XML timbrado.");
+                throw new Exception("No se encontró el UUID.");
             }
-
             $uuid = (string) $timbre[0]['UUID'];
-            return $uuid;
+
+            // 2. Total
+            $totalRaw = (string) $xml['Total'];
+            if (!$totalRaw) {
+                throw new Exception("No se encontró el Total.");
+            }
+            $totalFormateado = sprintf('%017.6f', (float) $totalRaw);
+
+            // 3. fe: últimos 8 del sello codificados en base64
+            $selloCFD = (string) $timbre[0]['SelloCFD'];
+            if (!$selloCFD || strlen($selloCFD) < 8) {
+                throw new Exception("No se encontró o es inválido el sello CFD.");
+            }
+            $ultimos8 = substr($selloCFD, -8);
+
+            $response = [
+                'uuid' => $uuid,
+                'total' => $totalFormateado,
+                'sello' => $ultimos8,
+            ];
+
+            return $response;
 
         } catch (Exception $e) {
             throw new Exception("Error al conectar con FacturaFiel: " . $e->getMessage());

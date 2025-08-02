@@ -1,8 +1,13 @@
 <x-layouts.app :title="__('Recibos')" :subheading="__('Lista de todos los Recibos existentes')" >
+    <div class="flex items-center gap-2 mb-4">
+        <flux:heading size="lg" level="1">Recibos</flux:heading>
+    </div>
+        <flux:subheading class="mb-4">Lista de todos los recibos existentes</flux:subheading>
+    <flux:separator variant="subtle" class="mb-4" />
     <div class="relative mb-6 w-full">
         @if (session('success'))
             <div
-                x-data="{ show: true }"
+                x-data="{ show: true 
                 x-init="setTimeout(() => show = false, 3000)"
                 x-show="show"
                 x-transition

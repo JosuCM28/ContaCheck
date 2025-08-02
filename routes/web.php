@@ -1,14 +1,17 @@
 <?php
 
+use App\Models\Receipt;
 use Livewire\Volt\Volt;
 use App\Http\Controllers\PDFMaker;
 use App\Http\Controllers\FielSello;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VerifyReceipt;
 use App\Http\Controllers\FileController;
+use App\Services\CancelarTimbradoService;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventorieController;
 
@@ -16,6 +19,11 @@ Route::get('/', function () {
     return view('welcome');
 })->name('home')->middleware('redirect');
 
+Route::get('test', function () {
+    $service = new CancelarTimbradoService();
+    $uuid = 'CA0FD6A6-1BA7-437A-B5FC-2BF4D06FE01F';
+    return $service->cancelarCFDI('BAMT6509088B3', '957E48F991564CEB', $uuid);
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -64,6 +72,13 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::get('sendPDF/{id}',[PDFMaker::class,'sendPDF'])->name('sendPDF');
 
     Route::resource('inventories', InventorieController::class);
+
+    Route::get('cancelar/timbrado/{uuid}', [CancelarTimbradoService::class, 'cancelarCFDI'])->name('cancelarCFDI');
+
+    Route::get('cancelar/timbrado/{id}', function ($id) {
+        $service = new CancelarTimbradoService();
+        return $service->cancelarCFDI($id);
+    })->name('cancelarCFDI');
 });
 
 Route::get('downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');
@@ -80,7 +95,6 @@ Route::middleware(['auth', 'role:cliente'])->group(function () {
     Route::get('archivos', function() {
         return view('consumers.files');
     })->name('client.files');
-
 });
 
 Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');

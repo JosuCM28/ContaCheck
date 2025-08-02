@@ -53,7 +53,7 @@ class ReceiptController extends Controller
 
     public function store(Request $request)
     {
-        $UUID = "";
+        $response = [];
         $rfcReceptor = "";
 
         $request->validate([
@@ -87,7 +87,6 @@ class ReceiptController extends Controller
 
             $client = Client::find($request->input('client_id'));
             $rfcReceptor = $client->rfc;
-
             $data = [
                 'forma_pago' => $request->input('pay_method') === 'EFECTIVO' ? '01' : '02',
                 'subtotal' => (string) $subtotal,
@@ -108,13 +107,18 @@ class ReceiptController extends Controller
             ];
 
             $service = new TimbradoService($data);
-            $UUID = $service->timbrar();
+            $response = $service->timbrar();
+
+            $receipt->is_timbred = true;
+            $receipt->uuid = $response['uuid'];
+            $receipt->save();
         }
 
         if ($request->input('action') == 'send') {
-            if (!empty($UUID)) {
+            if (!empty($response)) {
                 $rfcEmisor = env('FACTURAFIEL_RFC');
-                $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id={$UUID}&re={$rfcEmisor}&rr={$rfcReceptor}&tt=0000001000.000000&fe=vtR4hQ==";
+                $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id={$response['uuid']}&re={$rfcEmisor}&rr={$rfcReceptor}&tt={$response['total']}&fe={$response['sello']}";
+
             } else {
                 $url = route('receipt.verify', $receipt->identificator);
             }
