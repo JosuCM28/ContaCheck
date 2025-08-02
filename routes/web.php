@@ -2,13 +2,13 @@
 
 use Livewire\Volt\Volt;
 use App\Http\Controllers\PDFMaker;
+use App\Http\Controllers\FielSello;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VerifyReceipt;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\FielSello;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventorieController;
 
@@ -82,7 +82,6 @@ Route::middleware(['auth', 'role:cliente'])->group(function () {
     })->name('client.files');
 
 });
-
 
 Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');

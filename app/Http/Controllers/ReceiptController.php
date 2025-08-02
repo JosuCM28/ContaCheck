@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Client;
 use App\Models\Receipt;
 use App\Mail\ReceiptMail;
+use App\Services\TimbradoService;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
@@ -52,6 +53,8 @@ class ReceiptController extends Controller
 
     public function store(Request $request)
     {
+        $UUID = "";
+        $rfcReceptor = "";
 
         $request->validate([
             'counter_id' => 'required|exists:counters,id',
@@ -77,10 +80,46 @@ class ReceiptController extends Controller
             'status' => $request->input('status'),
         ]);
 
-        if ($request->input('action') == 'send') {
-            $url = route('receipt.verify', $receipt->identificator);
-            $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))->setPaper('a4', 'landscape')->output();
+        if ($request->input('timbrarInput') == 'true') {
+            $total = $request->input('mount');
+            $subtotal = round($total / 1.16, 2);
+            $descuento = round($total - $subtotal, 2);
 
+            $client = Client::find($request->input('client_id'));
+            $rfcReceptor = $client->rfc;
+
+            $data = [
+                'forma_pago' => $request->input('pay_method') === 'EFECTIVO' ? '01' : '02',
+                'subtotal' => (string) $subtotal,
+                'descuento' => (string) $descuento,
+                'total' => (string) $total,
+                'rfcReceptor' => $rfcReceptor,
+                'nombreReceptor' => $client->full_name,
+                'regimenFiscalReceptor' => '612',
+                'domicilioFiscalReceptor' => $client->cp,
+                'estado' => $client->state,
+                'localidad' => $client->city,
+                'municipio' => $client->city,
+                'calle' => $client->address,
+                'colonia' => 'Centro',
+                'noExterior' => '742',
+                'codigoPostal' => $client->cp,
+                'concepto_descripcion' => $request->input('concept'),
+            ];
+
+            $service = new TimbradoService($data);
+            $UUID = $service->timbrar();
+        }
+
+        if ($request->input('action') == 'send') {
+            if (!empty($UUID)) {
+                $rfcEmisor = env('FACTURAFIEL_RFC');
+                $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id={$UUID}&re={$rfcEmisor}&rr={$rfcReceptor}&tt=0000001000.000000&fe=vtR4hQ==";
+            } else {
+                $url = route('receipt.verify', $receipt->identificator);
+            }
+            
+            $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))->setPaper('a4', 'landscape')->output();
 
             Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
 

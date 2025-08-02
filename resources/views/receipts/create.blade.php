@@ -67,7 +67,7 @@
                                 <flux:select name="pay_method" id="pay_method"
                                     placeholder="Selecciona un método de pago" required>
                                     <flux:select.option value="EFECTIVO">Efectivo</flux:select.option>
-                                    <flux:select.option value="CHEQUE">Cheque</flux:select.option>
+                                    {{-- <flux:select.option value="CHEQUE">Cheque</flux:select.option> --}}
                                     <flux:select.option value="TRANSFERENCIA">Transferencia Bancaria
                                     </flux:select.option>
                                 </flux:select>
@@ -133,6 +133,20 @@
                                 <flux:error name="identificator" />
                             </flux:field>
                         </div>
+
+                        {{-- Timbrar recibo --}}
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>¿Desea timbrar el recibo? <span class="text-red-500">*</span></flux:label>
+                                <flux:description>Por favor seleccione una opción</flux:description>
+                                <flux:select name="timbrar" id="timbrar" placeholder="Por favor seleccione una opción" required>
+                                    <flux:select.option value="true">Si, timbrar</flux:select.option>
+                                    <flux:select.option value="false">No, solo guardar</flux:select.option>
+                                </flux:select>
+                                <flux:error name="pay_method" />
+                            </flux:field>
+                            <input type="text" name="timbrarInput" id="timbrarInput" hidden>
+                        </div>
                     </div>
                 </div>
 
@@ -179,5 +193,27 @@
             document.getElementById('counter_id').value = counterId;
             console.log(counterId)
         });
+
+        document.getElementById('timbrar').addEventListener('change', function () {
+            var timbrarInput = document.getElementById('timbrarInput');
+            timbrarInput.value = this.value;
+            console.log(timbrarInput.value)
+        });
+
+        document.getElementById('status').addEventListener('change', function () {
+            var selectedOption = this.value;
+            var timbrar = document.getElementById('timbrar');
+            var timbrarInput = document.getElementById('timbrarInput');
+
+            if (selectedOption === 'PENDIENTE') {
+                timbrar.selectedIndex = 2;       
+                timbrarInput.value = 'false';
+                console.log(timbrarInput.value)
+                timbrar.disabled = true;
+            } else if (selectedOption === 'PAGADO') {
+                timbrar.disabled = false;
+            }
+        });
+
     </script>
 </x-layouts.app>
