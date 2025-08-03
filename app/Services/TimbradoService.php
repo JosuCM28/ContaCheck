@@ -116,6 +116,7 @@ class TimbradoService
         //todo: agregar campo del código del regimén
         $cadena .= "RegimenFiscalReceptor={$this->data['regimenFiscalReceptor']}\n";
         $cadena .= "DomicilioFiscalReceptor={$this->data['domicilioFiscalReceptor']}\n"; // Código postal registrado ante el sat 
+        //poner el pais del receptor
         $cadena .= "Pais=México\n";
         $cadena .= "Estado={$this->data['estado']}\n";
         //todo: agregar campo de localidad

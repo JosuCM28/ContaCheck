@@ -148,10 +148,9 @@ class ClientController extends Controller
      */
     public function update(Request $request, Client $client)
     {
-        // Validar y actualizar el post
+        // Validar y actualizar el cliente
         $request->validate([
             'counter_id' => 'required',
-
             'phone' => 'nullable|string|max:10',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
@@ -169,7 +168,7 @@ class ClientController extends Controller
             'password' => 'nullable',
             'birthdate' => 'nullable|date|before:today',
 
-            # Validación de credenciales
+            // Credenciales
             'auxone' => 'nullable|string|max:255',
             'auxtwo' => 'nullable|string|max:255',
             'auxthree' => 'nullable|string|max:255',
@@ -178,17 +177,62 @@ class ClientController extends Controller
             'siec' => 'nullable|string|max:255',
             'useridse' => 'nullable|string|max:255',
             'usersipare' => 'nullable|string|max:255',
-            'iniciofiel' => 'nullable',
-            'iniciosello' => 'nullable',
-            'finsello' => 'nullable',
-            'finfiel' => 'nullable',
+            'iniciofiel' => 'nullable|date',
+            'iniciosello' => 'nullable|date',
+            'finsello' => 'nullable|date',
+            'finfiel' => 'nullable|date',
         ]);
-        $client = Client::findOrFail($client->id);
+
+        // Actualizar datos del cliente
         $client->full_name = $request->name . ' ' . $request->last_name;
-        $client->update($request->all());
-        $client->credentials->update($request->all());
+        $client->update($request->only([
+            'user_id',
+            'counter_id',
+            'regime_id',
+            'status',
+            'phone',
+            'name',
+            'last_name',
+            'full_name',
+            'email',
+            'address',
+            'rfc',
+            'curp',
+            'city',
+            'state',
+            'cp',
+            'nss',
+            'note',
+            'token',
+            'birthdate',
+        ]));
+
+        // Extraer datos de credenciales
+        $credentialsData = $request->only([
+            'auxone',
+            'auxtwo',
+            'auxthree',
+            'idse',
+            'sipare',
+            'siec',
+            'useridse',
+            'usersipare',
+            'iniciofiel',
+            'iniciosello',
+            'finsello',
+            'finfiel',
+        ]);
+
+        // Crear o actualizar credenciales
+        if ($client->credentials) {
+            $client->credentials->update($credentialsData);
+        } else {
+            $client->credentials()->create($credentialsData);
+        }
+
         return redirect()->route('client.index')->with('success', 'Cliente actualizado exitosamente.');
     }
+
 
 
     public function destroy(Client $client)

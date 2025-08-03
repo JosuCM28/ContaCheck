@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::table('receipts', function (Blueprint $table) {
             $table->boolean('is_timbred')->default(false)->after('status');
             $table->text('uuid')->nullable()->after('is_timbred');
-            $table->string('sello')->nullable()->after('uuid');
         });
     }
 

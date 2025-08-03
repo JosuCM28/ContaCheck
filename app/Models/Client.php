@@ -28,7 +28,17 @@ class Client extends Model
         'last_name',
         'full_name',
         'email',
+        'siec',
+        'useridse',
+        'idse',
+        'usersipare',
+        'sipare',
         'address',
+        'country',
+        'localities',
+        'street',
+        'col',
+        'num_ext',
         'rfc',
         'curp',
         'city',
@@ -39,7 +49,8 @@ class Client extends Model
         'token',
         'birthdate',
     ];
-    protected $qualifiedKeyName = 'clients.id'; 
+
+    protected $qualifiedKeyName = 'clients.id';
     /**
      * Relación con el modelo `User`.
      *
@@ -61,7 +72,7 @@ class Client extends Model
     }
     public function credentials()
     {
-        return $this->hasOne(Credential::class,'client_id');
+        return $this->hasOne(Credential::class, 'client_id');
 
     }
 
@@ -70,8 +81,8 @@ class Client extends Model
         return $this->belongsTo(Regime::class);
     }
     public function document()
-{
-    return $this->hasMany(Document::class);
-}
+    {
+        return $this->hasMany(Document::class);
+    }
 
 }

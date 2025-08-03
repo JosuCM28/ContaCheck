@@ -4,9 +4,9 @@ namespace App\Filament\Resources\RegimeResource\Pages;
 
 use App\Filament\Resources\RegimeResource;
 use Filament\Actions;
-use Filament\Resources\Pages\ManageRecords;
+use Filament\Resources\Pages\ListRecords;
 
-class ManageRegimes extends ManageRecords
+class ListRegimes extends ListRecords
 {
     protected static string $resource = RegimeResource::class;
 

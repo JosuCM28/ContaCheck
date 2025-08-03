@@ -61,64 +61,44 @@
                         </div>
 
                         <!-- FIEL - Fecha de Inicio -->
-<div class="sm:col-span-3">
-    <flux:field>
-        <flux:label>FIEL - Fecha de Inicio</flux:label>
-        <flux:input
-            name="iniciofiel"
-            id="iniciofiel"
-            type="date"
-            class="w-full"
-            value="{{ old('iniciofiel', optional($client->credentials)->iniciofiel) }}"
-        />
-        <flux:error name="iniciofiel" />
-    </flux:field>
-</div>
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>FIEL - Fecha de Inicio</flux:label>
+                                <flux:input name="iniciofiel" id="iniciofiel" type="date" class="w-full"
+                                    value="{{ old('iniciofiel', optional($client->credentials)->iniciofiel) }}" />
+                                <flux:error name="iniciofiel" />
+                            </flux:field>
+                        </div>
 
-<!-- FIEL - Fecha de Vencimiento -->
-<div class="sm:col-span-3">
-    <flux:field>
-        <flux:label>FIEL - Fecha de Vencimiento</flux:label>
-        <flux:input
-            name="finfiel"
-            id="finfiel"
-            type="date"
-            class="w-full"
-            value="{{ old('finfiel', optional($client->credentials)->finfiel) }}"
-        />
-        <flux:error name="finfiel" />
-    </flux:field>
-</div>
+                        <!-- FIEL - Fecha de Vencimiento -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>FIEL - Fecha de Vencimiento</flux:label>
+                                <flux:input name="finfiel" id="finfiel" type="date" class="w-full"
+                                    value="{{ old('finfiel', optional($client->credentials)->finfiel) }}" />
+                                <flux:error name="finfiel" />
+                            </flux:field>
+                        </div>
 
-<!-- SELLO - Fecha de Inicio -->
-<div class="sm:col-span-3">
-    <flux:field>
-        <flux:label>SELLO - Fecha de Inicio</flux:label>
-        <flux:input
-            name="iniciosello"
-            id="iniciosello"
-            type="date"
-            class="w-full"
-            value="{{ old('iniciosello', optional($client->credentials)->iniciosello) }}"
-        />
-        <flux:error name="iniciosello" />
-    </flux:field>
-</div>
+                        <!-- SELLO - Fecha de Inicio -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>SELLO - Fecha de Inicio</flux:label>
+                                <flux:input name="iniciosello" id="iniciosello" type="date" class="w-full"
+                                    value="{{ old('iniciosello', optional($client->credentials)->iniciosello) }}" />
+                                <flux:error name="iniciosello" />
+                            </flux:field>
+                        </div>
 
-<!-- SELLO - Fecha de Vencimiento -->
-<div class="sm:col-span-3">
-    <flux:field>
-        <flux:label>SELLO - Fecha de Vencimiento</flux:label>
-        <flux:input
-            name="finsello"
-            id="finsello"
-            type="date"
-            class="w-full"
-            value="{{ old('finsello', optional($client->credentials)->finsello) }}"
-        />
-        <flux:error name="finsello" />
-    </flux:field>
-</div>
+                        <!-- SELLO - Fecha de Vencimiento -->
+                        <div class="sm:col-span-3">
+                            <flux:field>
+                                <flux:label>SELLO - Fecha de Vencimiento</flux:label>
+                                <flux:input name="finsello" id="finsello" type="date" class="w-full"
+                                    value="{{ old('finsello', optional($client->credentials)->finsello) }}" />
+                                <flux:error name="finsello" />
+                            </flux:field>
+                        </div>
 
                         <!-- RFC -->
                         <div class="sm:col-span-2 sm:col-start-1">
@@ -146,11 +126,12 @@
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contraseña SIEC</flux:label>
-                                <flux:input name="siec" id="siec" type="text"
-                                    value="{{ old('siec', $client->credentials->siec) }}"
-                                    placeholder="Escribe la contraseña SIEC" />
-                                <flux:error name="siec" />
+                            <flux:input name="siec" id="siec" type="text"
+                                value="{{ old('siec', optional($client->credentials)->siec) }}"
+                                placeholder="{{ $client->credentials ? 'Escribe la contraseña SIEC' : 'Dato no registrado aún' }}" />
+                            <flux:error name="siec" />
                             </flux:field>
+
                         </div>
 
                         <!-- Usuario IDSE -->
@@ -158,22 +139,24 @@
                             <flux:field>
                                 <flux:label>Usuario IDSE</flux:label>
                                 <flux:input name="useridse" id="useridse" type="text" maxlength="18"
-                                    value="{{ old('useridse', $client->credentials->useridse) }}"
-                                    placeholder="Escribe usuario IDSE" />
+                                    value="{{ old('useridse', optional($client->credentials)->useridse) }}"
+                                    placeholder="{{ $client->credentials ? 'Escribe usuario IDSE' : 'Dato no registrado aún' }}" />
                                 <flux:error name="useridse" />
                             </flux:field>
                         </div>
+
 
                         <!-- Contraseña IDSE -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contraseña IDSE</flux:label>
                                 <flux:input name="idse" id="idse" type="text" maxlength="18"
-                                    value="{{ old('idse', $client->credentials->idse) }}"
-                                    placeholder="Escribe contraseña IDSE" />
+                                    value="{{ old('idse', optional($client->credentials)->idse) }}"
+                                    placeholder="{{ $client->credentials ? 'Escribe contraseña IDSE' : 'Dato no registrado aún' }}" />
                                 <flux:error name="idse" />
                             </flux:field>
                         </div>
+
 
                         <!-- Régimen -->
                         <div class="sm:col-span-2">
@@ -199,22 +182,24 @@
                             <flux:field>
                                 <flux:label>Usuario SIPARE</flux:label>
                                 <flux:input name="usersipare" id="usersipare" type="text" maxlength="18"
-                                    value="{{ old('usersipare', $client->credentials->usersipare) }}"
-                                    placeholder="Escribe usuario SIPARE" />
+                                    value="{{ old('usersipare', optional($client->credentials)->usersipare) }}"
+                                    placeholder="{{ $client->credentials ? 'Escribe usuario SIPARE' : 'Dato no registrado aún' }}" />
                                 <flux:error name="usersipare" />
                             </flux:field>
                         </div>
+
 
                         <!-- Contraseña SIPARE -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contraseña SIPARE</flux:label>
                                 <flux:input name="sipare" id="sipare" type="text" maxlength="18"
-                                    value="{{ old('sipare', $client->credentials->sipare) }}"
-                                    placeholder="Escribe contraseña SIPARE" />
+                                    value="{{ old('sipare', optional($client->credentials)->sipare) }}"
+                                    placeholder="{{ $client->credentials ? 'Escribe contraseña SIPARE' : 'Dato no registrado aún' }}" />
                                 <flux:error name="sipare" />
                             </flux:field>
                         </div>
+
 
                         <!-- Teléfono -->
                         <div class="sm:col-span-2">
@@ -352,8 +337,8 @@
                             <flux:field>
                                 <flux:label>Extra 1</flux:label>
                                 <flux:input name="auxone" id="auxone" type="text"
-                                    value="{{ old('auxone', $client->credentials->auxone) }}"
-                                    placeholder="Campo Extra 1" />
+                                    value="{{ old('auxone', optional($client->credentials)->auxone) }}"
+                                    placeholder="{{ $client->credentials ? 'Campo Extra 1' : 'Dato no registrado aún' }}" />
                                 <flux:error name="auxone" />
                             </flux:field>
                         </div>
@@ -363,8 +348,8 @@
                             <flux:field>
                                 <flux:label>Extra 2</flux:label>
                                 <flux:input name="auxtwo" id="auxtwo" type="text"
-                                    value="{{ old('auxtwo', $client->credentials->auxtwo) }}"
-                                    placeholder="Campo Extra 2" />
+                                    value="{{ old('auxtwo', optional($client->credentials)->auxtwo) }}"
+                                    placeholder="{{ $client->credentials ? 'Campo Extra 2' : 'Dato no registrado aún' }}" />
                                 <flux:error name="auxtwo" />
                             </flux:field>
                         </div>
@@ -374,11 +359,12 @@
                             <flux:field>
                                 <flux:label>Extra 3</flux:label>
                                 <flux:input name="auxthree" id="auxthree" type="text"
-                                    value="{{ old('auxthree', $client->credentials->auxthree) }}"
-                                    placeholder="Campo Extra 3" />
+                                    value="{{ old('auxthree', optional($client->credentials)->auxthree) }}"
+                                    placeholder="{{ $client->credentials ? 'Campo Extra 3' : 'Dato no registrado aún' }}" />
                                 <flux:error name="auxthree" />
                             </flux:field>
                         </div>
+
 
                     </div>
                 </div>

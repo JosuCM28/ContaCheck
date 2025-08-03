@@ -94,6 +94,7 @@ class ReceiptController extends Controller
                 'total' => (string) $total,
                 'rfcReceptor' => $rfcReceptor,
                 'nombreReceptor' => $client->full_name,
+                //poner el code de regimes
                 'regimenFiscalReceptor' => '612',
                 'domicilioFiscalReceptor' => $client->cp,
                 'estado' => $client->state,
@@ -111,6 +112,7 @@ class ReceiptController extends Controller
 
             $receipt->is_timbred = true;
             $receipt->uuid = $response['uuid'];
+            $receipt->sello = substr($response['sello'], -8);
             $receipt->save();
         }
 

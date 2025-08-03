@@ -21,7 +21,8 @@ return new class extends Migration
             $table->string('pay_method');
             $table->decimal('mount', 10, 2); 
             $table->text('concept');  
-            $table->string('status');  
+            $table->string('status'); 
+            $table->string('sello')->nullable(); 
             $table->timestamps();
         });
     }

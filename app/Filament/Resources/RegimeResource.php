@@ -26,6 +26,9 @@ class RegimeResource extends Resource
                  Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\TextInput::make('code')
+                    ->required()
+                    ->maxLength(255),
             ]);
     }
 
@@ -34,6 +37,8 @@ class RegimeResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('code')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -57,7 +62,9 @@ class RegimeResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageRegimes::route('/'),
+            'index' => Pages\ListRegimes::route('/'),
+            'create' => Pages\CreateRegime::route('/create'),
+            'edit' => Pages\EditRegime::route('/{record}/edit'),
         ];
     }
 }
