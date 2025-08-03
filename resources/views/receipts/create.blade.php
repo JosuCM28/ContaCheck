@@ -90,9 +90,9 @@
                         {{-- Fecha del Recibo --}}
                         <div class="sm:col-span-2">
                             <flux:field>
-                                <flux:label>Fecha del Recibo <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Escribe la fecha del pago (MES DE [mes] DEL [año])</flux:description>
-                                <flux:input name="concept" id="concept" type="text"
+                                <flux:label>Descripción<noscript></noscript> <span class="text-red-500">*</span></flux:label>
+                                <flux:description>Escribe la fecha del pago</flux:description>
+                                <flux:input name="concept" id="concept" type="text" value="HONORARIOS DEL MES DE"
                                     oninput="this.value = this.value.toUpperCase();" placeholder="MES DE ABRIL DEL 2025"
                                     required />
                                 <flux:error name="concept" />

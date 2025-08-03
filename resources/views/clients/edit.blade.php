@@ -45,8 +45,6 @@
                         <div class="sm:col-span-3">
                             <flux:field>
                                 <flux:label>Correo</flux:label>
-                                <flux:description>{{ $client->email ? '' : 'No hay datos existentes' }}
-                                </flux:description>
                                 <flux:input name="email" id="email" type="email" autocomplete="email"
                                     value="{{ old('email', $client->email) }}" placeholder="Escribe el correo" />
                                 <flux:error name="email" />

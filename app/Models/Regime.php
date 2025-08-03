@@ -19,4 +19,8 @@ class Regime extends Model
     {
         return $this->hasMany(Client::class);
     }
+    public function company_data(){
+        return $this->hasMany(CompanyData::class);
+    
+    }
 }

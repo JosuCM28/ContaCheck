@@ -11,6 +11,7 @@ use App\Services\CancelarTimbradoService;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\DataEmisorController;
 
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\InventorieController;
@@ -37,6 +38,11 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    //DataCompany
+    Route::get('/emisor', [DataEmisorController::class, 'index'])->name('emisor.index');
+    Route::get('/emisor/edit', [DataEmisorController::class, 'edit'])->name('emisor.edit');
+    Route::put('/emisor/update', [DataEmisorController::class, 'update'])->name('emisor.update');
     
     Route::get('counter/index', [CounterController::class, 'index'])->name('counter.index');
     Route::get('counter/create', [CounterController::class, 'create'])->name('counter.create');
