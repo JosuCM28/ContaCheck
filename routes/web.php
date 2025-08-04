@@ -107,5 +107,7 @@ Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->na
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');
 Route::get('file/download/{document}', [FileController::class, 'download'])->name('file.download');
 
-
+Route::get('pdfview', function(){
+    return view('dompdf.factura');
+})->name('pdfview');
 require __DIR__.'/auth.php';

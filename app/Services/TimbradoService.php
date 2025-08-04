@@ -15,7 +15,7 @@ class TimbradoService
     public function __construct(array $data)
     {
         $this->wsdl = 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php?wsdl';
-        $this->rfc = env('FACTURAFIEL_RFC'); 
+        $this->rfc = env('FACTURAFIEL_RFC');
         $this->apiKey = env('FACTURAFIEL_API_KEY');
         $this->data = $data;
     }
@@ -23,7 +23,7 @@ class TimbradoService
     public function timbrar(): array
     {
         try {
-            $datos = $this->generarCadena(); 
+            $datos = $this->generarCadena();
             $cadenaEnviada = "{$this->rfc}~{$this->apiKey}~{$datos}";
 
             $soap = new SoapClient($this->wsdl, [
@@ -144,6 +144,13 @@ class TimbradoService
         $cadena .= "Concepto_1_Importe={$this->data['subtotal']}\n";
         $cadena .= "Concepto_1_Num_Impuestos_Tras=1\n";
         $cadena .= "Concepto_1_Num_Impuestos_Ret=0\n";
+
+        // Impuestos de Retención
+        $cadena .= "Concepto_1_Imp_Ret_1_Base=0.00\n";
+        $cadena .= "Concepto_1_Imp_Ret_1_Impuesto=001\n";
+        $cadena .= "Concepto_1_Imp_Ret_1_TipoFactor=Tasa\n";
+        $cadena .= "Concepto_1_Imp_Ret_1_TasaOCuota=0.000000\n";
+        $cadena .= "Concepto_1_Imp_Ret_1_Importe=0.00\n";
 
         // Traslados del concepto
         $cadena .= "Concepto_1_Imp_Tras_1_Base={$this->data['subtotal']}\n";

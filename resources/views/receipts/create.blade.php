@@ -37,9 +37,9 @@
                                 <flux:label>Contribuyente <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Selecciona el contribuyente beneficiario</flux:description>
                                 <flux:select name="client_id" id="client_id" placeholder="Selecciona un cliente"
-                                    required>
+                                    required >
                                     @foreach ($clients as $client)
-                                        <flux:select.option value="{{ $client->id }}" data-counter-name="{{ $client->counter->full_name }}" data-counter-id="{{ $client->counter->id }}">{{ $client->full_name }}
+                                        <flux:select.option value="{{ $client->id }}" data-counter-name="{{ $client->counter->full_name }}" data-counter-id="{{ $client->counter->id }}">{{ strtoupper($client->full_name) }}
                                         </flux:select.option>
                                     @endforeach
                                 </flux:select>
@@ -66,9 +66,9 @@
                                 <flux:description>Por favor seleccione el método de pago</flux:description>
                                 <flux:select name="pay_method" id="pay_method"
                                     placeholder="Selecciona un método de pago" required>
-                                    <flux:select.option value="EFECTIVO">Efectivo</flux:select.option>
+                                    <flux:select.option value="EFECTIVO">EFECTIVO</flux:select.option>
                                     {{-- <flux:select.option value="CHEQUE">Cheque</flux:select.option> --}}
-                                    <flux:select.option value="TRANSFERENCIA">Transferencia Bancaria
+                                    <flux:select.option value="TRANSFERENCIA">TRANSFERENCIA BANCARIA
                                     </flux:select.option>
                                 </flux:select>
                                 <flux:error name="pay_method" />
@@ -115,8 +115,8 @@
                                 <flux:label>Estado <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor introduce el estado del recibo</flux:description>
                                 <flux:select name="status" id="status" placeholder="Selecciona un estado" required>
-                                    <flux:select.option value="PAGADO">Pagado</flux:select.option>
-                                    <flux:select.option value="PENDIENTE">Pendiente</flux:select.option>
+                                    <flux:select.option value="PAGADO">PAGADO</flux:select.option>
+                                    <flux:select.option value="PENDIENTE">PENDIENTE</flux:select.option>
                                 </flux:select>
                                 <flux:error name="status" />
                             </flux:field>
@@ -140,8 +140,8 @@
                                 <flux:label>¿Desea timbrar el recibo? <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor seleccione una opción</flux:description>
                                 <flux:select name="timbrar" id="timbrar" placeholder="Por favor seleccione una opción" required>
-                                    <flux:select.option value="true">Si, timbrar</flux:select.option>
-                                    <flux:select.option value="false">No, solo guardar</flux:select.option>
+                                    <flux:select.option value="true">SÍ, TIMBRAR</flux:select.option>
+                                    <flux:select.option value="false">NO, TIMBRAR</flux:select.option>
                                 </flux:select>
                                 <flux:error name="pay_method" />
                             </flux:field>

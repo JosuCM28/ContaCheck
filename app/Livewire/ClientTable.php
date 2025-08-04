@@ -57,40 +57,40 @@ final class ClientTable extends PowerGridComponent
                     ->whereColumn('regimes.id', 'clients.regime_id')
                     ->limit(1),
                 'siec' => Credential::select('siec')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'idse' => Credential::select('idse')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'sipare' => Credential::select('sipare')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'useridse' => Credential::select('useridse')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'usersipare' => Credential::select('usersipare')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'auxone' => Credential::select('auxone')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'auxtwo' => Credential::select('auxtwo')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'auxthree' => Credential::select('auxthree')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'iniciofiel' => Credential::select('iniciofiel')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'finfiel' => Credential::select('finfiel')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'iniciosello' => Credential::select('iniciosello')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
                 'finsello' => Credential::select('finsello')
-                    ->whereColumn('credentials.id', 'clients.id')
+                    ->whereColumn('credentials.client_id', 'clients.id')
                     ->limit(1),
             ]);
         if ($this->counter !== 0) {

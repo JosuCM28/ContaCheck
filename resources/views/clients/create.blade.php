@@ -8,167 +8,212 @@
                     <p class="mt-1 text-sm leading-6 text-gray-600">Ingresa los datos de un nuevo Cliente</p>
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        
-                        {{-- Nombre --}}
+
+                        <!-- Nombre -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Nombre <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Por favor escribe los nombres</flux:description>
                                 <flux:input name="name" id="name" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" autocomplete="given-name" required />
+                                    oninput="this.value = this.value.toUpperCase();" autocomplete="given-name" required
+                                    placeholder="Por favor escribe los nombres" />
                                 <flux:error name="name" />
                             </flux:field>
                         </div>
 
-                        {{-- Apellido --}}
+                        <!-- Apellido -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Apellido <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Por favor escribe los apellidos</flux:description>
                                 <flux:input name="last_name" id="last_name" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" autocomplete="family-name" required/>
+                                    oninput="this.value = this.value.toUpperCase();" autocomplete="family-name" required
+                                    placeholder="Por favor escribe los apellidos" />
                                 <flux:error name="last_name" />
                             </flux:field>
                         </div>
 
-                        {{-- Correo --}}
+                        <!-- Correo -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Correo <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Por favor escribe el correo</flux:description>
-                                <flux:input name="email" id="email" type="email" autocomplete="email" required />
+                                <flux:input name="email" id="email" type="email" autocomplete="email" required
+                                    placeholder="Por favor escribe el correo" />
                                 <flux:error name="email" />
                             </flux:field>
                         </div>
 
-                        {{-- Teléfono --}}
+                        <!-- Teléfono -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Teléfono</flux:label>
-                                <flux:description>Por favor escribe el número de teléfono</flux:description>
                                 <flux:input name="phone" id="phone" type="number"
-                                    oninput="this.value = this.value.slice(0, 10);" />
+                                    oninput="this.value = this.value.slice(0, 10);"
+                                    placeholder="Por favor escribe el número de teléfono" />
                                 <flux:error name="phone" />
                             </flux:field>
                         </div>
 
-                        {{-- RFC --}}
+                        <!-- RFC -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>RFC <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Por favor escribe el RFC</flux:description>
                                 <flux:input name="rfc" id="rfc" type="text" maxlength="13"
-                                    oninput="this.value = this.value.toUpperCase();" required/>
+                                    oninput="this.value = this.value.toUpperCase();" required
+                                    placeholder="Por favor escribe el RFC" />
                                 <flux:error name="rfc" />
                             </flux:field>
                         </div>
 
-                        {{-- CURP --}}
+                        <!-- CURP -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>CURP</flux:label>
-                                <flux:description>Por favor escribe el CURP</flux:description>
                                 <flux:input name="curp" id="curp" type="text" maxlength="18"
-                                    oninput="this.value = this.value.toUpperCase();" />
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    placeholder="Por favor escribe el CURP" />
                                 <flux:error name="curp" />
                             </flux:field>
                         </div>
+
 
                         {{-- Dirección --}}
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Dirección</flux:label>
-                                <flux:description>Por favor escribe la dirección</flux:description>
                                 <flux:input name="address" id="address" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" />
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    placeholder="Escribe la dirección" />
                                 <flux:error name="address" />
                             </flux:field>
                         </div>
 
-                        {{-- Ciudad --}}
+                        <!-- Calle -->
                         <div class="sm:col-span-2">
                             <flux:field>
-                                <flux:label>Ciudad</flux:label>
-                                <flux:description>Por favor escribe la ciudad</flux:description>
-                                <flux:input name="city" id="city" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" />
+                                <flux:label>Calle <span class="text-red-500">*</span></flux:label>
+                                <flux:input required name="street" id="street" type="text" class="w-full"
+                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('street') }}" placeholder="Escribe la calle" />
+                                <flux:error name="street" />
+                            </flux:field>
+                        </div>
+
+                        <!-- Colonia -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Colonia <span class="text-red-500">*</span></flux:label>
+                                <flux:input required name="col" id="col" type="text" class="w-full"
+                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('col') }}" placeholder="Escribe la colonia" />
+                                <flux:error name="col" />
+                            </flux:field>
+                        </div>
+
+                        <!-- Número exterior -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Número Ext. <span class="text-red-500">*</span></flux:label>
+                                <flux:input required name="num_ext" id="num_ext" type="text" class="w-full"
+                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('num_ext') }}" placeholder="Escribe el número exterior" />
+                                <flux:error name="num_ext" />
+                            </flux:field>
+                        </div>
+
+                        <!-- Ciudad / Municipio -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Municipio <span class="text-red-500">*</span></flux:label>
+                                <flux:input required name="city" id="city" type="text" class="w-full"
+                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('city') }}" placeholder="Escribe el municipio" />
                                 <flux:error name="city" />
                             </flux:field>
                         </div>
 
-                        {{-- Código Postal --}}
+                        <!-- Localidad -->
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Localidad <span class="text-red-500">*</span></flux:label>
+                                <flux:input required name="localities" id="localities" type="text" class="w-full"
+                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    value="{{ old('localities') }}" placeholder="Escribe la localidad" />
+                                <flux:error name="localities" />
+                            </flux:field>
+                        </div>
+                        <!-- Código Postal -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>CP <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Por favor escribe el CP</flux:description>
                                 <flux:input name="cp" id="cp" type="number"
-                                    oninput="this.value = this.value.slice(0, 5);" required />
+                                    oninput="this.value = this.value.slice(0, 5);" required
+                                    placeholder="Por favor escribe el CP" />
                                 <flux:error name="cp" />
                             </flux:field>
                         </div>
 
-                        {{-- Estado --}}
+                        <!-- Estado -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Estado</flux:label>
-                                <flux:description>Por favor escribe el estado</flux:description>
                                 <flux:input name="state" id="state" type="text"
-                                    oninput="this.value = this.value.toUpperCase();" />
+                                    oninput="this.value = this.value.toUpperCase();"
+                                    placeholder="Por favor escribe el estado" />
                                 <flux:error name="state" />
                             </flux:field>
                         </div>
 
-                        {{-- NSS --}}
+                        <!-- NSS -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>NSS</flux:label>
-                                <flux:description>Por favor escribe el NSS</flux:description>
                                 <flux:input name="nss" id="nss" type="number"
-                                    oninput="this.value = this.value.slice(0, 11);" />
+                                    oninput="this.value = this.value.slice(0, 11);"
+                                    placeholder="Por favor escribe el NSS" />
                                 <flux:error name="nss" />
                             </flux:field>
                         </div>
 
-                        {{-- Contraseña SIEC --}}
+                        <!-- Contraseña SIEC -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contraseña SIEC</flux:label>
-                                <flux:description>Por favor escribe la contraseña SIEC</flux:description>
-                                <flux:input name="siec" id="siec" type="text" />
+                                <flux:input name="siec" id="siec" type="text"
+                                    placeholder="Por favor escribe la contraseña SIEC" />
                                 <flux:error name="siec" />
                             </flux:field>
                         </div>
 
-                        {{-- Fecha de Nacimiento --}}
+                        <!-- Fecha de Nacimiento -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Fecha de Nacimiento</flux:label>
-                                <flux:description>Por favor digita la fecha de nacimiento</flux:description>
-                                <flux:input name="birthdate" id="birthdate" type="date" />
+                                <flux:input name="birthdate" id="birthdate" type="date"
+                                    placeholder="Por favor digita la fecha de nacimiento" />
                                 <flux:error name="birthdate" />
                             </flux:field>
                         </div>
 
-                        {{-- Régimen --}}
+                        <!-- Régimen -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Régimen <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Selecciona un régimen</flux:description>
-                                <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen" required>
+                                <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen"
+                                    required>
                                     @foreach ($regimes as $regime)
-                                        <flux:select.option value="{{ $regime->id }}">{{ $regime->title }}</flux:select.option>
+                                        <flux:select.option value="{{ $regime->id }}">{{ $regime->title }}
+                                        </flux:select.option>
                                     @endforeach
                                 </flux:select>
                                 <flux:error name="regime_id" />
                             </flux:field>
                         </div>
 
-                        {{-- Estatus --}}
+                        <!-- Estatus -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Estatus <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Selecciona el estatus</flux:description>
-                                <flux:select name="status" id="status" placeholder="Selecciona el estatus" required>
+                                <flux:select name="status" id="status" placeholder="Selecciona el estatus"
+                                    required>
                                     <flux:select.option value="active">Activo</flux:select.option>
                                     <flux:select.option value="inactive">Inactivo</flux:select.option>
                                 </flux:select>
@@ -176,66 +221,69 @@
                             </flux:field>
                         </div>
 
-                        {{-- Usuario IDSE --}}
+                        <!-- Usuario IDSE -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Usuario IDSE</flux:label>
-                                <flux:description>Por favor escribe el usuario IDSE</flux:description>
-                                <flux:input name="useridse" id="useridse" type="text" />
+                                <flux:input name="useridse" id="useridse" type="text"
+                                    placeholder="Por favor escribe el usuario IDSE" />
                                 <flux:error name="useridse" />
                             </flux:field>
                         </div>
 
-                        {{-- Contraseña IDSE --}}
+                        <!-- Contraseña IDSE -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contraseña IDSE</flux:label>
-                                <flux:description>Por favor escribe la contraseña IDSE</flux:description>
-                                <flux:input name="idse" id="idse" type="text" />
+                                <flux:input name="idse" id="idse" type="text"
+                                    placeholder="Por favor escribe la contraseña IDSE" />
                                 <flux:error name="idse" />
                             </flux:field>
                         </div>
 
-                        {{-- Usuario Sipare --}}
+                        <!-- Usuario Sipare -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Usuario Sipare</flux:label>
-                                <flux:description>Por favor escribe el usuario Sipare</flux:description>
-                                <flux:input name="usersipare" id="usersipare" type="text" />
+                                <flux:input name="usersipare" id="usersipare" type="text"
+                                    placeholder="Por favor escribe el usuario Sipare" />
                                 <flux:error name="usersipare" />
                             </flux:field>
                         </div>
 
-                        {{-- Contraseña Sipare --}}
+                        <!-- Contraseña Sipare -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contraseña Sipare</flux:label>
-                                <flux:description>Por favor escribe la contraseña Sipare</flux:description>
-                                <flux:input name="sipare" id="sipare" type="text" />
+                                <flux:input name="sipare" id="sipare" type="text"
+                                    placeholder="Por favor escribe la contraseña Sipare" />
                                 <flux:error name="sipare" />
                             </flux:field>
                         </div>
 
-                        {{-- Contador Asignado--}}
+                        <!-- Contador Asignado -->
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Contador <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Selecciona el contador asignado</flux:description>
-                                <flux:select name="counter_id" id="counter_id" placeholder="Selecciona un contador" required>
+                                <flux:select name="counter_id" id="counter_id" placeholder="Selecciona un contador"
+                                    required>
                                     @foreach ($counters as $counter)
-                                        <flux:select.option value="{{ $counter->id }}">{{ $counter->name . ' ' . $counter->last_name }}</flux:select.option>
+                                        <flux:select.option value="{{ $counter->id }}">
+                                            {{ $counter->name . ' ' . $counter->last_name }}</flux:select.option>
                                     @endforeach
                                 </flux:select>
                                 <flux:error name="counter_id" />
                             </flux:field>
                         </div>
+    
 
                         {{-- Token --}}
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Token <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Token de registro</flux:description>
-                                <flux:input name="token" id="token" type="text" value="{{ $token }}" readonly required/>
+                                <flux:input name="token" id="token" type="text"
+                                    value="{{ $token }}" readonly required />
                                 <flux:error name="token" />
                             </flux:field>
                         </div>
@@ -245,11 +293,12 @@
                             <flux:field>
                                 <flux:label>Nota</flux:label>
                                 <flux:description>Escribe una nota para el cliente</flux:description>
-                                <flux:textarea name="note" id="note" rows="5" maxlength="255" style="resize: none;" />
+                                <flux:textarea name="note" id="note" rows="5" maxlength="255"
+                                    style="resize: none;" />
                                 <flux:error name="note" />
                             </flux:field>
                         </div>
-                        
+
                     </div>
                 </div>
 

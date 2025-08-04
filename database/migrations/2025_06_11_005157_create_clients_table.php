@@ -22,11 +22,6 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('full_name');
             $table->string('email')->nullable();
-            $table->string('siec')->nullable();
-            $table->string('useridse')->nullable();
-            $table->string('idse')->nullable();
-            $table->string('usersipare')->nullable();
-            $table->string('sipare')->nullable();
             $table->string('address')->nullable();
             $table->string('country')->nullable();
             $table->string('localities')->nullable();

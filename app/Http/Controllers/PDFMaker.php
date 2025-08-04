@@ -24,7 +24,7 @@ class PDFMaker extends Controller
         }
 
         $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))
-            ->setPaper('a4', 'landscape');
+            ->setPaper('a4', 'portrait');
 
         return $pdf->download('recibo.pdf');
     }
@@ -54,4 +54,5 @@ class PDFMaker extends Controller
         return redirect()->route('receipt.index')
             ->with('success', 'Recibo enviado exitosamente a ' . $receipt->client->email . '.');
     }
+
 }

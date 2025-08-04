@@ -111,7 +111,8 @@ final class ReceiptTable extends PowerGridComponent
 
             Column::add()
                 ->title('Cliente')
-                ->field('client_name'),
+                ->field('client_name')
+                ->searchable(),
 
             Column::add()
                 ->title('Categoría')
