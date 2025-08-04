@@ -83,14 +83,14 @@ class ReceiptController extends Controller
         if ($request->input('timbrarInput') == 'true') {
             $total = $request->input('mount');
             $subtotal = round($total / 1.16, 2);
-            $descuento = round($total - $subtotal, 2);
+            $iva = round($total - $subtotal, 2);
 
             $client = Client::find($request->input('client_id'));
             $rfcReceptor = $client->rfc;
             $data = [
-                'forma_pago' => $request->input('pay_method') === 'EFECTIVO' ? '01' : '02',
+                'forma_pago' => $request->input('pay_method') === 'EFECTIVO' ? '01' : '03',
                 'subtotal' => (string) $subtotal,
-                'descuento' => (string) $descuento,
+                'iva' => (string) $iva,
                 'total' => (string) $total,
                 'rfcReceptor' => $rfcReceptor,
                 'nombreReceptor' => $client->full_name,

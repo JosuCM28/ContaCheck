@@ -91,7 +91,7 @@ class TimbradoService
     {
         $cadena = "";
 
-        $cadena .= "AmbienteDePruebas=SI\n";
+        $cadena .= "AmbienteDePruebas=NO\n";
         $cadena .= "TipoDeComprobante=Ingreso\n";
         $cadena .= "TipoDeFormato=ReciboDeHonorarios\n";
         $cadena .= "Serie=H\n";
@@ -99,39 +99,32 @@ class TimbradoService
         $cadena .= "FormaDePago={$this->data['forma_pago']}\n";
         $cadena .= "CondicionesDePago=Contado\n";
         $cadena .= "MetodoDePago=PUE\n";
-        //todo: hace dinámico (opcional)
         $cadena .= "LugarExpedicion=93700\n";
         $cadena .= "SubTotal={$this->data['subtotal']}\n";
         $cadena .= "Total={$this->data['total']}\n";
         $cadena .= "Moneda=MXN\n";
 
         // Emisor
-        //todo: hacer esto dinámico
         $cadena .= "RegimenEmisor=626\n";
 
         // Receptor
         $cadena .= "UsoCFDI=G03\n";
         $cadena .= "RFCReceptor={$this->data['rfcReceptor']}\n";
         $cadena .= "NombreReceptor={$this->data['nombreReceptor']}\n";
-        //todo: agregar campo del código del regimén
         $cadena .= "RegimenFiscalReceptor={$this->data['regimenFiscalReceptor']}\n";
         $cadena .= "DomicilioFiscalReceptor={$this->data['domicilioFiscalReceptor']}\n"; // Código postal registrado ante el sat 
-        //poner el pais del receptor
         $cadena .= "Pais=México\n";
         $cadena .= "Estado={$this->data['estado']}\n";
-        //todo: agregar campo de localidad
         $cadena .= "Localidad={$this->data['localidad']}\n";
         $cadena .= "Municipio={$this->data['municipio']}\n";
         $cadena .= "Calle={$this->data['calle']}\n";
-        //todo: agregar campo de colonia
         $cadena .= "Colonia={$this->data['colonia']}\n";
-        //todo: agregar campo de no. exterior
         $cadena .= "NoExterior={$this->data['noExterior']}\n";
         $cadena .= "CodigoPostal={$this->data['codigoPostal']}\n";
 
-        // Conceptos
+        // Concepto único
         $cadena .= "NumeroDePartidas=1\n";
-        $cadena .= "Concepto_1_Cantidad=1.00\n";
+        $cadena .= "Concepto_1_Cantidad=1\n";
         $cadena .= "Concepto_1_Unidad=Servicio\n";
         $cadena .= "Concepto_1_UnidadSAT=E48\n";
         $cadena .= "Concepto_1_UnidadSATD=Unidad de servicio\n";
@@ -142,29 +135,47 @@ class TimbradoService
         $cadena .= "Concepto_1_Descripcion={$this->data['concepto_descripcion']}\n";
         $cadena .= "Concepto_1_ValorUnitario={$this->data['subtotal']}\n";
         $cadena .= "Concepto_1_Importe={$this->data['subtotal']}\n";
+
         $cadena .= "Concepto_1_Num_Impuestos_Tras=1\n";
-        $cadena .= "Concepto_1_Num_Impuestos_Ret=0\n";
+        $cadena .= "Concepto_1_Num_Impuestos_Ret=2\n";
 
         // Impuestos de Retención
-        $cadena .= "Concepto_1_Imp_Ret_1_Base=0.00\n";
+        // Retención 1: ISR en 0
+        $cadena .= "Concepto_1_Imp_Ret_1_Base={$this->data['subtotal']}\n";
         $cadena .= "Concepto_1_Imp_Ret_1_Impuesto=001\n";
         $cadena .= "Concepto_1_Imp_Ret_1_TipoFactor=Tasa\n";
         $cadena .= "Concepto_1_Imp_Ret_1_TasaOCuota=0.000000\n";
         $cadena .= "Concepto_1_Imp_Ret_1_Importe=0.00\n";
 
-        // Traslados del concepto
+        // Retención 2: IVA en 0
+        $cadena .= "Concepto_1_Imp_Ret_2_Base={$this->data['subtotal']}\n";
+        $cadena .= "Concepto_1_Imp_Ret_2_Impuesto=002\n";
+        $cadena .= "Concepto_1_Imp_Ret_2_TipoFactor=Tasa\n";
+        $cadena .= "Concepto_1_Imp_Ret_2_TasaOCuota=0.000000\n";
+        $cadena .= "Concepto_1_Imp_Ret_2_Importe=0.00\n";
+
+        // Traslados del concepto (IVA 16%)
         $cadena .= "Concepto_1_Imp_Tras_1_Base={$this->data['subtotal']}\n";
         $cadena .= "Concepto_1_Imp_Tras_1_Impuesto=002\n";
         $cadena .= "Concepto_1_Imp_Tras_1_TipoFactor=Tasa\n";
         $cadena .= "Concepto_1_Imp_Tras_1_TasaOCuota=0.160000\n";
-        $cadena .= "Concepto_1_Imp_Tras_1_Importe={$this->data['descuento']}\n";
+        $cadena .= "Concepto_1_Imp_Tras_1_Importe={$this->data['iva']}\n";
 
-        // Retenciones del concepto
-
-        $cadena .= "TotalDeImpuestosTrasladados={$this->data['descuento']}\n";
+        // Total de impuestos (globales)
+        $cadena .= "TotalDeImpuestosTrasladados={$this->data['iva']}\n";
+        $cadena .= "TotalDeImpuestosRetenidos=0\n";
         $cadena .= "Num_TotalImpuestosTrasladados=1\n";
+        $cadena .= "Num_TotalImpuestosRetenidos=2\n";
+
+        // Retenciones globales en cero
+        $cadena .= "ImpuestosRetenido1_Impuesto=001\n";
+        $cadena .= "ImpuestosRetenido1_Importe=0.00\n";
+        $cadena .= "ImpuestosRetenido2_Impuesto=002\n";
+        $cadena .= "ImpuestosRetenido2_Importe=0.00\n";
+
+        // Trasladado global
         $cadena .= "ImpuestosTrasladado1_Tasa=0.160000\n";
-        $cadena .= "ImpuestosTrasladado1_Importe={$this->data['descuento']}\n";
+        $cadena .= "ImpuestosTrasladado1_Importe={$this->data['iva']}\n";
         $cadena .= "ImpuestosTrasladado1_TipoFactor=Tasa\n";
         $cadena .= "ImpuestosTrasladado1_Impuesto=002\n";
         $cadena .= "ImpuestosTrasladado1_Base={$this->data['subtotal']}\n";

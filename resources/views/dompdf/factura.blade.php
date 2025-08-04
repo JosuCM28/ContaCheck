@@ -109,6 +109,8 @@
             </tr>
         </table>
 
+        <br>
+
         <table>
             <tr>
                 <td>
@@ -119,7 +121,7 @@
                     <p><strong>Domicilio:</strong> {{ $receipt->counter->address }}</p>
                 </td>
                 <td>
-                    <h3 style="color:red">RECEPTOR</h3>
+                    <h3 style="color:red">RECEPTOR DEL COMPROBANTE FISCAL</h3>
                     <p><strong>RFC:</strong> {{ $receipt->client->rfc }}</p>
                     <p><strong>Nombre:</strong> {{ $receipt->client->full_name }}</p>
                     <p><strong>C.P.:</strong> {{ $receipt->client->cp }}</p>
@@ -128,6 +130,8 @@
             </tr>
         </table>
 
+        <br>
+
         <table>
             <thead>
                 <tr class="heading">
@@ -135,7 +139,7 @@
                     <td>Clave SAT</td>
                     <td>Descripción</td>
                     <td>Unidad</td>
-                    <td>Cant</td>
+                    <td>Cantidad</td>
                     <td>Precio</td>
                     <td>Importe</td>
                 </tr>
@@ -146,11 +150,12 @@
                     <td>95121913</td>
                     <td>
                         ALIAT CUATRIMESTRE MAESTRÍA<br>
-                        IVA 16% = 24.00<br>
-                        ISR 10% = 15.00
+                        IVA Trasladado 16% = 24.00<br>
+                        IVA Retenido 0% = 0.00<br>
+                        ISR Retenido 0% = 0.00
                     </td>
                     <td>M36</td>
-                    <td>1.00</td>
+                    <td>1</td>
                     <td>$1,450.00</td>
                     <td>$1,450.00</td>
                 </tr>
@@ -161,7 +166,7 @@
             <tr>
                 <td style="width: 60%">
                     <p><strong>Forma de Pago:</strong> 01 - Efectivo</p>
-                    <p><strong>Método de Pago:</strong> PUE</p>
+                    <p><strong>Método de Pago:</strong> PUE - Pago en una sola exhibición</p>
                     <p><strong>Condiciones:</strong> Contado</p>
                     <p><strong>Moneda:</strong> MXN - TC: 1.00</p>
                 </td>
@@ -177,7 +182,7 @@
                         </tr>
                         <tr>
                             <td style="text-align:right">ISR Retenido:</td>
-                            <td style="text-align:right">$15.00</td>
+                            <td style="text-align:right">$0.00</td>
                         </tr>
                         <tr>
                             <td style="text-align:right"><strong>Total:</strong></td>
@@ -189,6 +194,8 @@
         </table>
 
         <p><strong>Total en letra:</strong> (UN MIL CUATROCIENTOS CUARENTA Y UN PESOS 00/100 MXN)</p>
+
+        <br>
 
         <div class="qr-code">
             <img src="data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate($url)) }}" alt="QR">

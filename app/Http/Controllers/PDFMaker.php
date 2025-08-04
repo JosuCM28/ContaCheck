@@ -26,7 +26,7 @@ class PDFMaker extends Controller
         $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))
             ->setPaper('a4', 'portrait');
 
-        return $pdf->download('recibo.pdf');
+        return $pdf->stream('recibo.pdf');
     }
 
     public function sendPDF($id)
