@@ -48,6 +48,11 @@ class ClientController extends Controller
             'phone' => 'nullable|string|unique:clients|max:10',
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:clients|max:255',
+            'country' => 'nullable|string|max:255',
+            'localities' => 'nullable|string|max:255',
+            'street' => 'nullable|string|max:255',
+            'col' => 'nullable|string|max:255',
+            'num_ext' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'rfc' => 'required|string|unique:clients|max:13',
@@ -76,27 +81,34 @@ class ClientController extends Controller
             'finsello' => 'nullable',
         ]);
 
-        $fullname = $request->name . ' ' . $request->last_name;
+        $fullName = $request->name . ' ' . $request->last_name;
+        $fullAddress = strtoupper($request->street) . ' ' . strtoupper($request->num_ext) . ' COL. ' . strtoupper($request->col) . ', C.P. ' . $request->cp . ', ' . $request->localities . ', ' . $request->state . ',' . ' ' . $request->country;
+
         $client = Client::create([
             'user_id' => $request->user_id,
             'counter_id' => $request->counter_id,
+            'regime_id' => $request->regime_id,
             'status' => $request->status,
             'phone' => $request->phone,
             'name' => $request->name,
-            'email' => $request->email,
             'last_name' => $request->last_name,
-            'address' => $request->address,
+            'full_name' => $fullName,
+            'email' => $request->email,
+            'address' => $fullAddress,
+            'country' => $request->country,
+            'localities' => $request->localities,
+            'street' => $request->street,
+            'col' => $request->col,
+            'num_ext' => $request->num_ext,
             'rfc' => $request->rfc,
             'curp' => $request->curp,
             'city' => $request->city,
             'state' => $request->state,
             'cp' => $request->cp,
             'nss' => $request->nss,
-            'regime_id' => $request->regime_id,
             'note' => $request->note,
             'token' => $request->token,
             'birthdate' => $request->birthdate,
-            'full_name' => $fullname,
         ]);
         Credential::create([
             'sipare' => $request->sipare,
@@ -154,6 +166,11 @@ class ClientController extends Controller
             'phone' => 'nullable|string|max:10',
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',
+            'country' => 'nullable|string|max:255',
+            'localities' => 'nullable|string|max:255',
+            'street' => 'nullable|string|max:255',
+            'col' => 'nullable|string|max:255',
+            'num_ext' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'address' => 'nullable|string|max:255',
             'rfc' => 'required|string|max:13',
@@ -185,6 +202,8 @@ class ClientController extends Controller
 
         // Actualizar datos del cliente
         $client->full_name = $request->name . ' ' . $request->last_name;
+        $fullAddress = strtoupper($request->street) . ' ' . strtoupper($request->num_ext) . ' COL. ' . strtoupper($request->col) . ', C.P. ' . $request->cp . ', ' . $request->localities . ', ' . $request->state . ',' . ' ' . $request->country;
+        $client->address = $fullAddress;
         $client->update($request->only([
             'user_id',
             'counter_id',
@@ -195,6 +214,11 @@ class ClientController extends Controller
             'last_name',
             'full_name',
             'email',
+            'country',
+            'localities',
+            'street',
+            'col',
+            'num_ext',
             'address',
             'rfc',
             'curp',

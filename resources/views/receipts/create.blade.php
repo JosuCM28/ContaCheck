@@ -23,8 +23,7 @@
                                 <flux:select name="category_id" id="category_id" placeholder="Selecciona una categoría"
                                     required>
                                     @foreach ($categories as $category)
-                                        <flux:select.option value="{{ $category->id }}">{{ $category->name }}
-                                        </flux:select.option>
+                                        <flux:select.option value="{{ $category->id }}" data-category="{{ $category->name }}" data-description="{{ $category->description }}">{{ $category->name }}</flux:select.option>
                                     @endforeach
                                 </flux:select>
                                 <flux:error name="category_id" />
@@ -92,8 +91,7 @@
                             <flux:field>
                                 <flux:label>Descripción<noscript></noscript> <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Escribe la fecha del pago</flux:description>
-                                <flux:input name="concept" id="concept" type="text" value="HONORARIOS DEL MES DE"
-                                    oninput="this.value = this.value.toUpperCase();" placeholder="MES DE ABRIL DEL 2025"
+                                <flux:input name="concept" id="concept" type="text" oninput="this.value = this.value.toUpperCase();" placeholder="MES DE ABRIL DEL 2025"
                                     required />
                                 <flux:error name="concept" />
                             </flux:field>
@@ -189,25 +187,51 @@
         </form>
     </div>
     <script>
+        globalCategoryName = '';
         document.getElementById('client_id').addEventListener('change', function() {
             var selectedOption = this.options[this.selectedIndex];
             var counterName = selectedOption.getAttribute('data-counter-name');
             var counterId = selectedOption.getAttribute('data-counter-id');
             document.getElementById('counter_name').value = counterName;
             document.getElementById('counter_id').value = counterId;
-            console.log(counterId)
+        });
+
+        document.getElementById('category_id').addEventListener('change', function() {
+            var selectedOption = this.options[this.selectedIndex];
+            var index = selectedOption.index;
+            var timbrar = document.getElementById('timbrar');
+            var timbrarInput = document.getElementById('timbrarInput');
+            var category = selectedOption.getAttribute('data-category');
+            var descriptionCategory = selectedOption.getAttribute('data-description');
+            var descriptionInput = document.getElementById('concept');
+
+            globalCategoryName = category;
+
+            descriptionInput.value = descriptionCategory;
+
+            
+            if (category !== 'HONORARIOS') {
+                timbrar.disabled = true;
+                timbrar.selectedIndex = index
+                timbrarInput.value = 'false';
+            } else {
+                timbrar.disabled = false;
+                timbrar.selectedIndex = 0
+                timbrarInput.value = 'true';
+            }
         });
 
         document.getElementById('timbrar').addEventListener('change', function () {
             var timbrarInput = document.getElementById('timbrarInput');
             timbrarInput.value = this.value;
-            console.log(timbrarInput.value)
         });
 
         document.getElementById('status').addEventListener('change', function () {
             var selectedOption = this.value;
             var timbrar = document.getElementById('timbrar');
             var timbrarInput = document.getElementById('timbrarInput');
+
+            if ( globalCategoryName !== 'HONORARIOS') return;
 
             if (selectedOption === 'PENDIENTE') {
                 timbrar.selectedIndex = 2;       

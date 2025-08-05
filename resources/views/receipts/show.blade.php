@@ -66,9 +66,9 @@
                 <flux:field>
                     <flux:label>FacturaFiel</flux:label>
                     <flux:input type="text" readonly value="{{ $receipt->is_timbred ? 'Timbrado' : 'Sin timbrar' }}" class="w-full bg-gray-100">
-                        @if($receipt->status == 'PAGADO' && !$receipt->is_timbred)
+                        @if($receipt->status == 'PAGADO' && !$receipt->is_timbred && $receipt->category->name == 'HONORARIOS')
                             <x-slot name="iconTrailing">
-                                <a href="#" onclick="return alert('Usted va a timbrar este recibo')">
+                                <a href="{{ route('timbrar.recibo', $receipt->id) }}" onclick="return confirm('Usted va a timbrar este recibo')">
                                     <flux:icon.bell-alert variant="solid" class="hover:text-yellow-300 text-yellow-500 cursor-pointer" />
                                 </a>
                             </x-slot>

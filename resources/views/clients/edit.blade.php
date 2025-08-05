@@ -230,8 +230,10 @@
                             </flux:field>
                         </div>
 
-                        <div class="sm:col-span-2">
+                        <!-- País -->
+                        <input type="hidden" name="country" id="country" value="MÉXICO">
 
+                        <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Localidad<span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="localities" id="localities" type="text" class="w-full"
@@ -314,18 +316,6 @@
                             </flux:field>
                         </div>
 
-                        <!-- Nota -->
-                        <!-- Nota -->
-                        <div class="sm:col-span-2">
-                            <flux:field>
-                                <flux:label>Nota</flux:label>
-                                <flux:input name="note" id="note" type="text" class="w-full"
-                                    maxlength="255" value="{{ old('note', $client->note) }}"
-                                    placeholder="{{ $client->note ? 'Escribe una nota' : 'No hay datos existentes' }}" />
-                                <flux:error name="note" />
-                            </flux:field>
-                        </div>
-
                         <!-- Estatus -->
                         <div class="sm:col-span-2">
                             <flux:field>
@@ -344,6 +334,22 @@
                                 <flux:error name="status" />
                             </flux:field>
                         </div>
+
+                        <!-- Nota -->
+                        <div class="sm:col-span-6">
+                            <flux:field>
+                                <flux:label>Nota</flux:label>
+                                {{-- <flux:description>Escribe una nota para el cliente</flux:description> --}}
+                                {{-- <flux:input name="note" id="note" type="text" class="w-full"
+                                    maxlength="255" value="{{ old('note', $client->note) }}"
+                                    placeholder="{{ $client->note ? 'Escribe una nota' : 'No hay datos existentes' }}" /> --}}
+                                <flux:textarea name="note" id="note" rows="5" maxlength="255" style="resize: none;" value="{{ old('note', $client->note) }}"
+                                    placeholder="{{ $client->note ? 'Escribe una nota' : 'No hay datos existentes' }}" />
+                                <flux:error name="note" />
+                            </flux:field>
+                        </div>
+
+                        
 
                         <!-- FIEL - Fecha de Inicio -->
                         <flux:fieldset class="sm:col-span-6">

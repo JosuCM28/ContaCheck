@@ -81,7 +81,7 @@
                             </flux:field>
                         </div>
 
-                        {{-- Dirección --}}
+                        {{-- Dirección
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Dirección</flux:label>
@@ -92,7 +92,7 @@
                                     placeholder="{{ $counter->address ? '' : 'No hay datos existentes' }}" />
                                 <flux:error name="address" />
                             </flux:field>
-                        </div>
+                        </div> --}}
 
                         {{-- Ciudad --}}
                         <div class="sm:col-span-2">

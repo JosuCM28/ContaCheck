@@ -75,7 +75,7 @@
                         </div>
 
 
-                        {{-- Dirección --}}
+                        {{-- Dirección
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Dirección</flux:label>
@@ -84,7 +84,7 @@
                                     placeholder="Escribe la dirección" />
                                 <flux:error name="address" />
                             </flux:field>
-                        </div>
+                        </div> --}}
 
                         <!-- Calle -->
                         <div class="sm:col-span-2">
@@ -130,6 +130,9 @@
                             </flux:field>
                         </div>
 
+                        <!-- País -->
+                        <input type="hidden" name="country" id="country" value="MÉXICO">
+
                         <!-- Localidad -->
                         <div class="sm:col-span-2">
                             <flux:field>
@@ -154,9 +157,9 @@
                         <!-- Estado -->
                         <div class="sm:col-span-2">
                             <flux:field>
-                                <flux:label>Estado</flux:label>
+                                <flux:label>Estado <span class="text-red-500">*</span></flux:label>
                                 <flux:input name="state" id="state" type="text"
-                                    oninput="this.value = this.value.toUpperCase();"
+                                    oninput="this.value = this.value.toUpperCase();" required
                                     placeholder="Por favor escribe el estado" />
                                 <flux:error name="state" />
                             </flux:field>
@@ -281,7 +284,6 @@
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Token <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Token de registro</flux:description>
                                 <flux:input name="token" id="token" type="text"
                                     value="{{ $token }}" readonly required />
                                 <flux:error name="token" />
@@ -293,8 +295,7 @@
                             <flux:field>
                                 <flux:label>Nota</flux:label>
                                 <flux:description>Escribe una nota para el cliente</flux:description>
-                                <flux:textarea name="note" id="note" rows="5" maxlength="255"
-                                    style="resize: none;" />
+                                <flux:textarea name="note" id="note" rows="5" maxlength="255" style="resize: none;" />
                                 <flux:error name="note" />
                             </flux:field>
                         </div>

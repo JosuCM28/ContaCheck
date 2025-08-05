@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers;
 use App\Models\Receipt;
-use Barryvdh\DomPDF\Facade\Pdf;
 use App\Mail\ReceiptMail;
+use App\Models\CompanyData;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Mail;
+
 class PDFMaker extends Controller
 {
     public function downloadPDF($id)
     {
         $receipt = Receipt::findOrFail($id);
+        $company = CompanyData::first();
 
         if ($receipt->is_timbred) {
             $rfcEmisor = env('FACTURAFIEL_RFC');
@@ -23,15 +26,16 @@ class PDFMaker extends Controller
             $url = route('receipt.verify', $receipt->identificator);
         }
 
-        $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))
+        $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url', 'company'))
             ->setPaper('a4', 'portrait');
 
-        return $pdf->stream('recibo.pdf');
+        return $pdf->download('recibo.pdf');
     }
 
     public function sendPDF($id)
     {
         $receipt = Receipt::findOrFail($id);
+        $company = CompanyData::first();
 
         if ($receipt->is_timbred) {
             $rfcEmisor = env('FACTURAFIEL_RFC');
@@ -45,8 +49,8 @@ class PDFMaker extends Controller
             $url = route('receipt.verify', $receipt->identificator);
         }
 
-        $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url'))
-            ->setPaper('a4', 'landscape')
+        $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url', 'company'))
+            ->setPaper('a4', 'portrait')
             ->output();
 
         Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));

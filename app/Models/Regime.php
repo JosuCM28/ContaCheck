@@ -8,6 +8,7 @@ class Regime extends Model
 {
     protected $fillable = [
         'title',
+        'code',
     ];
 
     public function counters()

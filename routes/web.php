@@ -85,6 +85,8 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
         $service = new CancelarTimbradoService();
         return $service->cancelarCFDI($id);
     })->name('cancelarCFDI');
+
+    Route::get('timbrar/recibo/{id}', [ReceiptController::class, 'timbrarRecibo'])->name('timbrar.recibo');
 });
 
 Route::get('downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');

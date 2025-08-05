@@ -105,7 +105,7 @@ class TimbradoService
         $cadena .= "Moneda=MXN\n";
 
         // Emisor
-        $cadena .= "RegimenEmisor=626\n";
+        $cadena .= "RegimenEmisor={$this->data['regimenEmisor']}\n";
 
         // Receptor
         $cadena .= "UsoCFDI=G03\n";
