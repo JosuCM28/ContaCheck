@@ -35,8 +35,8 @@ class CancelarTimbradoService
                 ])
             ]);
 
-            $rfcEmisor = env('FACTURAFIEL_RFC');
-            $apiKey = env('FACTURAFIEL_API_KEY');
+            $rfcEmisor = config('services.facturafiel.rfc');
+            $apiKey = config('services.facturafiel.api_key');
             $folioUUID = $receipt->uuid;
 
             $cadenaEnviada = "{$rfcEmisor}~{$apiKey}~{$folioUUID}~{$motivo}~{$uuidSustitucion}";

@@ -15,7 +15,7 @@ class PDFMaker extends Controller
         $company = CompanyData::first();
 
         if ($receipt->is_timbred) {
-            $rfcEmisor = env('FACTURAFIEL_RFC');
+            $rfcEmisor = config('services.facturafiel.rfc');
             $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?" .
                 "id={$receipt->uuid}&" .
                 "re={$rfcEmisor}&" .
@@ -38,7 +38,7 @@ class PDFMaker extends Controller
         $company = CompanyData::first();
 
         if ($receipt->is_timbred) {
-            $rfcEmisor = env('FACTURAFIEL_RFC');
+            $rfcEmisor = config('services.facturafiel.rfc');
             $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?" .
                 "id={$receipt->uuid}&" .
                 "re={$rfcEmisor}&" .
