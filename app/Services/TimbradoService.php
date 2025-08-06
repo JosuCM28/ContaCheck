@@ -7,14 +7,14 @@ use Exception;
 
 class TimbradoService
 {
-    protected string $wsdl;
+    // protected string $wsdl;
     protected string $rfc;
     protected string $apiKey;
     protected array $data;
 
     public function __construct(array $data)
     {
-        $this->wsdl = 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php?wsdl';
+        // $this->wsdl = 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php?wsdl';
         $this->rfc = config('services.facturafiel.rfc');
         $this->apiKey = config('services.facturafiel.api_key');
         $this->data = $data;
@@ -26,7 +26,13 @@ class TimbradoService
             $datos = $this->generarCadena();
             $cadenaEnviada = "{$this->rfc}~{$this->apiKey}~{$datos}";
 
-            $soap = new SoapClient($this->wsdl, [
+            $localWsdlPath = storage_path('app/wsdl/wsdl_facturafiel.wsdl');
+
+            if (!file_exists($localWsdlPath)) {
+                throw new Exception("El archivo WSDL local no fue encontrado en: {$localWsdlPath}");
+            }
+
+            $soap = new SoapClient($localWsdlPath, [
                 'trace' => 1,
                 'exceptions' => true,
                 'cache_wsdl' => WSDL_CACHE_NONE,
