@@ -128,7 +128,7 @@
 
             <div
                 class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
-                <div class="flex items-center justify-center w-full h-full">Centradoooooooooooooooooooo</div>
+                <div class="flex items-center justify-center w-full h-full">Centrado</div>
             </div>
         </div>
     </div>
