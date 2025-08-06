@@ -1,5 +1,11 @@
 [phases.setup]
-nixPkgs = ['php', 'phpPackages.composer', 'nodejs']
+nixPkgs = [
+  "php",
+  "phpPackages.composer",
+  "phpPackages.openssl",
+  "phpPackages.soap",
+  "nodejs"
+]
 
 [phases.build]
 cmds = [
