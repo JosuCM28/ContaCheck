@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ['php', 'phpPackages.composer', 'php82Extensions.soap', 'nodejs', 'cacert', 'ca-certificates']
+nixPkgs = ['php', 'phpPackages.composer', 'php82Extensions.soap', 'nodejs', 'cacert']
 
 [phases.build]
 cmds = [
