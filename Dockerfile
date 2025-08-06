@@ -37,6 +37,7 @@ RUN apk add --no-cache \
     && docker-php-ext-install gd \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
+    && update-ca-certificates \
     && rm -rf /var/cache/apk/*
 
 # Instala Composer
