@@ -47,8 +47,9 @@ WORKDIR /var/www
 COPY . .
 
 # Instala dependencias PHP y JS
-RUN composer install --no-dev --optimize-autoloader \
- && npm install && npm run build
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install
+RUN npm run build
 
 # Configura permisos (opcional según tu app)
 RUN chmod -R 755 storage bootstrap/cache
