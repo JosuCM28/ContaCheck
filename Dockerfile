@@ -35,6 +35,8 @@ RUN apk add --no-cache \
         opcache \
     && docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install gd \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
     && rm -rf /var/cache/apk/*
 
 # Instala Composer
