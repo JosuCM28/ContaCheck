@@ -59,4 +59,7 @@ class PDFMaker extends Controller
             ->with('success', 'Recibo enviado exitosamente a ' . $receipt->client->email . '.');
     }
 
+    public function showPDF() {
+        return view('dompdf.factura');
+    }
 }
