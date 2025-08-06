@@ -18,6 +18,7 @@ ARG GID=1000
 # 'libpng-dev', 'libjpeg-dev', 'libxml2-dev' para GD y SOAP,
 # 'ca-certificates' es CRUCIAL para la validación SSL de peticiones externas (como WSDL).
 # Se añaden 'libcurl4-openssl-dev' para la extensión curl y 'libfreetype-dev' para GD.
+# Se añade 'libicu-dev' para la extensión intl (común en Laravel).
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -30,18 +31,30 @@ RUN apt-get update && apt-get install -y \
     ca-certificates \
     libcurl4-openssl-dev \
     libfreetype-dev \
+    libicu-dev \
     # Limpia la caché de apt para reducir el tamaño de la imagen
     && rm -rf /var/lib/apt/lists/*
+
+# Configura las extensiones de PHP que requieren configuración especial ANTES de instalarlas.
+# Configura GD con soporte para JPEG, PNG y FreeType.
+RUN docker-php-ext-configure gd --with-jpeg --with-png --with-freetype
 
 # Instala las extensiones de PHP necesarias.
 # 'pdo_mysql' (o pdo_pgsql si usas PostgreSQL), 'zip', 'gd', 'mbstring', 'exif', 'pcntl', 'bcmath'.
 # 'soap' es ESENCIAL para tus peticiones SOAP a WSDL.
 # 'curl' es comúnmente usado por SOAP y otras librerías HTTP, y su configuración SSL es vital.
-RUN docker-php-ext-install pdo_mysql zip gd mbstring exif pcntl bcmath soap curl \
-    # Configura GD con soporte para JPEG y PNG (y FreeType si es necesario)
-    && docker-php-ext-configure gd --with-jpeg --with-png --with-freetype \
-    # Instala las extensiones configuradas
-    && docker-php-ext-install -j$(nproc) gd
+# 'intl' es útil para localización y funciones de Carbon en Laravel.
+RUN docker-php-ext-install -j$(nproc) \
+    pdo_mysql \
+    zip \
+    gd \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    soap \
+    curl \
+    intl
 
 # --- Configuración de Composer ---
 # Descarga e instala Composer globalmente.
