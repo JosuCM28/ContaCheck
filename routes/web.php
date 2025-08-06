@@ -52,7 +52,7 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::put('client/update/{client}/', [ClientController::class, 'update'])->name('client.update');
     Route::delete('client/destroy/{client}', [ClientController::class, 'destroy'])->name('client.destroy');
 
-    Route::get('user', [ClientController::class, 'final'])->name('client.final');
+    // Route::get('user', [ClientController::class, 'final'])->name('client.final');
 
     Route::get('sello/fecha', [FielSello::class, 'indexsello'])->name('sello.indexsello');
     Route::get('fiel/fecha', [FielSello::class, 'indexfiel'])->name('fiel.indexfiel');
