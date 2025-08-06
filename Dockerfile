@@ -17,6 +17,7 @@ ARG GID=1000
 # 'libpq-dev' si usas PostgreSQL, 'libzip-dev' para la extensión zip de PHP,
 # 'libpng-dev', 'libjpeg-dev', 'libxml2-dev' para GD y SOAP,
 # 'ca-certificates' es CRUCIAL para la validación SSL de peticiones externas (como WSDL).
+# Se añaden 'libcurl4-openssl-dev' para la extensión curl y 'libfreetype-dev' para GD.
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
@@ -27,6 +28,8 @@ RUN apt-get update && apt-get install -y \
     libonig-dev \
     libxml2-dev \
     ca-certificates \
+    libcurl4-openssl-dev \
+    libfreetype-dev \
     # Limpia la caché de apt para reducir el tamaño de la imagen
     && rm -rf /var/lib/apt/lists/*
 
@@ -35,8 +38,10 @@ RUN apt-get update && apt-get install -y \
 # 'soap' es ESENCIAL para tus peticiones SOAP a WSDL.
 # 'curl' es comúnmente usado por SOAP y otras librerías HTTP, y su configuración SSL es vital.
 RUN docker-php-ext-install pdo_mysql zip gd mbstring exif pcntl bcmath soap curl \
-    # Configura GD con soporte para JPEG y PNG
-    && docker-php-ext-configure gd --with-jpeg --with-png
+    # Configura GD con soporte para JPEG y PNG (y FreeType si es necesario)
+    && docker-php-ext-configure gd --with-jpeg --with-png --with-freetype \
+    # Instala las extensiones configuradas
+    && docker-php-ext-install -j$(nproc) gd
 
 # --- Configuración de Composer ---
 # Descarga e instala Composer globalmente.
