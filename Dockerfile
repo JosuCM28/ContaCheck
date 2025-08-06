@@ -27,18 +27,25 @@ RUN apk add --no-cache \
     libjpeg \
     libjpeg-turbo \
     imagemagick \
+    # Asegúrate de que freetype-dev esté explícitamente presente para GD
+    freetype-dev \
     # Limpia la caché de APK para reducir el tamaño de la imagen
     && rm -rf /var/cache/apk/*
 
-# Configura las extensiones de PHP que requieren configuración especial ANTES de instalarlas.
-# Configura GD con soporte para JPEG y WebP (y FreeType si es necesario)
-RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
+# --- SOLUCIÓN PARA EL ERROR SSL DE CURL/SOAP (Mantenido) ---
+# Asegura que ca-certificates esté actualizado y que curl/openssl lo usen correctamente.
+# Para Alpine, a veces se necesita un symlink para cert.pem.
+# Esto es crucial para que `curl` (y por ende, `SOAPClient` que lo usa) confíe en los certificados SSL.
+RUN update-ca-certificates && \
+    ln -sf /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem
 
-# Instala las extensiones de PHP necesarias.
-# 'pdo_mysql' (o pdo_pgsql si usas PostgreSQL), 'zip', 'gd', 'mbstring', 'exif', 'pcntl', 'bcmath'.
-# 'soap' es ESENCIAL para tus peticiones SOAP a WSDL.
-# 'curl' es comúnmente usado por SOAP y otras librerías HTTP, y su configuración SSL es vital.
-# 'intl' es útil para localización y funciones de Carbon en Laravel.
+# --- MEJORA PARA LA INSTALACIÓN DE GD Y OTRAS EXTENSIONES ---
+# Configura e instala GD con soporte para JPEG, WebP y FreeType en un solo paso.
+# Esto ayuda a asegurar que las dependencias de GD se encuentren durante la compilación.
+RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype \
+    && docker-php-ext-install -j$(nproc) gd
+
+# Instala las demás extensiones de PHP necesarias en un bloque separado.
 RUN docker-php-ext-install -j$(nproc) \
     pdo \
     pdo_mysql \
@@ -46,20 +53,11 @@ RUN docker-php-ext-install -j$(nproc) \
     zip \
     opcache \
     curl \
-    gd \
     intl \
     mbstring \
     exif \
     pcntl \
-    bcmath \
-    && update-ca-certificates \
-    # --- INICIO DE LA MEJORA PARA SSL ---
-    # Crea un enlace simbólico para que /etc/ssl/cert.pem apunte a ca-certificates.crt
-    # Esto es crucial para que `curl` (y por ende, `SOAPClient`) encuentre los certificados CA en Alpine.
-    && ln -sf /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem \
-    # --- FIN DE LA MEJORA PARA SSL ---
-    && rm -rf /var/cache/apk/*
-
+    bcmath
 
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -67,20 +65,27 @@ COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 # Establece el directorio de trabajo
 WORKDIR /var/www
 
-# Copia los archivos del proyecto
-COPY . .
-
-# Instala dependencias PHP y JS
+# Copia los archivos de Composer primero para aprovechar el cache de Docker.
+# Si composer.json o composer.lock no cambian, Docker no reinstalará las dependencias.
 COPY composer.json composer.lock ./
+# Instala dependencias PHP
 RUN composer install --no-dev --optimize-autoloader
+
+# Copia los archivos de NPM/Node.js antes de instalar las dependencias JS.
 COPY package.json package-lock.json ./
+# Instala dependencias JS y construye los assets de frontend.
 RUN npm install
 RUN npm run build
+
+# Copia el resto del código de tu aplicación.
+COPY . .
 
 # Configura permisos (opcional según tu app)
 RUN chmod -R 755 storage bootstrap/cache
 
-# Genera caches
+# Genera caches (Recuerda que estas cachés deben generarse DESPUÉS de que las variables de entorno
+# sean inyectadas por Dokploy en tiempo de ejecución, o se generarán con valores incorrectos.
+# Considera mover estas líneas a un script de entrada o a un comando de post-despliegue en Dokploy).
 RUN php artisan config:cache \
  && php artisan route:cache \
  && php artisan view:cache
@@ -91,5 +96,5 @@ RUN php artisan storage:link
 # Puerto expuesto por php artisan serve o nginx
 EXPOSE 8080
 
-# Comando para iniciar Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# Comando para iniciar Laravel (formato JSON recomendado para evitar advertencias de Docker)
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=8080"]
