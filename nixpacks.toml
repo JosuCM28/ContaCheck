@@ -1,9 +1,9 @@
 [phases.setup]
 nixPkgs = [
   "php",
-  "phpPackages.composer",
-  "phpPackages.openssl",
-  "phpPackages.soap",
+  "php.packages.composer",
+  "php.packages.openssl",
+  "php.packages.soap",
   "nodejs"
 ]
 
