@@ -1,4 +1,4 @@
-<x-layouts.appHome>
+<x-layouts.app>
     {{-- Navbar --}}
     <nav class="bg-white shadow-md">
         <div class="container mx-auto px-4 md:flex md:items-center md:justify-between py-4">
@@ -12,28 +12,14 @@
                     <span class="icon-[tabler-menu-2] text-2xl"></span>
                 </button>
             </div>
-            <div id="menu" class="hidden md:flex md:items-center mt-4 md:mt-0">
-                <flux:field>
-                    <flux:select placeholder="Opciones" class="md:flex md:gap-4">
-                        <flux:select.option>
-                            <button type="button" class="px-4 py-2 rounded-lg hover:bg-gray-100 transition" data-overlay="#toggle-docs">Ver Documentos</button>
-                        </flux:select.option>
-                        <flux:select.option>
-                            <form method="POST" action="{{ route('logout') }}" x-data>
-                                @csrf
-                                <x-dropdown-link href="{{ route('logout') }}" @click.prevent="$root.submit();" class="px-4 py-2 rounded-lg hover:bg-gray-100 transition">Cerrar sesión</x-dropdown-link>
-                            </form>
-                        </flux:select.option>
-                    </flux:select>
-                </flux:field>
-            </div>
+            
         </div>
     </nav>
 
     {{-- Header --}}
     <header class="bg-gradient-to-r from-blue-600 to-purple-600 py-12 rounded-lg mx-4 md:mx-0 mt-8">
         <div class="container mx-auto text-center text-white">
-            <h1 class="text-3xl font-bold">Bienvenido, {{ $client->full_name }}</h1>
+            {{-- <h1 class="text-3xl font-bold">Bienvenido, {{ $client->full_name }}</h1> --}}
             <p class="mt-2">Historial de Recibos</p>
         </div>
     </header>
@@ -155,3 +141,5 @@
             </nav>
         </div>
     </footer>
+
+</x-layouts.app>

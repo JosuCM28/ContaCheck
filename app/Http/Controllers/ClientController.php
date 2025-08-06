@@ -257,8 +257,6 @@ class ClientController extends Controller
         return redirect()->route('client.index')->with('success', 'Cliente actualizado exitosamente.');
     }
 
-
-
     public function destroy(Client $client)
     {
         $client = Client::findOrFail($client->id);
