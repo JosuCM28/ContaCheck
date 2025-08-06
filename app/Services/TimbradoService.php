@@ -48,7 +48,6 @@ class TimbradoService
                     ]
                 ])
             ]);
-            dd($soap);
             $params = ['datos_enviados' => $cadenaEnviada];
 
             $response = $soap->__soapCall('servicio_timbrado', $params);
