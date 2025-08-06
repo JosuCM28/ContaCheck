@@ -124,7 +124,7 @@ class ReceiptController extends Controller
             $company = CompanyData::first();
 
             if (!empty($response)) {
-                $rfcEmisor = env('FACTURAFIEL_RFC');
+                $rfcEmisor = config('services.facturafiel.rfc');
                 $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id={$response['uuid']}&re={$rfcEmisor}&rr={$rfcReceptor}&tt={$response['total']}&fe={$response['sello']}";
                 
             } else {

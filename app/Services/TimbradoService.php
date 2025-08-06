@@ -15,8 +15,8 @@ class TimbradoService
     public function __construct(array $data)
     {
         $this->wsdl = 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php?wsdl';
-        $this->rfc = env('FACTURAFIEL_RFC');
-        $this->apiKey = env('FACTURAFIEL_API_KEY');
+        $this->rfc = config('services.facturafiel.rfc');
+        $this->apiKey = config('services.facturafiel.api_key');
         $this->data = $data;
     }
 

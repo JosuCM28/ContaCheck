@@ -35,4 +35,9 @@ return [
         ],
     ],
 
+    'facturafiel' => [
+        'rfc' => env('FACTURAFIEL_RFC'),
+        'api_key' => env('FACTURAFIEL_API_KEY'),
+    ],
+
 ];
