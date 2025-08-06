@@ -31,7 +31,6 @@ class TimbradoService
             // if (!file_exists($localWsdlPath)) {
             //     throw new Exception("El archivo WSDL local no fue encontrado en: {$localWsdlPath}");
             // }
-            dd($this->wsdl);
             $soap = new SoapClient($this->wsdl, [
                 'location' => 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php',
                 'trace' => 1,
