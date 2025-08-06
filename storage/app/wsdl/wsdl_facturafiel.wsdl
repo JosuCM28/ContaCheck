@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<definitions xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tns="urn:server" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns="http://schemas.xmlsoap.org/wsdl/" targetNamespace="urn:server">
+<types>
+<xsd:schema targetNamespace="urn:server"
+>
+ <xsd:import namespace="http://schemas.xmlsoap.org/soap/encoding/" />
+ <xsd:import namespace="http://schemas.xmlsoap.org/wsdl/" />
+</xsd:schema>
+</types>
+<message name="servicio_timbradoRequest">
+  <part name="datos_enviados" type="xsd:string" /></message>
+<message name="servicio_timbradoResponse">
+  <part name="return" type="xsd:string" /></message>
+<portType name="serverPortType">
+  <operation name="servicio_timbrado">
+    <input message="tns:servicio_timbradoRequest"/>
+    <output message="tns:servicio_timbradoResponse"/>
+  </operation>
+</portType>
+<binding name="serverBinding" type="tns:serverPortType">
+  <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+  <operation name="servicio_timbrado">
+    <soap:operation soapAction="urn:server#servicio_timbrado" style="rpc"/>
+    <input><soap:body use="encoded" namespace="urn:server" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></input>
+    <output><soap:body use="encoded" namespace="urn:server" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/></output>
+  </operation>
+</binding>
+<service name="server">
+  <port name="serverPort" binding="tns:serverBinding">
+    <soap:address location="https://www.facturafiel.com:443/websrv/servicio_timbrado_40.php"/>
+  </port>
+</service>
+</definitions>
