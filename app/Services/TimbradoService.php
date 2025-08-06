@@ -33,6 +33,7 @@ class TimbradoService
             }
 
             $soap = new SoapClient($localWsdlPath, [
+'location' => 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php',
                 'trace' => 1,
                 'exceptions' => true,
                 'cache_wsdl' => WSDL_CACHE_NONE,
