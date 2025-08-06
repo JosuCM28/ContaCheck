@@ -33,11 +33,14 @@ class TimbradoService
             }
 
             $soap = new SoapClient($localWsdlPath, [
-'location' => 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php',
+                'location' => 'https://www.facturafiel.com/websrv/servicio_timbrado_40.php',
                 'trace' => 1,
                 'exceptions' => true,
                 'cache_wsdl' => WSDL_CACHE_NONE,
                 'stream_context' => stream_context_create([
+                    'http' => [
+                        'header' => "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/115.0 Safari/537.36\r\n"
+                    ],
                     'ssl' => [
                         'verify_peer' => false,
                         'verify_peer_name' => false,
@@ -45,7 +48,7 @@ class TimbradoService
                     ]
                 ])
             ]);
-
+            dd($soap);
             $params = ['datos_enviados' => $cadenaEnviada];
 
             $response = $soap->__soapCall('servicio_timbrado', $params);
