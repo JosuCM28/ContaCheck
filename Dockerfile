@@ -27,18 +27,39 @@ RUN apk add --no-cache \
     libjpeg \
     libjpeg-turbo \
     imagemagick \
-    && docker-php-ext-install \
-        pdo \
-        pdo_mysql \
-        soap \
-        zip \
-        opcache \
-    && docker-php-ext-configure gd --with-jpeg --with-webp \
-    && docker-php-ext-install gd \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install intl \
-    && update-ca-certificates \
+    # Limpia la caché de APK para reducir el tamaño de la imagen
     && rm -rf /var/cache/apk/*
+
+# Configura las extensiones de PHP que requieren configuración especial ANTES de instalarlas.
+# Configura GD con soporte para JPEG y WebP (y FreeType si es necesario)
+RUN docker-php-ext-configure gd --with-jpeg --with-webp --with-freetype
+
+# Instala las extensiones de PHP necesarias.
+# 'pdo_mysql' (o pdo_pgsql si usas PostgreSQL), 'zip', 'gd', 'mbstring', 'exif', 'pcntl', 'bcmath'.
+# 'soap' es ESENCIAL para tus peticiones SOAP a WSDL.
+# 'curl' es comúnmente usado por SOAP y otras librerías HTTP, y su configuración SSL es vital.
+# 'intl' es útil para localización y funciones de Carbon en Laravel.
+RUN docker-php-ext-install -j$(nproc) \
+    pdo \
+    pdo_mysql \
+    soap \
+    zip \
+    opcache \
+    curl \
+    gd \
+    intl \
+    mbstring \
+    exif \
+    pcntl \
+    bcmath \
+    && update-ca-certificates \
+    # --- INICIO DE LA MEJORA PARA SSL ---
+    # Crea un enlace simbólico para que /etc/ssl/cert.pem apunte a ca-certificates.crt
+    # Esto es crucial para que `curl` (y por ende, `SOAPClient`) encuentre los certificados CA en Alpine.
+    && ln -sf /etc/ssl/certs/ca-certificates.crt /etc/ssl/cert.pem \
+    # --- FIN DE LA MEJORA PARA SSL ---
+    && rm -rf /var/cache/apk/*
+
 
 # Instala Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -50,7 +71,9 @@ WORKDIR /var/www
 COPY . .
 
 # Instala dependencias PHP y JS
+COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader
+COPY package.json package-lock.json ./
 RUN npm install
 RUN npm run build
 
@@ -59,8 +82,8 @@ RUN chmod -R 755 storage bootstrap/cache
 
 # Genera caches
 RUN php artisan config:cache \
- && php artisan route:cache \
- && php artisan view:cache
+ && php artisan route:cache \
+ && php artisan view:cache
 
 # Ejecuta migraciones y crea storage link
 RUN php artisan storage:link
