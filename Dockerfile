@@ -47,7 +47,7 @@ WORKDIR /var/www
 
 # Copia los archivos del proyecto
 COPY . .
-COPY composer.json composer.lock ./
+
 # Instala dependencias PHP y JS
 RUN composer install --no-dev --optimize-autoloader
 RUN npm install
