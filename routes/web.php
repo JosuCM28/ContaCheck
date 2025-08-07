@@ -7,24 +7,18 @@ use App\Http\Controllers\FielSello;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VerifyReceipt;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\HomeController;
 use App\Services\CancelarTimbradoService;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
 use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\DataEmisorController;
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DataEmisorController;
 use App\Http\Controllers\InventorieController;
+use App\Http\Controllers\ClientPortalController;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home')->middleware('redirect');
-
-Route::get('test', function () {
-    $service = new CancelarTimbradoService();
-    $uuid = 'CA0FD6A6-1BA7-437A-B5FC-2BF4D06FE01F';
-    return $service->cancelarCFDI('BAMT6509088B3', '957E48F991564CEB', $uuid);
-});
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('redirect');
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
@@ -32,8 +26,6 @@ Route::middleware(['auth'])->group(function () {
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
-    
-    
 });
 
 Route::middleware(['auth', 'role:contador'])->group(function () {
@@ -79,12 +71,12 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
 
     Route::resource('inventories', InventorieController::class);
 
-    Route::get('cancelar/timbrado/{uuid}', [CancelarTimbradoService::class, 'cancelarCFDI'])->name('cancelarCFDI');
+    Route::get('cancelar/timbrado/{id}', [CancelarTimbradoService::class, 'cancelarCFDI'])->name('cancelarCFDI');
 
-    Route::get('cancelar/timbrado/{id}', function ($id) {
-        $service = new CancelarTimbradoService();
-        return $service->cancelarCFDI($id);
-    })->name('cancelarCFDI');
+    // Route::get('cancelar/timbrado/{id}', function ($id) {
+    //     $service = new CancelarTimbradoService();
+    //     return $service->cancelarCFDI($id);
+    // })->name('cancelarCFDI');
 
     Route::get('timbrar/recibo/{id}', [ReceiptController::class, 'timbrarRecibo'])->name('timbrar.recibo');
 });
@@ -92,24 +84,15 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
 Route::get('downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');
 
 Route::middleware(['auth', 'role:cliente'])->group(function () {
-    Route::get('inicio', function () {
-        return view('consumers.dashboard');
-    })->name('client.dashboard');
-
-    Route::get('recibos', function() {
-        return view('consumers.receipts');
-    })->name('client.receipts');
-
-    Route::get('archivos', function() {
-        return view('consumers.files');
-    })->name('client.files');
+    Route::get('inicio', [ClientPortalController::class, 'index'])->name('client.dashboard');
+    Route::get('recibos', [ClientPortalController::class, 'receipts'])->name('client.receipts');
+    Route::get('archivos', [ClientPortalController::class, 'files'])->name('client.files');
 });
 
 Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');
 Route::get('file/download/{document}', [FileController::class, 'download'])->name('file.download');
 
-Route::get('pdfview', function(){
-    return view('dompdf.factura');
-})->name('pdfview');
+Route::get('pdfview', [PDFMaker::class, 'showPDF'])->name('pdfview');
+
 require __DIR__.'/auth.php';
