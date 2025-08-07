@@ -22,293 +22,293 @@
             </div>
         @endif
 
-        <div class="">
-            <div class="bg-white p-8">
-                <div class="flex items-center justify-between mb-6">
-                    <h2 class="text-lg font-semibold text-gray-800">Detalles del cliente</h2>
-                    <flux:button icon="plus" class="mb-4 cursor-pointer" variant="primary" size="sm" onclick="document.getElementById('addDocument').click();">Agregar Documento</flux:buttom>
+        <div class="p-8">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold text-gray-800">Detalles del cliente</h2>
+                <flux:button icon="plus" class="mb-4 cursor-pointer" variant="primary" size="sm" onclick="document.getElementById('addDocument').click();">Agregar Documento</flux:buttom>
+            </div>
+
+            <!-- Modal para subir documento -->
+            <flux:modal name="document-store" class="md:w-96">
+                <div class="space-y-6">
+                    <div>
+                        <flux:heading size="lg">Documentos</flux:heading>
+                        <flux:text class="mt-2">Documentos asociados a este cliente</flux:text>
+                    </div>
+                    <form action="{{ route('file.store', $client->id) }}" method="post"
+                        enctype="multipart/form-data">
+                        @csrf
+                        <div class="space-y-4">
+                            <flux:input label="Documento" placeholder="Nombre del documento" type="text"
+                                name="title" oninput="this.value = this.value.toUpperCase();" required />
+                            @error('title')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+
+                            <flux:input type="file" label="Archivo" accept="application/pdf" name="file_path"
+                                required />
+                            @error('file_path')
+                                <span class="text-red-500 text-sm">{{ $message }}</span>
+                            @enderror
+                        </div>
+
+                        <div class="flex mt-4">
+                            <flux:spacer />
+                            <flux:button type="submit" variant="primary" class="cursor-pointer">Subir documento
+                            </flux:button>
+                        </div>
+                    </form>
+                </div>
+            </flux:modal>
+
+
+            <!-- Cuadrícula de información -->
+            <div class="grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-9 gap-6 my-10">
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Correo</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->email ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->email ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
                 </div>
 
-                <!-- Modal para subir documento -->
-                <flux:modal name="document-store" class="md:w-96">
-                    <div class="space-y-6">
-                        <div>
-                            <flux:heading size="lg">Documentos</flux:heading>
-                            <flux:text class="mt-2">Documentos asociados a este cliente</flux:text>
-                        </div>
-                        <form action="{{ route('file.store', $client->id) }}" method="post"
-                            enctype="multipart/form-data">
-                            @csrf
-                            <div class="space-y-4">
-                                <flux:input label="Documento" placeholder="Nombre del documento" type="text"
-                                    name="title" oninput="this.value = this.value.toUpperCase();" required />
-                                @error('title')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-
-                                <flux:input type="file" label="Archivo" accept="application/pdf" name="file_path"
-                                    required />
-                                @error('file_path')
-                                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                                @enderror
-                            </div>
-
-                            <div class="flex mt-4">
-                                <flux:spacer />
-                                <flux:button type="submit" variant="primary" class="cursor-pointer">Subir documento
-                                </flux:button>
-                            </div>
-                        </form>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="birthdate" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
+                        nacimiento</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->birthdate ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->birthdate ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
-                </flux:modal>
+                </div>
 
-
-                <!-- Cuadrícula de información -->
-                <div class="grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-9 gap-6">
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Correo</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->email ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->email ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="rfc" class="block text-sm font-medium leading-6 text-gray-900">RFC</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->rfc ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->rfc ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="birthdate" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                            nacimiento</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->birthdate ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->birthdate ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="curp" class="block text-sm font-medium leading-6 text-gray-900">CURP</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->curp ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->curp ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="rfc" class="block text-sm font-medium leading-6 text-gray-900">RFC</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->rfc ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->rfc ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Teléfono</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->phone ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->phone ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="curp" class="block text-sm font-medium leading-6 text-gray-900">CURP</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->curp ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->curp ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="address"
+                        class="block text-sm font-medium leading-6 text-gray-900">Dirección</label>
+                    <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
+                        <p class="{{ $client->address ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->address ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Teléfono</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->phone ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->phone ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Ciudad</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->city ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->city ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="address"
-                            class="block text-sm font-medium leading-6 text-gray-900">Dirección</label>
-                        <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
-                            <p class="{{ $client->address ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->address ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="cp" class="block text-sm font-medium leading-6 text-gray-900">CP</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->cp ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->cp ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Ciudad</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->city ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->city ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="state" class="block text-sm font-medium leading-6 text-gray-900">Estado</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->state ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->state ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="cp" class="block text-sm font-medium leading-6 text-gray-900">CP</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->cp ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->cp ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="regime" class="block text-sm font-medium leading-6 text-gray-900">Régimen</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->regime_id ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->regime->title ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="state" class="block text-sm font-medium leading-6 text-gray-900">Estado</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->state ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->state ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="nss" class="block text-sm font-medium leading-6 text-gray-900">NSS</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->nss ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->nss ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="regime" class="block text-sm font-medium leading-6 text-gray-900">Régimen</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->regime_id ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->regime->title ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="siec" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
+                        SIEC</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($credential)->siec ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($credential)->siec ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="nss" class="block text-sm font-medium leading-6 text-gray-900">NSS</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->nss ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->nss ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="useridse" class="block text-sm font-medium leading-6 text-gray-900">Usuario
+                        IDSE</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($credential)->useridse ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($credential)->useridse ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="siec" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
-                            SIEC</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($credential)->siec ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($credential)->siec ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="idse" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
+                        IDSE</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($credential)->idse ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($credential)->idse ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="useridse" class="block text-sm font-medium leading-6 text-gray-900">Usuario
-                            IDSE</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($credential)->useridse ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($credential)->useridse ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="usersipare" class="block text-sm font-medium leading-6 text-gray-900">Usuario
+                        SIPARE</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($credential)->usersipare ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($credential)->usersipare ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="idse" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
-                            IDSE</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($credential)->idse ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($credential)->idse ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="sipare" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
+                        SIPARE</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($credential)->sipare ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($credential)->sipare ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="usersipare" class="block text-sm font-medium leading-6 text-gray-900">Usuario
-                            SIPARE</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($credential)->usersipare ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($credential)->usersipare ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="note" class="block text-sm font-medium leading-6 text-gray-900">Nota</label>
+                    <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
+                        <p class="{{ $client->note ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->note ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="sipare" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
-                            SIPARE</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($credential)->sipare ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($credential)->sipare ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="token" class="block text-sm font-medium leading-6 text-gray-900">Token</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $client->token ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->token ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="note" class="block text-sm font-medium leading-6 text-gray-900">Nota</label>
-                        <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
-                            <p class="{{ $client->note ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->note ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="iniciofiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
+                        inicio (FIEL)</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($client->credentials)->iniciofiel ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->iniciofiel ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="token" class="block text-sm font-medium leading-6 text-gray-900">Token</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ $client->token ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ $client->token ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="finfiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
+                        vencimiento (FIEL)</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($client->credentials)->finfiel ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->finfiel ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="iniciofiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                            inicio (FIEL)</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($client->credentials)->iniciofiel ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->iniciofiel ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="iniciosello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
+                        inicio (SELLO)</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($client->credentials)->iniciosello ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->iniciosello ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="finfiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                            vencimiento (FIEL)</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($client->credentials)->finfiel ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->finfiel ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="finsello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
+                        vencimiento (SELLO)</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($client->credentials)->finsello ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->finsello ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="iniciosello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                            inicio (SELLO)</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($client->credentials)->iniciosello ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->iniciosello ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="auxone" class="block text-sm font-medium leading-6 text-gray-900">Extra
+                        1</label>
+                    <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
+                        <p class="{{ optional($client->credentials)->auxone ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->auxone ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="finsello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
-                            vencimiento (SELLO)</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($client->credentials)->finsello ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->finsello ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="auxtwo" class="block text-sm font-medium leading-6 text-gray-900">Extra
+                        2</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ optional($client->credentials)->auxtwo ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->auxtwo ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
+                </div>
 
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="auxone" class="block text-sm font-medium leading-6 text-gray-900">Extra
-                            1</label>
-                        <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
-                            <p class="{{ optional($client->credentials)->auxone ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->auxone ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="auxtwo" class="block text-sm font-medium leading-6 text-gray-900">Extra
-                            2</label>
-                        <div class="mt-2 input input-filled peer">
-                            <p class="{{ optional($client->credentials)->auxtwo ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->auxtwo ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="sm:col-span-3 form-control w-full sm:w-96">
-                        <label for="auxthree" class="block text-sm font-medium leading-6 text-gray-900">Extra
-                            3</label>
-                        <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
-                            <p class="{{ optional($client->credentials)->auxthree ? '' : 'text-gray-400 italic' }} text-sm">
-                                {{ optional($client->credentials)->auxthree ?? 'Sin datos existentes' }}
-                            </p>
-                        </div>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label for="auxthree" class="block text-sm font-medium leading-6 text-gray-900">Extra
+                        3</label>
+                    <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
+                        <p class="{{ optional($client->credentials)->auxthree ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ optional($client->credentials)->auxthree ?? 'Sin datos existentes' }}
+                        </p>
                     </div>
                 </div>
             </div>
 
+            <div class="border-b border-gray-900/10"></div>
+
             <!-- Botones de acción -->
-            <div class="mt-6 pb-2 flex items-center justify-between">
+            <div class="pb-2 flex items-center justify-between mt-6">
                 <div class="flex gap-4 items-center">
                     <flux:button id="showReceipts" class="cursor-pointer">Recibos</flux:button>
                     <flux:button id="showDocuments" class="cursor-pointer">Documentos</flux:button>

@@ -14,17 +14,17 @@
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
-                    <flux:navlist.item icon="home" :href="route('emisor.index')" :current="request()->routeIs('emisor.index')" wire:navigate>{{ __('Datos Emisor') }}</flux:navlist.item>
+                    <flux:navlist.item icon="home" :href="route('emisor.index')" :current="request()->routeIs('emisor.index')" wire:navigate>{{ __('Datos emisor') }}</flux:navlist.item>
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Contadores')" class="grid">
                     <flux:navlist.item icon="user-group" :href="route('counter.index')" :current="request()->routeIs('counter.index')" wire:navigate>{{ __('Contadores') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user" :href="route('counter.create')" :current="request()->routeIs('counter.create')" wire:navigate>{{ __('Nuevo Contador') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user" :href="route('counter.create')" :current="request()->routeIs('counter.create')" wire:navigate>{{ __('Nuevo contador') }}</flux:navlist.item>
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Clientes')" class="grid">
                     <flux:navlist.item icon="user-group" :href="route('client.index')" :current="request()->routeIs('client.index')" wire:navigate>{{ __('Clientes') }}</flux:navlist.item>
-                    <flux:navlist.item icon="user" :href="route('client.create')" :current="request()->routeIs('client.create')" wire:navigate>{{ __('Nuevo Cliente') }}</flux:navlist.item>
+                    <flux:navlist.item icon="user" :href="route('client.create')" :current="request()->routeIs('client.create')" wire:navigate>{{ __('Nuevo cliente') }}</flux:navlist.item>
                 </flux:navlist.group>
 
                 <flux:navlist.group :heading="__('Recibos')" class="grid">

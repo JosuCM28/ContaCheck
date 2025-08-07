@@ -1,8 +1,7 @@
 <x-layouts.app :title="__('Dashboard')">
-    <div class="flex h-[calc(100vh-112px)] w-full flex-1 flex-col gap-4 rounded-xl">
+    <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
@@ -30,8 +29,8 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
@@ -60,8 +59,8 @@
                     </div>
                 </div>
             </div>
-            <div
-                class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+
+            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
@@ -88,47 +87,61 @@
                         </a>
                     </div>
                 </div>
-            </div>
+            </div>   
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
-                <h3 class="text-base font-semibold text-neutral-800 mb-4">Últimos Recibos</h3>
-                <table class="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead class="bg-gray-100 text-gray-700">
-                        <tr>
-                            <th class="px-4 py-2 text-left font-semibold">Cliente</th>
-                            <th class="px-4 py-2 text-left font-semibold">Fecha</th>
-                            <th class="px-4 py-2 text-left font-semibold">Estado</th>
-                            <th class="px-4 py-2 text-left font-semibold">Monto</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach ($ultimosRecibos as $recibo)
-                            <tr>
-                                <td class="px-4 py-2">{{ $recibo->client->full_name }}</td>
-                                <td class="px-4 py-2">{{ $recibo->created_at->format('d/m/Y') }}</td>
-                                <td class="px-4 py-2">
-                                    <span
-                                        class="inline-block px-2 py-1 text-xs font-medium rounded 
-                            {{ $recibo->status === 'PAGADO'
-                                ? 'bg-green-100 text-green-700'
-                                : ($recibo->status === 'CANCELADO'
-                                    ? 'bg-red-100 text-red-700'
-                                    : 'bg-gray-100 text-gray-700') }}">
-                                        {{ ucfirst(strtolower($recibo->status)) }}
-                                    </span>
-                                </td>
-                                <td class="px-4 py-2 font-semibold text-right">${{ number_format($recibo->mount, 2) }}
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 shadow max-h-[500px] overflow-y-auto">
+                <h3 class="text-md text-neutral-500 mb-4">Próximos vencimientos</h3>
 
-            <div
-                class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
-                <div class="flex items-center justify-center w-full h-full">Centrado</div>
+                <div class="space-y-4">
+                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm">
+                        <p class="text-sm text-gray-700">
+                            <span class="font-semibold">Juan Pérez</span> tiene la <strong>FIEL</strong> por vencer el <strong>12/08/2025</strong> (<span class="text-yellow-600 font-medium">6 días restantes</span>).
+                        </p>
+                    </div>
+
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
+                        <p class="text-sm text-gray-700">
+                            <span class="font-semibold">María López</span> tiene el <strong>SELLO</strong> <span class="text-red-600 font-medium">vencido</span> desde el <strong>01/08/2025</strong> (hace 5 días).
+                        </p>
+                    </div>
+
+                    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-md shadow-sm">
+                        <p class="text-sm text-gray-700">
+                            <span class="font-semibold">Luis Méndez</span> tiene la <strong>FIEL</strong> vigente hasta el <strong>25/08/2025</strong> (<span class="text-green-600 font-medium">19 días restantes</span>).
+                        </p>
+                    </div>
+                </div>
+            </div>            
+
+            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
+                <h2 class="text-md mb-4 text-neutral-500">Tareas por hacer</h2>
+
+                <ul class="space-y-3">
+                    <li class="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <input type="checkbox" class="mt-1 accent-blue-600">
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">Subir archivos faltantes</p>
+                            <p class="text-xs text-gray-500">Cliente: Juan Pérez</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <input type="checkbox" class="mt-1 accent-blue-600">
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">Actualizar RFC de María</p>
+                            <p class="text-xs text-gray-500">Revisar CURP y dirección</p>
+                        </div>
+                    </li>
+
+                    <li class="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                        <input type="checkbox" class="mt-1 accent-blue-600">
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">Verificar contraseña del SAT</p>
+                            <p class="text-xs text-gray-500">Credencial vencida</p>
+                        </div>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

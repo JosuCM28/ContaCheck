@@ -138,11 +138,6 @@ final class FielTable extends PowerGridComponent
             Column::make('Status', 'status')
                 ->searchable(),
 
-
-
-
-
-
             Column::action('Action')
         ];
     }
