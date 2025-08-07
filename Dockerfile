@@ -27,7 +27,7 @@ RUN apk add --no-cache \
     libjpeg \
     libjpeg-turbo \
     imagemagick \
-    imagemagick-dev \  # <-- Necesario para pecl imagick
+    imagemagick-dev \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
