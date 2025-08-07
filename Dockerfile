@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y \
         zip \
         opcache \
     && update-ca-certificates \
+    && echo "curl.cainfo=/etc/ssl/certs/ca-certificates.crt" >> /usr/local/etc/php/conf.d/99-ca.ini \
     && echo "openssl.cafile=/etc/ssl/certs/ca-certificates.crt" >> /usr/local/etc/php/conf.d/99-custom-ssl.ini \
     && echo "openssl.capath=/etc/ssl/certs" >> /usr/local/etc/php/conf.d/99-custom-ssl.ini \
     && rm -rf /var/lib/apt/lists/*
