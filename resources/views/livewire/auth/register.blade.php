@@ -61,7 +61,7 @@ new #[Layout('components.layouts.auth')] class extends Component {
 }; ?>
 
 <div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Create an account')" :description="__('Enter your details below to create your account')" />
+    <x-auth-header :title="__('Crear cuenta')" :description="__('ingresa tus datos acontinuación para crear tu cuenta')" />
 
     <!-- Session Status -->
     <x-auth-session-status class="text-center" :status="session('status')" />
@@ -70,43 +70,43 @@ new #[Layout('components.layouts.auth')] class extends Component {
         <!-- Name -->
         <flux:input
             wire:model="name"
-            :label="__('Name')"
+            :label="__('Nombre')"
             type="text"
             required
             autofocus
             autocomplete="name"
-            :placeholder="__('Full name')"
+            :placeholder="__('Nombre completo')"
         />
 
         <!-- Email Address -->
         <flux:input
             wire:model="email"
-            :label="__('Email address')"
+            :label="__('Correo')"
             type="email"
             required
             autocomplete="email"
-            placeholder="email@example.com"
+            placeholder="correo@ejemplo.com"
         />
 
         <!-- Password -->
         <flux:input
             wire:model="password"
-            :label="__('Password')"
+            :label="__('Contraseña')"
             type="password"
             required
             autocomplete="new-password"
-            :placeholder="__('Password')"
+            :placeholder="__('Contraseña')"
             viewable
         />
 
         <!-- Confirm Password -->
         <flux:input
             wire:model="password_confirmation"
-            :label="__('Confirm password')"
+            :label="__('Confirma contraseña')"
             type="password"
             required
             autocomplete="new-password"
-            :placeholder="__('Confirm password')"
+            :placeholder="__('Confirmar contraseña')"
             viewable
         />
 
@@ -118,18 +118,18 @@ new #[Layout('components.layouts.auth')] class extends Component {
             required
             autofocus
             autocomplete="token"
-            :placeholder="__('Token')"
+            :placeholder="__('Token proporcionado por tu contador')"
         />
 
         <div class="flex items-center justify-end">
             <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Create account') }}
+                {{ __('Crear cuenta') }}
             </flux:button>
         </div>
     </form>
 
     <div class="space-x-1 rtl:space-x-reverse text-center text-sm text-zinc-600 dark:text-zinc-400">
-        {{ __('Already have an account?') }}
-        <flux:link :href="route('login')" wire:navigate>{{ __('Log in') }}</flux:link>
+        {{ __('Ya tienes una cuenta?') }}
+        <flux:link :href="route('login')" wire:navigate>{{ __('Inicia sesion') }}</flux:link>
     </div>
 </div>

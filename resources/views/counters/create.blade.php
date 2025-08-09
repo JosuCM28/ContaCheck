@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('Crear Contador')">
     <div class="container mx-auto p-10">
-        <form action="{{ route('counter.store') }}" method="post">
+        <form id="form" action="{{ route('counter.store') }}" method="post">
             @csrf
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -162,9 +162,19 @@
                         <flux:button class="cursor-pointer">Cancelar</flux:button>
                     </a>
 
-                    <flux:button variant="primary" type="submit" class="cursor-pointer">Guardar</flux:button>
+                    <flux:button variant="primary" type="submit" class="cursor-pointer" id="saveButton">
+                    <flux:icon.loading class="size-4 hidden" id="saveButtonIcon" />
+                    <span id="saveButtonText">Guardar</span>
+                    </flux:button>
                 </div>
             </div>
         </form>
     </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', function() {
+            document.getElementById('saveButton').disabled = true;
+            document.getElementById('saveButtonText').classList.add('hidden');
+            document.getElementById('saveButtonIcon').classList.remove('hidden');
+        });
+    </script>
 </x-layouts.app>

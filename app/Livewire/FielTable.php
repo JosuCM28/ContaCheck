@@ -145,8 +145,7 @@ final class FielTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::datepicker('iniciofiel'),
-            Filter::datepicker('finfiel'),
+           //
 
         ];
     }
