@@ -6,11 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\Receipt;
 use Carbon\Carbon;
 use App\Models\Client;
+use App\Models\Credential;
+use App\Models\Task;
 
 class DashboardController extends Controller
 {
     public function index()
     {
+        $tasks = Task::where('status', 'todo')->get();
+
         $kpiRecibosMes = Receipt::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->count();
@@ -40,7 +44,8 @@ class DashboardController extends Controller
             'kpiMontoTotalMes',
             'kpiClientesNuevos',
             'clientesNuevosMes',
-            'ultimosRecibos'
+            'ultimosRecibos',
+            'tasks',
         ));
     }
 }

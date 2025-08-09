@@ -5,7 +5,7 @@
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-md text-neutral-500">Recibos generados en el mes</p>
+                            <p class="text-md">Recibos generados en el mes</p>
                             <h2 class="text-3xl font-bold text-black mt-8">{{ $kpiRecibosMes }}</h2>
                         </div>
                         <div class="bg-blue-100 text-blue-600 p-2 rounded-lg">
@@ -34,7 +34,7 @@
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-md text-neutral-500">Monto total de recibos en el mes</p>
+                            <p class="text-md">Monto total de recibos en el mes</p>
                             <h2 class="text-3xl font-bold text-black mt-8">${{ number_format($kpiMontoTotalMes, 2) }}
                             </h2>
                         </div>
@@ -64,7 +64,7 @@
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-md text-neutral-500">Clientes nuevos en el mes</p>
+                            <p class="text-md">Clientes nuevos en el mes</p>
                             <h2 class="text-3xl font-bold text-black mt-8">{{ $kpiClientesNuevos }}</h2>
                         </div>
                         <div class="bg-yellow-100 text-yellow-600 p-2 rounded-lg">
@@ -91,58 +91,73 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
             <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 shadow max-h-[500px] overflow-y-auto">
-                <h3 class="text-md text-neutral-500 mb-4">Próximos vencimientos</h3>
-
-                <div class="space-y-4">
-                    <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-md shadow-sm">
-                        <p class="text-sm text-gray-700">
-                            <span class="font-semibold">Juan Pérez</span> tiene la <strong>FIEL</strong> por vencer el <strong>12/08/2025</strong> (<span class="text-yellow-600 font-medium">6 días restantes</span>).
-                        </p>
-                    </div>
-
-                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-md shadow-sm">
-                        <p class="text-sm text-gray-700">
-                            <span class="font-semibold">María López</span> tiene el <strong>SELLO</strong> <span class="text-red-600 font-medium">vencido</span> desde el <strong>01/08/2025</strong> (hace 5 días).
-                        </p>
-                    </div>
-
-                    <div class="bg-green-50 border-l-4 border-green-400 p-4 rounded-md shadow-sm">
-                        <p class="text-sm text-gray-700">
-                            <span class="font-semibold">Luis Méndez</span> tiene la <strong>FIEL</strong> vigente hasta el <strong>25/08/2025</strong> (<span class="text-green-600 font-medium">19 días restantes</span>).
-                        </p>
-                    </div>
-                </div>
+                <livewire:upcoming-credentials />
             </div>            
 
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 overflow-y-auto max-h-[500px] shadow">
-                <h2 class="text-md mb-4 text-neutral-500">Tareas por hacer</h2>
+            <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-md overflow-y-auto max-h-[500px]">
+                <livewire:task-actions />
+                <h3 class="text-md mb-4 flex items-center gap-2">
+                    <flux:icon.list-bullet class="size-4" />
+                    <span>Tareas por hacer</span>
+                </h3>
 
                 <ul class="space-y-3">
-                    <li class="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <input type="checkbox" class="mt-1 accent-blue-600">
-                        <div>
-                            <p class="text-sm font-medium text-gray-800">Subir archivos faltantes</p>
-                            <p class="text-xs text-gray-500">Cliente: Juan Pérez</p>
-                        </div>
-                    </li>
+                    @foreach ($tasks as $task)
+                        <li
+                            class="relative group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 hover:bg-yellow-50/40 hover:border-yellow-200 transition-colors"
+                            id="task-li-{{ $task->id }}"
+                        >
+                            <span class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-l-xl bg-yellow-500/70"></span>
+                            <input 
+                                type="checkbox" 
+                                onchange="window.Livewire.dispatch('markAsDone', { 0: {{ $task->id }} })" 
+                                class="peer mt-1.5 shrink-0 accent-yellow-600 rounded cursor-pointer"
+                                style="transform: scale(1.4);"
+                            >
+                            <div class="flex-1 min-w-0">
 
-                    <li class="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <input type="checkbox" class="mt-1 accent-blue-600">
-                        <div>
-                            <p class="text-sm font-medium text-gray-800">Actualizar RFC de María</p>
-                            <p class="text-xs text-gray-500">Revisar CURP y dirección</p>
-                        </div>
-                    </li>
+                                <p class="text-sm font-semibold text-gray-900 truncate peer-checked:text-gray-500 peer-checked:line-through">
+                                    {{ $task->title }}
+                                </p>
 
-                    <li class="flex items-start gap-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                        <input type="checkbox" class="mt-1 accent-blue-600">
-                        <div>
-                            <p class="text-sm font-medium text-gray-800">Verificar contraseña del SAT</p>
-                            <p class="text-xs text-gray-500">Credencial vencida</p>
-                        </div>
-                    </li>
+                                <div class="mt-1 flex items-center gap-2 text-xs text-gray-600">
+                                    {{-- Avatar inicial --}}
+                                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-gray-700 font-medium">
+                                        {{ strtoupper(mb_substr($task->counter_name, 0, 1)) }}
+                                    </span>
+                                    <span class="truncate">
+                                        Para: <span class="font-medium text-gray-800">{{ $task->counter_name }}</span>
+                                    </span>
+                                </div>
+
+
+                                <div class="mt-2 flex items-center gap-2">
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-yellow-100 text-yellow-700 px-2 py-0.5 text-[11px] font-medium">
+                                        <span class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>
+                                        Por hacer
+                                    </span>
+
+                                    <span class="text-[11px] text-gray-500">
+                                        {{ $task->created_at->locale('es')->translatedFormat('d M') }}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                    @endforeach
                 </ul>
             </div>
+
         </div>
     </div>
+    <script>
+        window.addEventListener('task-done', (e) => {
+            const id = e.detail.id;
+            const li = document.getElementById('task-li-' + id);
+            if (!li) return;
+            li.style.transition = 'opacity 200ms ease, transform 200ms ease';
+            li.style.opacity = '0';
+            li.style.transform = 'translateX(6px)';
+            setTimeout(() => li.remove(), 200);
+        });
+    </script>
 </x-layouts.app>
