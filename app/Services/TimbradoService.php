@@ -90,7 +90,7 @@ class TimbradoService
     protected function generarCadena(): string
     {
         $cadena = "";
-
+        //4campos
         $cadena .= "AmbienteDePruebas=NO\n";
         $cadena .= "TipoDeComprobante=Ingreso\n";
         $cadena .= "TipoDeFormato=ReciboDeHonorarios\n";
@@ -99,7 +99,7 @@ class TimbradoService
         $cadena .= "FormaDePago={$this->data['forma_pago']}\n";
         $cadena .= "CondicionesDePago=Contado\n";
         $cadena .= "MetodoDePago=PUE\n";
-        $cadena .= "LugarExpedicion=93700\n";
+        $cadena .= "LugarExpedicion={$this->data['codigoPostalCompany']}\n";
         $cadena .= "SubTotal={$this->data['subtotal']}\n";
         $cadena .= "Total={$this->data['total']}\n";
         $cadena .= "Moneda=MXN\n";

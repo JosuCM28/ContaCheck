@@ -49,8 +49,8 @@
                         {{-- Realizado por --}}
                         <div class="sm:col-span-3">
                             <flux:field>
-                                <flux:label>Realizado por <span class="text-red-500">*</span></flux:label>
-                                <flux:description>Seleccione el contador que realiza el recibo</flux:description>
+                                <flux:label>Contador responsable <span class="text-red-500">*</span></flux:label>
+                                <flux:description>Contador de el cliente</flux:description>
                                 <flux:input name="counter_name" id="counter_name" type="text" readonly />
                                 <input type="hidden" name="counter_id" id="counter_id">
                                 <flux:error name="counter_id" />

@@ -106,7 +106,6 @@ class CounterController extends Controller
             'phone' => 'nullable|string|size:10',
             'birthdate' => 'nullable|date',
             'city' => 'nullable|string|max:255',
-            'address' => 'required|string|max:255',
             'cp' => 'required|string|max:255',
             'state' => 'nullable|string|max:255',
             'regime_id' => 'required',

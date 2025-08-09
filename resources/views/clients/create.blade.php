@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('Crear Cliente')">
     <div class="container mx-auto p-10">
-        <form action="{{ route('client.store') }}" method="post">
+        <form  id="form" action="{{ route('client.store') }}"  method="post">
             @csrf
             <div class="space-y-12">
                 <div class="border-b border-gray-900/10 pb-12">
@@ -278,7 +278,7 @@
                                 <flux:error name="counter_id" />
                             </flux:field>
                         </div>
-    
+
 
                         {{-- Token --}}
                         <div class="sm:col-span-2">
@@ -295,7 +295,8 @@
                             <flux:field>
                                 <flux:label>Nota</flux:label>
                                 <flux:description>Escribe una nota para el cliente</flux:description>
-                                <flux:textarea name="note" id="note" rows="5" maxlength="255" style="resize: none;" />
+                                <flux:textarea name="note" id="note" rows="5" maxlength="255"
+                                    style="resize: none;" />
                                 <flux:error name="note" />
                             </flux:field>
                         </div>
@@ -305,11 +306,22 @@
 
                 <div class="mt-6 pb-2 flex items-center justify-end gap-x-6">
                     <a href="#" onclick="history.back()">
-                        <flux:button class="cursor-pointer">Cancelar</flux:button>
+                        <flux:button class="cursor-pointer">
+                            Cancelar</flux:button>
                     </a>
-                    <flux:button variant="primary" type="submit" class="cursor-pointer">Guardar</flux:button>
+                    <flux:button variant="primary" type="submit" class="cursor-pointer" id="saveButton">
+                        <flux:icon.loading class="size-4 hidden" id="saveButtonIcon"/>
+                        <span id="saveButtonText">Guardar</span>
+                    </flux:button>
                 </div>
             </div>
         </form>
     </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', function() {
+            document.getElementById('saveButton').disabled = true;
+            document.getElementById('saveButtonText').classList.add('hidden');
+            document.getElementById('saveButtonIcon').classList.remove('hidden');
+        });
+    </script>
 </x-layouts.app>

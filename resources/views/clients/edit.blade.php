@@ -1,6 +1,6 @@
 <x-layouts.app :title="__('Actualizar Cliente')" :subheading="__('Información personal')">
     <div class="container mx-auto p-14">
-        <form action="{{ route('client.update', $client->id) }}" method="post">
+        <form id="form" action="{{ route('client.update', $client->id) }}" method="post">
             @method('put')
             @csrf
             <div class="space-y-12">
@@ -442,11 +442,20 @@
                         <flux:button class="cursor-pointer">Cancelar</flux:button>
                     </a>
                     <button type="submit">
-                        <flux:button variant="primary" type="submit" class="cursor-pointer">Actualizar
+                        <flux:button variant="primary" type="submit" class="cursor-pointer" id="saveButton">
+                        <flux:icon.loading class="size-4 hidden" id="saveButtonIcon" />
+                        <span id="saveButtonText">Actualizar</span>
                         </flux:button>
                     </button>
                 </div>
             </div>
         </form>
     </div>
+    <script>
+        document.getElementById('form').addEventListener('submit', function() {
+            document.getElementById('saveButton').disabled = true;
+            document.getElementById('saveButtonText').classList.add('hidden');
+            document.getElementById('saveButtonIcon').classList.remove('hidden');
+        });
+    </script>
 </x-layouts.app>

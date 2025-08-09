@@ -97,7 +97,11 @@ final class ReceiptTable extends PowerGridComponent
             ->add('payment_date_formatted', fn(Receipt $model) => Carbon::parse($model->payment_date)->format('d/m/Y H:i:s'))
             ->add('status')
             ->add('concept')
+            ->add('counter_id')
+            ->add('is_timbred')
+            ->add('timbrado_name', fn ($model) => $model->is_timbred ? 'Timbrado' : 'No timbrado')
             ->add('created_at');
+            
     }
 
     public function columns(): array
@@ -134,6 +138,11 @@ final class ReceiptTable extends PowerGridComponent
             Column::make('Concepto', 'concept')
                 ->searchable(),
 
+            Column::make('Timbrado', 'timbrado_name','is_timbred')
+                ->sortable()
+                ->hidden(isHidden: true, isForceHidden: false)
+                ->searchable(false),
+                
             Column::make('Fecha de Pago', 'payment_date_formatted', 'payment_date')
                 ->sortable()
                 ->searchable()
@@ -156,6 +165,13 @@ final class ReceiptTable extends PowerGridComponent
                 ->dataSource(Category::all())
                 ->optionLabel('name')
                 ->optionValue('id'),
+            Filter::select('is_timbred', 'is_timbred')
+                ->dataSource(collect([
+                ['value' => 1, 'label' => 'Si'],
+                ['value' => 0, 'label' => 'No'],
+                ]))
+                ->optionLabel('label')
+                ->optionValue('value'),
             Filter::select('receipt_status', 'status')
                 ->dataSource(Receipt::all())
                 ->optionLabel('Estado')
@@ -180,6 +196,10 @@ final class ReceiptTable extends PowerGridComponent
                 ]))
                 ->optionLabel('label')
                 ->optionValue('value'),
+            Filter::select('client_id', 'client_id')
+                ->dataSource(Client::query()->select('id', 'full_name')->orderBy('full_name')->get())
+                ->optionLabel('full_name')
+                ->optionValue('id'),
 
 
         ];

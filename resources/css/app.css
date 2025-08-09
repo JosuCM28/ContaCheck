@@ -84,6 +84,7 @@
     font-weight: 400;
     font-style: normal;
     font-size: 2rem;
+
     @media screen {
         display: inline;
         font-size: 2.1rem;
@@ -100,8 +101,43 @@ select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
 
+.galery {
+    display: flex;
+    width: 100%;
+    max-width: 750px; /* antes 600px → más ancho */
+    height: 500px; /* antes 430px → más alto */
+    margin: 0 auto;
+}
 
+.galery img {
+    width: 0;
+    flex-grow: 1;
+    object-fit: cover;
+    opacity: 0.8;
+    transition: width 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+}
 
+.galery img:hover {
+    cursor: crosshair;
+    width: 350px; /* antes 300px → expansión más grande */
+    opacity: 1;
+    filter: contrast(120%);
+}
+
+/* Ajuste para móviles: escala proporcionalmente */
+@media (max-width: 640px) {
+    .galery {
+        max-width: 95%; /* ocupa casi todo el ancho disponible */
+        height: 300px;  /* proporcional a pantallas pequeñas */
+    }
+    .galery img:hover {
+        width: 200px; /* expansión adaptada a móviles */
+    }
+}
+
+.inicio {
+    background-image: url(public/img/front.jpg);
+}
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */

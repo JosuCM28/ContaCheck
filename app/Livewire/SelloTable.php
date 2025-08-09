@@ -19,6 +19,10 @@ final class SelloTable extends PowerGridComponent
 {
     public string $tableName = 'sello-table-kyyfkb-table';
     use WithExport;
+    protected $casts = [
+        'iniciosello' => 'datetime',
+        'finsello' => 'datetime',
+    ];
     public function boot()
     {
         Carbon::setLocale('es');
@@ -146,8 +150,7 @@ final class SelloTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::datepicker('iniciosello_formatted','iniciosello'),
-            Filter::datepicker('finsello'),
+            
 
         ];
     }

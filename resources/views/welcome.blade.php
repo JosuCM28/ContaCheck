@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Despacho Contable BM</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+   
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
@@ -15,6 +16,7 @@
         .card-hover:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); }
         .accordion-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
         .accordion-content.open { max-height: 500px; }
+        
     </style>
 </head>
 <body class="bg-white">
@@ -56,10 +58,10 @@
     </nav>
 
     <!-- Hero Section -->
-    <section id="inicio" class="pt-20 pb-16 bg-black text-white">
+    <section id="inicio" class="pt-20 pb-16 bg-black text-white" >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 pt-10 flex flex-col lg:flex-row items-center">
             <div class="lg:w-1/2">
-                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">30+ Años de Tranquilidad Financiera</h1>
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">35+ Años de Tranquilidad Financiera</h1>
                 <p class="mt-4 text-lg sm:text-xl">Soluciones contables y fiscales en Altotonga, Veracruz.</p>
                 <a href="#contacto" class="mt-6 inline-block bg-white text-black px-6 py-3 rounded-md font-medium hover:bg-gray-200">Contáctanos</a>
             </div>
@@ -222,28 +224,20 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section id="testimonios" class="py-16 bg-white">
+    <section id="testimonios" class="pb-16  bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-bold text-center text-black">Lo Que Dicen Nuestros Clientes</h2>
-            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="card-hover bg-white border border-gray-200 p-6 rounded-lg text-center">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d" alt="Testimonial 1" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover">
-                    <p class="text-gray-700 italic">"El equipo de Despacho Contable BM ha transformado la gestión financiera de mi negocio con profesionalismo y claridad."</p>
-                    <p class="mt-4 text-black font-semibold">Juan Pérez</p>
-                    <p class="text-gray-500 text-sm">Empresario Local</p>
-                </div>
-                <div class="card-hover bg-white border border-gray-200 p-6 rounded-lg text-center">
-                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="Testimonial 2" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover">
-                    <p class="text-gray-700 italic">"Su atención personalizada y experiencia fiscal nos han ahorrado tiempo y recursos valiosos."</p>
-                    <p class="mt-4 text-black font-semibold">María Gómez</p>
-                    <p class="text-gray-500 text-sm">Propietaria de Negocio</p>
-                </div>
-                <div class="card-hover bg-white border border-gray-200 p-6 rounded-lg text-center">
-                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7" alt="Testimonial 3" class="w-20 h-20 rounded-full mx-auto mb-4 object-cover">
-                    <p class="text-gray-700 italic">"Confío plenamente en BM para manejar mis obligaciones contables con transparencia y eficiencia."</p>
-                    <p class="mt-4 text-black font-semibold">Carlos Ramírez</p>
-                    <p class="text-gray-500 text-sm">Contribuyente Individual</p>
-                </div>
+        <div class="flex flex-col justify-center items-center mb-8 text-2xl sm:text-3xl font-bold text-black">Instalaciones</div>
+            <div id="gelery" class="col-start-1 grid gap-4 row-span-2 text-black galery ">
+                <img src="{{ asset('img/DESPACHO.svg') }}" alt="Logo"
+                    class="transition-transform duration-500 group-hover:scale-110">
+                <img src="{{asset('img/singleback.jpg')}}" alt="cert"
+                    alt="Logo">
+                <img src="{{ asset('img/outmiddle.jpg') }}" alt="cert"
+                    alt="Logo">
+                <img src="{{asset('img/front.jpg')}}" alt="cert"
+                    alt="Logo">
+                <img src="{{asset('img/middle.jpg')}}" alt="cert"
+                    alt="Logo">
             </div>
         </div>
     </section>
@@ -279,7 +273,7 @@
                 </div>
                 <div class="border-b border-gray-200">
                     <button @click="open = open === 'faq2' ? null : 'faq2'" class="w-full text-left py-4 flex justify-between items-center">
-                        <span class="text-lg font-medium text-black">¿Qué información necesito proporcionar para iniciar los servicios contables?</span>
+                        <span class="text-lg font-medium text-black">¿Qué información debo proporcionar para iniciar los servicios contables?</span>
                         <svg :class="{ 'rotate-180': open === 'faq2' }" class="w-5 h-5 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -293,7 +287,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
                     </button>
-                    <div x-show="open === 'faq3'" class="accordion-content open pb-4 text-gray-700">Contamos con más de 30 años de experiencia, ofrecemos un servicio personalizado, garantizamos transparencia, seguridad y nos mantenemos actualizados con las últimas normativas fiscales.</div>
+                    <div x-show="open === 'faq3'" class="accordion-content open pb-4 text-gray-700">Contamos con más de 35 años de experiencia, ofrecemos un servicio personalizado, garantizamos transparencia y seguridad, y nos mantenemos actualizados con las últimas normativas fiscales.</div>
                 </div>
             </div>
         </div>

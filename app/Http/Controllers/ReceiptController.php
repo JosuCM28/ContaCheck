@@ -93,6 +93,7 @@ class ReceiptController extends Controller
             
             $data = [
                 'regimenEmisor' => $company->regime->code,
+                'codigoPostalCompany' => $company->cp,
                 'forma_pago' => $request->input('pay_method') === 'EFECTIVO' ? '01' : '03',
                 'subtotal' => (string) $subtotal,
                 'iva' => (string) $iva,
