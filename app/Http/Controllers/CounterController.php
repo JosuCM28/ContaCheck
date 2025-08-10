@@ -96,8 +96,6 @@ class CounterController extends Controller
     public function update(Request $request, Counter $counter, User $user)
     {
         $fullname = $request->name . ' ' . $request->last_name;
-
-                dd($request->all());
         
         $request->validate([
             'name' => 'required|string|max:255,', 

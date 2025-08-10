@@ -15,7 +15,7 @@
         gap: 12px;
         background: #fff;
         color: #333;
-        padding: 12px 2rem;
+        padding: 10px 1rem;
         border-radius: 10px;
         margin-bottom: 10px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, .1);

@@ -182,7 +182,7 @@
                                 <td>84111500</td>
                                 <td>
                                     {{$receipt->concept }}<br>
-                                    IVA Trasladado 16% = ${{ number_format($receipt->mount * 0.16, 2) }}<br>
+                                    IVA Trasladado 16% = ${{ number_format(($receipt->mount / 1.16) * 0.16, 2) }}<br>
                                     IVA Retenido 0% = $0.00 <br>
                                     ISR Retenido 0% = $0.00
                                 </td>
@@ -208,8 +208,8 @@
                     <div class="text-right">
                         <h3>TOTALES</h3>
                         <p><strong>Subtotal:</strong> ${{ number_format($receipt->mount / 1.16, 2) }}</p>
-                        <p><strong>IVA:</strong> ${{ number_format($receipt->mount * 0.16, 2) }}</p>
-                        <p><strong>ISR Retenido:</strong> $0</p>
+                        <p><strong>IVA:</strong> ${{ number_format(($receipt->mount / 1.16) * 0.16, 2) }}</p>
+                        <p><strong>ISR Retenido:</strong> $0.00</p>
                         <p><strong>Total:</strong> <span>${{ $receipt->mount }}</span></p>
                     </div>
                 </td>

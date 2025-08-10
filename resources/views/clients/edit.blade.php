@@ -1,8 +1,6 @@
 <x-layouts.app :title="__('Actualizar Cliente')" :subheading="__('Información personal')">
-    <div class="container mx-auto p-14">
-        <form id="form" action="{{ route('client.update', $client->id) }}" method="post">
     <div class="container mx-auto p-10">
-        <form action="{{ route('client.update', $client->id) }}" method="post">
+        <form action="{{ route('client.update', $client->id) }}" method="post" id="form">
             @method('put')
             @csrf
             <div class="space-y-12">
@@ -439,16 +437,17 @@
                     <a href="{{ url()->previous() }}">
                         <flux:button class="cursor-pointer">Cancelar</flux:button>
                     </a>
-                    <button type="submit">
-                        <flux:button variant="primary" type="submit" class="cursor-pointer" id="saveButton">
+
+                    <flux:button variant="primary" type="submit" class="cursor-pointer" id="saveButton">
                         <flux:icon.loading class="size-4 hidden" id="saveButtonIcon" />
                         <span id="saveButtonText">Actualizar</span>
-                        </flux:button>
-                    </button>
+                    </flux:button>
+
                 </div>
             </div>
         </form>
     </div>
+    
     <script>
         document.getElementById('form').addEventListener('submit', function() {
             document.getElementById('saveButton').disabled = true;

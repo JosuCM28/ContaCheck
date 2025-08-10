@@ -23,7 +23,7 @@
     <!-- Navbar -->
     <nav x-data="{ open: false }" class="bg-white shadow-sm fixed w-full z-50">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <a href="#inicio" class="text-xl font-bold text-black montecarlo-regular">Despacho Contable BM</a>
+            <a href="#inicio" class="text-lg font-bold text-black">Despacho Contable BM</a>
             <div class="hidden lg:flex space-x-6 items-center text-sm">
                 <a href="#inicio" class="nav-link text-gray-700 hover:text-black">Inicio</a>
                 <a href="#nosotros" class="nav-link text-gray-700 hover:text-black">Acerca de</a>
@@ -63,7 +63,7 @@
             <div class="lg:w-1/2">
                 <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight">35+ Años de Tranquilidad Financiera</h1>
                 <p class="mt-4 text-lg sm:text-xl">Soluciones contables y fiscales en Altotonga, Veracruz.</p>
-                <a href="#contacto" class="mt-6 inline-block bg-white text-black px-6 py-3 rounded-md font-medium hover:bg-gray-200">Contáctanos</a>
+                <a href="#contacto" class="hidden mt-6 sm:inline-block bg-white text-black px-6 py-3 rounded-md font-medium hover:bg-gray-200">Contáctanos</a>
             </div>
             <div class="lg:w-1/2 mt-8 lg:mt-0">
                 <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40" alt="Hero Image" class="w-full h-auto rounded-lg">
@@ -224,12 +224,10 @@
     </section>
 
     <!-- Testimonials Section -->
-    <section id="testimonios" class="pb-16  bg-white">
+    <section id="testimonios" class="py-16  bg-white">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col justify-center items-center mb-8 text-2xl sm:text-3xl font-bold text-black">Instalaciones</div>
+        <div class="flex flex-col justify-center items-center mb-8 text-2xl sm:text-3xl font-bold text-black">Conócenos</div>
             <div id="gelery" class="col-start-1 grid gap-4 row-span-2 text-black galery ">
-                <img src="{{ asset('img/DESPACHO.svg') }}" alt="Logo"
-                    class="transition-transform duration-500 group-hover:scale-110">
                 <img src="{{asset('img/singleback.jpg')}}" alt="cert"
                     alt="Logo">
                 <img src="{{ asset('img/outmiddle.jpg') }}" alt="cert"

@@ -25,7 +25,7 @@
                 <h2 class="text-lg font-semibold text-gray-800">Detalles del contador</h2>
 
                     <div class="my-10 grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-9 gap-6">
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="email"
                                 class="block text-sm font-medium leading-6 text-gray-900">Correo</label>
                             <div class="mt-2 input input-filled peer">
@@ -34,7 +34,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="rfc" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                                 nacimiento</label>
                             <div class="mt-2 input input-filled peer">
@@ -44,7 +44,7 @@
                         </div>
 
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="city"
                                 class="block text-sm font-medium leading-6 text-gray-900">RFC</label>
                             <div class="mt-2 input input-filled peer">
@@ -53,7 +53,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">CURP</label>
                             <div class="mt-2 input input-filled peer">
@@ -62,7 +62,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">Telefono</label>
                             <div class="mt-2 input input-filled peer">
@@ -71,7 +71,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">Drección</label>
                             <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
@@ -80,7 +80,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">Ciudad</label>
                             <div class="mt-2 input input-filled peer">
@@ -89,7 +89,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">CP</label>
                             <div class="mt-2 input input-filled peer">
@@ -98,7 +98,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">Estado</label>
                             <div class="mt-2 input input-filled peer">
@@ -107,7 +107,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <div class="sm:col-span-3 form-control w-full">
                             <label for="curp"
                                 class="block text-sm font-medium leading-6 text-gray-900">Regimen</label>
                             <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
@@ -116,7 +116,7 @@
                             </div>
                         </div>
 
-                        <div class="sm:col-span-2 form-control w-full sm:w-96">
+                        <div class="sm:col-span-2 form-control w-full">
                             <label for="curp" class="block text-sm font-medium leading-6 text-gray-900">No.
                                 de clientes</label>
                             <div class="mt-2 input input-filled peer text-sm">

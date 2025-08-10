@@ -21,7 +21,9 @@
 
                                 <flux:input name="name" id="name" type="text" autocomplete="given-name"
                                     value="{{ $counter->name ?? '' }}"
-                                    placeholder="{{ $counter->name ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->name ? '' : 'No hay datos existentes' }}"
+                                    oninput="this.value = this.value.toUpperCase();"
+                                 />
                                 <flux:error name="name" />
                             </flux:field>
                         </div>
@@ -33,7 +35,9 @@
 
                                 <flux:input name="last_name" id="last_name" type="text" autocomplete="family-name"
                                     value="{{ $counter->last_name ?? '' }}"
-                                    placeholder="{{ $counter->last_name ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->last_name ? '' : 'No hay datos existentes' }}" 
+                                    oninput="this.value = this.value.toUpperCase();"
+                                />
                                 <flux:error name="last_name" />
                             </flux:field>
                         </div>
@@ -57,7 +61,8 @@
 
                                 <flux:input name="rfc" id="rfc" type="text" autocomplete="address-level2"
                                     maxlength="13" value="{{ $counter->rfc ?? '' }}"
-                                    placeholder="{{ $counter->rfc ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->rfc ? '' : 'No hay datos existentes' }}" 
+                                    oninput="this.value = this.value.toUpperCase();"/>
                                 <flux:error name="rfc" />
                             </flux:field>
                         </div>
@@ -69,7 +74,8 @@
 
                                 <flux:input name="curp" id="curp" type="text" autocomplete="curp"
                                     maxlength="18" value="{{ $counter->curp ?? '' }}"
-                                    placeholder="{{ $counter->curp ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->curp ? '' : 'No hay datos existentes' }}" 
+                                    oninput="this.value = this.value.toUpperCase();"/>
                                 <flux:error name="curp" />
                             </flux:field>
                         </div>
@@ -94,7 +100,8 @@
                                 <flux:input name="address" id="address" type="text"
                                     autocomplete="address-level2" maxlength="150"
                                     value="{{ $counter->address ?? '' }}"
-                                    placeholder="{{ $counter->address ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->address ? '' : 'No hay datos existentes' }}" 
+                                    oninput="this.value = this.value.toUpperCase();"/>
                                 <flux:error name="address" />
                             </flux:field>
                         </div>
@@ -106,7 +113,8 @@
 
                                 <flux:input name="city" id="city" type="text" autocomplete="city"
                                     maxlength="18" value="{{ $counter->city ?? '' }}"
-                                    placeholder="{{ $counter->city ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->city ? '' : 'No hay datos existentes' }}" 
+                                    oninput="this.value = this.value.toUpperCase();"/>
                                 <flux:error name="city" />
                             </flux:field>
                         </div>
@@ -130,7 +138,8 @@
 
                                 <flux:input name="state" id="state" type="text"
                                     value="{{ $counter->state ?? '' }}"
-                                    placeholder="{{ $counter->state ? '' : 'No hay datos existentes' }}" />
+                                    placeholder="{{ $counter->state ? '' : 'No hay datos existentes' }}" 
+                                    oninput="this.value = this.value.toUpperCase();"/>
                                 <flux:error name="state" />
                             </flux:field>
                         </div>

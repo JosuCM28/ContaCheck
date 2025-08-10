@@ -18,7 +18,7 @@
                         </div>
                     </div>
                     <div>
-                        <a href="#" class="text-md text-blue-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('receipt.index') }}" class="text-md text-blue-600 hover:underline flex items-center gap-1">
                             Ver más
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -48,7 +48,7 @@
                         </div>
                     </div>
                     <div>
-                        <a href="#" class="text-md text-green-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('receipt.index') }}" class="text-md text-green-600 hover:underline flex items-center gap-1">
                             Ver más
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -77,7 +77,7 @@
                         </div>
                     </div>
                     <div>
-                        <a href="#" class="text-md text-yellow-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('client.index') }}" class="text-md text-yellow-600 hover:underline flex items-center gap-1">
                             Ver más
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"

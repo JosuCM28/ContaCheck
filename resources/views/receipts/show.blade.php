@@ -108,12 +108,11 @@
                             {{ $receipt->is_timbred ? 'Timbrado' : 'Sin timbrar' }}
                         </p>
                         @if ($receipt->status === 'PAGADO' && !$receipt->is_timbred && $receipt->category?->name === 'HONORARIOS')
-                            <a href="{{ route('timbrar.recibo', $receipt->id) }}"
-                               onclick="return confirm('Usted va a timbrar este recibo')"
-                               title="Timbrar recibo"
-                            >
-                                <flux:icon.bell-alert variant="solid" class="hover:text-yellow-300 text-yellow-500 cursor-pointer" />
-                            </a>
+
+                        <flux:modal.trigger name="timbrar-recibo">
+                            <flux:icon.bell-alert variant="solid" class="hover:text-yellow-300 text-yellow-500 cursor-pointer" />
+                        </flux:modal.trigger>
+
                         @endif
                     </div>
                 </div>
@@ -144,11 +143,11 @@
                 <div></div>
                 <div class="flex gap-4 items-center">
                     @if ($receipt->status === 'PAGADO')
-                        <flux:button variant="danger"
-                            href="{{ route('cancelarCFDI', $receipt->id) }}"
-                            onclick="return confirm('¿Estás seguro de que deseas cancelar este recibo?')">
-                            Cancelar recibo
-                        </flux:button>
+                        <flux:modal.trigger name="delete-receipt">
+                            <flux:button variant="danger" class="cursor-pointer">
+                                Cancelar recibo
+                            </flux:button>
+                        </flux:modal.trigger>
                     @endif
 
                     <a href="{{ url()->previous() }}">
@@ -162,6 +161,79 @@
                     @endif
                 </div>
             </div>
+
+            <flux:modal name="delete-receipt" class="min-w-[22rem]">
+                <form method="GET" action="{{ route('cancelarCFDI', $receipt->id) }}" id="modalDeleteForm">
+                    @csrf
+
+                    <div class="space-y-6">
+                        <div>
+                            <flux:heading size="lg">Cancelar recibo</flux:heading>
+                            <flux:text class="mt-2">
+                                <p>El recibo pasará a estado CANCELADO.</p>
+                                <p>Si esta timbrado, se cancelará la timbración.</p>
+                            </flux:text>
+                        </div>
+                        <div class="flex gap-2">
+                            <flux:spacer />
+                            <flux:modal.close>
+                                <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
+                            </flux:modal.close>
+                            <flux:button type="submit" variant="danger" class="cursor-pointer" id="modalDeleteButton">
+                                <flux:icon.loading class="size-4 hidden" id="modalDeleteButtonIcon" />
+                                <span id="modalDeleteButtonText">Cancelar recibo</span>
+                            </flux:button>
+                        </div>
+                    </div>
+                </form>
+            </flux:modal>
+
+
+            <flux:modal name="timbrar-recibo" class="min-w-[22rem]">
+                <form method="GET" action="{{ route('timbrar.recibo', $receipt->id) }}" id="modalTimbraForm">
+                    @csrf
+
+                    <div class="space-y-6">
+                        <div>
+                            <flux:heading size="lg">Timbrar recibo</flux:heading>
+                            <flux:text class="mt-2">
+                                <p>El recibo se timbrará mediante FacturaFiel.</p>
+                                <p>Se podrá cancelar más adelante.</p>
+                            </flux:text>
+                        </div>
+                        <div class="flex gap-2">
+                            <flux:spacer />
+                            <flux:modal.close>
+                                <flux:button variant="ghost" class="cursor-pointer">Cancel</flux:button>
+                            </flux:modal.close>
+                            <flux:button type="submit" variant="primary" class="cursor-pointer" id="modalTimbrarButton">
+                                <flux:icon.loading class="size-4 hidden" id="modalTimbrarButtonIcon" />
+                                <span id="modalTimbrarButtonText">Timbrar recibo</span>
+                            </flux:button>
+                        </div>
+                    </div>
+                </form>
+            </flux:modal>
         </div>
     </div>
 </x-layouts.app>
+
+<script>
+    const btnDelete = document.getElementById('modalDeleteButton');
+    document.getElementById('modalDeleteForm').addEventListener('submit', function() {
+        btnDelete.disabled = true;
+        btnDelete.classList.add('opacity-50');
+        document.getElementById('modalDeleteButtonText').classList.add('hidden');
+        document.getElementById('modalDeleteButtonIcon').classList.remove('hidden');
+    });
+
+    const btnTimbrar = document.getElementById('modalTimbrarButton');
+    document.getElementById('modalTimbraForm').addEventListener('submit', function() {
+        btnTimbrar.disabled = true;
+        btnTimbrar.classList.add('opacity-50');
+        document.getElementById('modalTimbrarButtonText').classList.add('hidden');
+        document.getElementById('modalTimbrarButtonIcon').classList.remove('hidden');
+    });
+</script>
+
+

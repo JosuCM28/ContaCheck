@@ -67,7 +67,7 @@
 
             <!-- Cuadrícula de información -->
             <div class="grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-9 gap-6 my-10">
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="email" class="block text-sm font-medium leading-6 text-gray-900">Correo</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->email ? '' : 'text-gray-400 italic' }} text-sm">
@@ -76,7 +76,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="birthdate" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         nacimiento</label>
                     <div class="mt-2 input input-filled peer">
@@ -86,7 +86,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="rfc" class="block text-sm font-medium leading-6 text-gray-900">RFC</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->rfc ? '' : 'text-gray-400 italic' }} text-sm">
@@ -95,7 +95,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="curp" class="block text-sm font-medium leading-6 text-gray-900">CURP</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->curp ? '' : 'text-gray-400 italic' }} text-sm">
@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="phone" class="block text-sm font-medium leading-6 text-gray-900">Teléfono</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->phone ? '' : 'text-gray-400 italic' }} text-sm">
@@ -113,7 +113,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="address"
                         class="block text-sm font-medium leading-6 text-gray-900">Dirección</label>
                     <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
@@ -123,7 +123,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="city" class="block text-sm font-medium leading-6 text-gray-900">Ciudad</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->city ? '' : 'text-gray-400 italic' }} text-sm">
@@ -132,7 +132,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="cp" class="block text-sm font-medium leading-6 text-gray-900">CP</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->cp ? '' : 'text-gray-400 italic' }} text-sm">
@@ -141,7 +141,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="state" class="block text-sm font-medium leading-6 text-gray-900">Estado</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->state ? '' : 'text-gray-400 italic' }} text-sm">
@@ -150,7 +150,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="regime" class="block text-sm font-medium leading-6 text-gray-900">Régimen</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->regime_id ? '' : 'text-gray-400 italic' }} text-sm">
@@ -159,7 +159,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="nss" class="block text-sm font-medium leading-6 text-gray-900">NSS</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->nss ? '' : 'text-gray-400 italic' }} text-sm">
@@ -168,7 +168,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="siec" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
                         SIEC</label>
                     <div class="mt-2 input input-filled peer">
@@ -179,7 +179,7 @@
                 </div>
 
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="useridse" class="block text-sm font-medium leading-6 text-gray-900">Usuario
                         IDSE</label>
                     <div class="mt-2 input input-filled peer">
@@ -189,7 +189,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="idse" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
                         IDSE</label>
                     <div class="mt-2 input input-filled peer">
@@ -199,7 +199,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="usersipare" class="block text-sm font-medium leading-6 text-gray-900">Usuario
                         SIPARE</label>
                     <div class="mt-2 input input-filled peer">
@@ -209,7 +209,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="sipare" class="block text-sm font-medium leading-6 text-gray-900">Contraseña
                         SIPARE</label>
                     <div class="mt-2 input input-filled peer">
@@ -219,7 +219,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="note" class="block text-sm font-medium leading-6 text-gray-900">Nota</label>
                     <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
                         <p class="{{ $client->note ? '' : 'text-gray-400 italic' }} text-sm">
@@ -228,7 +228,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="token" class="block text-sm font-medium leading-6 text-gray-900">Token</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->token ? '' : 'text-gray-400 italic' }} text-sm">
@@ -237,7 +237,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="iniciofiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         inicio (FIEL)</label>
                     <div class="mt-2 input input-filled peer">
@@ -249,7 +249,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="finfiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         vencimiento (FIEL)</label>
                     <div class="mt-2 input input-filled peer">
@@ -261,7 +261,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="iniciosello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         inicio (SELLO)</label>
                     <div class="mt-2 input input-filled peer">
@@ -273,7 +273,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="finsello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         vencimiento (SELLO)</label>
                     <div class="mt-2 input input-filled peer">
@@ -285,7 +285,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="auxone" class="block text-sm font-medium leading-6 text-gray-900">Extra
                         1</label>
                     <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
@@ -295,7 +295,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="auxtwo" class="block text-sm font-medium leading-6 text-gray-900">Extra
                         2</label>
                     <div class="mt-2 input input-filled peer">
@@ -305,7 +305,7 @@
                     </div>
                 </div>
 
-                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                <div class="sm:col-span-3 form-control w-full">
                     <label for="auxthree" class="block text-sm font-medium leading-6 text-gray-900">Extra
                         3</label>
                     <div class="mt-2 input input-filled peer" style="max-height: 4rem; overflow-y: auto;">
