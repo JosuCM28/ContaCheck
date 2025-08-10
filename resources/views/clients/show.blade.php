@@ -14,13 +14,15 @@
             </p>
         </div>
 
+        <flux:separator variant="subtle" class="mb-4" />
+
         <!-- Mensaje de éxito -->
-        @if (session('success'))
+        {{-- @if (session('success'))
             <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
                 class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 m-4" role="alert">
                 {{ session('success') }}
             </div>
-        @endif
+        @endif --}}
 
         <div class="p-8">
             <div class="flex items-center justify-between">
@@ -35,8 +37,7 @@
                         <flux:heading size="lg">Documentos</flux:heading>
                         <flux:text class="mt-2">Documentos asociados a este cliente</flux:text>
                     </div>
-                    <form action="{{ route('file.store', $client->id) }}" method="post"
-                        enctype="multipart/form-data">
+                    <form action="{{ route('file.store', $client->id) }}" method="post" id="documentForm" enctype="multipart/form-data">
                         @csrf
                         <div class="space-y-4">
                             <flux:input label="Documento" placeholder="Nombre del documento" type="text"
@@ -54,7 +55,9 @@
 
                         <div class="flex mt-4">
                             <flux:spacer />
-                            <flux:button type="submit" variant="primary" class="cursor-pointer">Subir documento
+                            <flux:button type="submit" variant="primary" class="flex items-center gap-2 cursor-pointer" id="uploadFileButton">
+                                <flux:icon.loading class="size-4 hidden" id="uploadFileButtonIcon" />
+                                <span id="uploadFileButtonText">Subir documento</span>
                             </flux:button>
                         </div>
                     </form>
@@ -78,7 +81,7 @@
                         nacimiento</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->birthdate ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ $client->birthdate ?? 'Sin datos existentes' }}
+                            {{ \Carbon\Carbon::parse($client->birthdate)->format('d/m/Y') ?? 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>
@@ -238,8 +241,10 @@
                     <label for="iniciofiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         inicio (FIEL)</label>
                     <div class="mt-2 input input-filled peer">
-                        <p class="{{ optional($client->credentials)->iniciofiel ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ optional($client->credentials)->iniciofiel ?? 'Sin datos existentes' }}
+                        <p class="{{ $client->credentials->iniciofiel ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->credentials->iniciofiel 
+                                ? \Carbon\Carbon::parse($client->credentials->iniciofiel)->format('d/m/Y')
+                                : 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>
@@ -248,8 +253,10 @@
                     <label for="finfiel" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         vencimiento (FIEL)</label>
                     <div class="mt-2 input input-filled peer">
-                        <p class="{{ optional($client->credentials)->finfiel ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ optional($client->credentials)->finfiel ?? 'Sin datos existentes' }}
+                        <p class="{{ $client->credentials?->finfiel ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->credentials?->finfiel 
+                                ? \Carbon\Carbon::parse($client->credentials->finfiel)->format('d/m/Y') 
+                                : 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>
@@ -258,8 +265,10 @@
                     <label for="iniciosello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         inicio (SELLO)</label>
                     <div class="mt-2 input input-filled peer">
-                        <p class="{{ optional($client->credentials)->iniciosello ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ optional($client->credentials)->iniciosello ?? 'Sin datos existentes' }}
+                        <p class="{{ $client->credentials->iniciosello ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->credentials?->iniciosello 
+                                ? \Carbon\Carbon::parse($client->credentials->iniciosello)->format('d/m/Y') 
+                                : 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>
@@ -268,8 +277,10 @@
                     <label for="finsello" class="block text-sm font-medium leading-6 text-gray-900">Fecha de
                         vencimiento (SELLO)</label>
                     <div class="mt-2 input input-filled peer">
-                        <p class="{{ optional($client->credentials)->finsello ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ optional($client->credentials)->finsello ?? 'Sin datos existentes' }}
+                        <p class="{{ $client->credentials->finsello ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $client->credentials?->iniciosello 
+                                ? \Carbon\Carbon::parse($client->credentials->finsello)->format('d/m/Y') 
+                                : 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>
@@ -341,6 +352,14 @@
     </div>
 
     <script>
+        const btnUploadFile = document.getElementById('uploadFileButton');
+        document.getElementById('documentForm').addEventListener('submit', function() {
+            btnUploadFile.disabled = true;
+            btnUploadFile.classList.add('opacity-50');
+            document.getElementById('uploadFileButtonText').classList.add('hidden');
+            document.getElementById('uploadFileButtonIcon').classList.remove('hidden');
+        });
+
         document.getElementById('showReceipts').addEventListener('click', function() {
             const receipts = document.getElementById('tableClients');
             const showButton = document.getElementById('showReceipts');

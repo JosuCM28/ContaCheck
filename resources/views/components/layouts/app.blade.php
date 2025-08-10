@@ -3,6 +3,7 @@
 @endphp
 
 <x-layouts.app.sidebar :title="$title ?? null" :subheading="$subheading ?? null">
+    <x-toast />
     <flux:main>
         {{-- <div class="flex items-center gap-2 mb-4">
             <flux:icon.code-bracket-square class="hidden lg:inline cursor-pointer w-5" id="toggle-sidebar" />

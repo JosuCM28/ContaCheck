@@ -4,7 +4,13 @@
             @csrf
             @method('PUT')
             <div class="space-y-12">
-                <div class="border-b border-gray-900/10 pb-5">
+                <div class="border-b border-gray-900/10 pb-12">
+                    <h2 class="text-base font-semibold leading-7 text-gray-900">
+                        Actualiza Información personal
+                    </h2>
+                    <p class="mt-1 text-sm leading-6 text-gray-600">
+                        Ingresa los datos del contador que deseas actualizar
+                    </p>
 
                     <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
 
@@ -81,7 +87,7 @@
                             </flux:field>
                         </div>
 
-                        {{-- Dirección
+                        {{-- Dirección --}}
                         <div class="sm:col-span-2">
                             <flux:field>
                                 <flux:label>Dirección</flux:label>
@@ -92,7 +98,7 @@
                                     placeholder="{{ $counter->address ? '' : 'No hay datos existentes' }}" />
                                 <flux:error name="address" />
                             </flux:field>
-                        </div> --}}
+                        </div>
 
                         {{-- Ciudad --}}
                         <div class="sm:col-span-2">

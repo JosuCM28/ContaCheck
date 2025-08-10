@@ -1,125 +1,166 @@
 <x-layouts.app :title="__('Ver Recibo')" :subheading="__('Detalles del recibo')">
-    <div class="container mx-auto p-14">
-        <div class="space-y-12">
-            @if (session('success'))
-                <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
-                    class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 m-4" role="alert">
-                    {{ session('success') }}
+    <div class="container mx-auto p-12 max-w-7xl">
+        <!-- Encabezado -->
+        <div class="text-center space-y-1 mb-10">
+            <p class="text-2xl font-bold">
+                Recibo #{{ $receipt->identificator }}
+            </p>
+            <p class="text-sm text-gray-500">
+                Detalles del recibo
+            </p>
+        </div>
+
+        <flux:separator variant="subtle" class="mb-4" />
+
+        <div class="p-8">
+            <h2 class="text-lg font-semibold text-gray-800">Información del recibo</h2>
+
+            <div class="my-10 grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-9 gap-6">
+                <!-- Tipo de recibo -->
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Tipo de Recibo</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->category?->name ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $receipt->category?->name ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
                 </div>
-            @endif
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Tipo de Recibo -->
-                <flux:field>
-                    <flux:label>Tipo de Recibo</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->category->name }}"
-                        class="w-full bg-gray-100" />
-                </flux:field>
-
-                <!-- Realizado Por -->
-                <flux:field>
-                    <flux:label>Realizado Por</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->counter->full_name }}"
-                        class="w-full bg-gray-100" />
-                </flux:field>
+                <!-- Realizado por -->
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Realizado por</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->counter?->full_name ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $receipt->counter?->full_name ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Contribuyente -->
-                <flux:field>
-                    <flux:label>Contribuyente</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->client->full_name }}"
-                        class="w-full bg-gray-100" />
-                </flux:field>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Contribuyente</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->client?->full_name ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $receipt->client?->full_name ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
-                <!-- Método de Pago -->
-                <flux:field>
-                    <flux:label>Método de Pago</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->pay_method }}" class="w-full bg-gray-100" />
-                </flux:field>
+                <!-- Método de pago -->
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Método de pago</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->pay_method ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $receipt->pay_method ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Monto $MXN -->
-                <flux:field>
-                    <flux:label>Monto $MXN</flux:label>
-                    <flux:input type="text" readonly value="{{ number_format($receipt->mount, 2) }}"
-                        class="w-full bg-gray-100" />
-                </flux:field>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Monto $MXN</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ isset($receipt->mount) ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ isset($receipt->mount) ? number_format((float)$receipt->mount, 2) : 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Concepto -->
-                <flux:field>
-                    <flux:label>Concepto</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->concept }}" class="w-full bg-gray-100" />
-                </flux:field>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Concepto</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->concept ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $receipt->concept ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
-                <!-- Fecha de Pago -->
-                <flux:field>
-                    <flux:label>Fecha de Pago</flux:label>
-                    <flux:input type="text" readonly value="{{ old('payment_date', $receipt->payment_date) }}"
-                        class="w-full bg-gray-100" />
-                </flux:field>
+                <!-- Fecha de pago -->
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Fecha de pago</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->payment_date ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{-- Usa cast datetime en el modelo: $casts=['payment_date'=>'datetime'] --}}
+                            {{ $receipt->payment_date ? ($receipt->payment_date instanceof \Carbon\Carbon
+                                ? $receipt->payment_date->format('d/m/Y')
+                                : \Carbon\Carbon::parse($receipt->payment_date)->format('d/m/Y'))
+                                : 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
                 <!-- Estado -->
-                <flux:field>
-                    <flux:label>Estado</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->status }}" class="w-full bg-gray-100" />
-                </flux:field>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Estado</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="{{ $receipt->status ? '' : 'text-gray-400 italic' }} text-sm">
+                            {{ $receipt->status ?? 'Sin datos existentes' }}
+                        </p>
+                    </div>
+                </div>
 
-                <!-- Estado -->
-                <flux:field>
-                    <flux:label>FacturaFiel</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->is_timbred ? 'Timbrado' : 'Sin timbrar' }}" class="w-full bg-gray-100">
-                        @if($receipt->status == 'PAGADO' && !$receipt->is_timbred && $receipt->category->name == 'HONORARIOS')
-                            <x-slot name="iconTrailing">
-                                <a href="{{ route('timbrar.recibo', $receipt->id) }}" onclick="return confirm('Usted va a timbrar este recibo')">
-                                    <flux:icon.bell-alert variant="solid" class="hover:text-yellow-300 text-yellow-500 cursor-pointer" />
-                                </a>
-                            </x-slot>
+                <!-- FacturaFiel -->
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">FacturaFiel</label>
+                    <div class="mt-2 input input-filled peer flex items-center gap-4">
+                        <p class="text-sm">
+                            {{ $receipt->is_timbred ? 'Timbrado' : 'Sin timbrar' }}
+                        </p>
+                        @if ($receipt->status === 'PAGADO' && !$receipt->is_timbred && $receipt->category?->name === 'HONORARIOS')
+                            <a href="{{ route('timbrar.recibo', $receipt->id) }}"
+                               onclick="return confirm('Usted va a timbrar este recibo')"
+                               title="Timbrar recibo"
+                            >
+                                <flux:icon.bell-alert variant="solid" class="hover:text-yellow-300 text-yellow-500 cursor-pointer" />
+                            </a>
                         @endif
-                    </flux:input>
-                </flux:field>
+                    </div>
+                </div>
 
-                @if(!empty($receipt->uuid)) 
-                    <!-- Folio UUID -->
-                    <flux:field>
-                        <flux:label>Folio UUID (SAT)</flux:label>
-                        <flux:input type="text" readonly value="{{ $receipt->uuid }}"
-                            class="w-full bg-gray-100" />
-                    </flux:field>
-
+                @if (!empty($receipt->uuid))
+                    <!-- Folio UUID (SAT) -->
+                    <div class="sm:col-span-3 form-control w-full sm:w-96">
+                        <label class="block text-sm font-medium leading-6 text-gray-900">Folio UUID (SAT)</label>
+                        <div class="mt-2 input input-filled peer">
+                            <p class="text-sm">{{ $receipt->uuid }}</p>
+                        </div>
+                    </div>
                 @endif
 
                 <!-- Identificador -->
-                <flux:field>
-                    <flux:label>Identificador</flux:label>
-                    <flux:input type="text" readonly value="{{ $receipt->identificator }}"
-                        class="w-full bg-gray-100" />
-                </flux:field>
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Identificador</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="text-sm">{{ $receipt->identificator }}</p>
+                    </div>
+                </div>
             </div>
 
-            <!-- Acciones -->
-            <div class="mt-8 flex justify-end space-x-4">
-                @if ($receipt->status == 'PAGADO')
-                    <flux:field>
-                        <flux:button variant="danger">
-                            <a href="{{ route('cancelarCFDI', $receipt->id) }}"
-                                class="btn btn-soft btn-accent"
-                                onclick="return confirm('¿Estás seguro de que deseas cancelar este recibo?')">
-                                Cancelar recibo
-                            </a>
+            <div class="border-b border-gray-900/10"></div>
+
+            <!-- Botones de acción -->
+            <div class="mt-6 pb-2 flex items-center justify-between">
+                <div></div>
+                <div class="flex gap-4 items-center">
+                    @if ($receipt->status === 'PAGADO')
+                        <flux:button variant="danger"
+                            href="{{ route('cancelarCFDI', $receipt->id) }}"
+                            onclick="return confirm('¿Estás seguro de que deseas cancelar este recibo?')">
+                            Cancelar recibo
                         </flux:button>
-                    </flux:field>
-                @endif
-                <flux:field>
-                    <flux:button>
-                        <a href="{{ url()->previous() }}" class="btn btn-soft btn-secondary">Regresar</a>
-                    </flux:button>
-                </flux:field>
-                @if ($receipt->status == 'PENDIENTE')
-                    <flux:field>
-                        <flux:button variant="primary">
-                            <a href="{{ route('receipt.edit', $receipt->id) }}"
-                                class="btn btn-soft btn-accent">Editar</a>
+                    @endif
+
+                    <a href="{{ url()->previous() }}">
+                        <flux:button class="cursor-pointer">Regresar</flux:button>
+                    </a>
+
+                    @if ($receipt->status === 'PENDIENTE')
+                        <flux:button variant="primary" href="{{ route('receipt.edit', $receipt->id) }}">
+                            Editar
                         </flux:button>
-                    </flux:field>
-                @endif
+                    @endif
+                </div>
             </div>
         </div>
     </div>

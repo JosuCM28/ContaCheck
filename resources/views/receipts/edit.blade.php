@@ -5,11 +5,11 @@
             @method('PUT')
 
             <!-- Mensaje de éxito -->
-            @if (session('success'))
+            {{-- @if (session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 my-4" role="alert">
                     {{ session('success') }}
                 </div>
-            @endif
+            @endif --}}
 
             <div class="grid grid-cols-4 gap-6">
 

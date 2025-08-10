@@ -104,14 +104,14 @@
                 <ul class="space-y-3">
                     @foreach ($tasks as $task)
                         <li
-                            class="relative group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 hover:bg-yellow-50/40 hover:border-yellow-200 transition-colors"
+                            class="relative group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 hover:bg-yellow-50/40 hover:border-blue-200 transition-colors"
                             id="task-li-{{ $task->id }}"
                         >
-                            <span class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-l-xl bg-yellow-500/70"></span>
+                            <span class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-l-xl bg-blue-500/70"></span>
                             <input 
                                 type="checkbox" 
                                 onchange="window.Livewire.dispatch('markAsDone', { 0: {{ $task->id }} })" 
-                                class="peer mt-1.5 shrink-0 accent-yellow-600 rounded cursor-pointer"
+                                class="peer mt-1.5 shrink-0 accent-blue-600 rounded cursor-pointer"
                                 style="transform: scale(1.4);"
                             >
                             <div class="flex-1 min-w-0">
@@ -132,7 +132,7 @@
 
 
                                 <div class="mt-2 flex items-center gap-2">
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-yellow-100 text-yellow-700 px-2 py-0.5 text-[11px] font-medium">
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-[11px] font-medium">
                                         <span class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>
                                         Por hacer
                                     </span>

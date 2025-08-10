@@ -146,8 +146,6 @@ final class SelloTable extends PowerGridComponent
     public function filters(): array
     {
         return [
-            Filter::datepicker('iniciosello_formatted','iniciosello'),
-            Filter::datepicker('finsello'),
 
         ];
     }

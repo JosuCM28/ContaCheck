@@ -1,5 +1,5 @@
 <x-layouts.app :title="__('Actualizar Cliente')" :subheading="__('Información personal')">
-    <div class="container mx-auto p-14">
+    <div class="container mx-auto p-10">
         <form action="{{ route('client.update', $client->id) }}" method="post">
             @method('put')
             @csrf
@@ -18,8 +18,6 @@
                         <div class="sm:col-span-3">
                             <flux:field>
                                 <flux:label>Nombre <span class="text-red-500">*</span></flux:label>
-                                <flux:description>{{ $client->name ? '' : 'No hay datos existentes' }}
-                                </flux:description>
                                 <flux:input name="name" id="name" type="text" autocomplete="given-name"
                                     oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('name', $client->name) }}" placeholder="Escribe el nombre" required />
@@ -31,8 +29,6 @@
                         <div class="sm:col-span-3">
                             <flux:field>
                                 <flux:label>Apellido <span class="text-red-500">*</span></flux:label>
-                                <flux:description>{{ $client->last_name ? '' : 'No hay datos existentes' }}
-                                </flux:description>
                                 <flux:input name="last_name" id="last_name" type="text" autocomplete="family-name"
                                     oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('last_name', $client->last_name) }}" placeholder="Escribe el apellido"

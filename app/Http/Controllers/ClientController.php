@@ -127,7 +127,11 @@ class ClientController extends Controller
 
         ]);
 
-        return redirect()->route('client.index')->with('success', 'Cliente creado exitosamente.');
+        return redirect()->route('client.index')->with('toast', [
+            'title' => 'Cliente creado correctamente',
+            'message' => 'El cliente ha sido creado correctamente.',
+            'type' => 'success',
+        ]);
     }
 
     /**
@@ -254,14 +258,22 @@ class ClientController extends Controller
             $client->credentials()->create($credentialsData);
         }
 
-        return redirect()->route('client.index')->with('success', 'Cliente actualizado exitosamente.');
+        return redirect()->route('client.index')->with('toast', [
+            'title' => 'Cliente actualizado correctamente',
+            'message' => 'El cliente ha sido actualizado correctamente.',
+            'type' => 'success',
+        ]);
     }
 
     public function destroy(Client $client)
     {
         $client = Client::findOrFail($client->id);
         $client->delete();
-        return redirect()->route('client.index')->with('success', 'Contador Borrado Exitosamente');
+        return redirect()->route('client.index')->with('toast', [
+            'title' => 'Cliente borrado correctamente',
+            'message' => 'El cliente ha sido borrado correctamente.',
+            'type' => 'success',
+        ]);
     }
 
     public function final(Client $client)

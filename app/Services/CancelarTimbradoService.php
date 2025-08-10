@@ -18,7 +18,11 @@ class CancelarTimbradoService
         if ($receipt && $receipt->is_timbred == false) {
             $receipt->status = 'CANCELADO';
             $receipt->save();
-            return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('success','Recibo cancelado exitosamente.');
+            return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('toast', [
+                'title' => 'Recibo cancelado',
+                'message' => 'Recibo cancelado correctamente.',
+                'type' => 'success',
+            ]);
         }
 
         try {
@@ -55,7 +59,12 @@ class CancelarTimbradoService
                 }
             }
 
-            return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('success','Recibo cancelado exitosamente.');
+            return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('toast', [
+                'title' => 'Recibo cancelado',
+                'message' => 'Recibo cancelado correctamente.',
+                'type' => 'success',
+            ]);
+
         } catch (Exception $e) {
             return [
                 'success' => false,

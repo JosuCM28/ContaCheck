@@ -135,9 +135,18 @@ class ReceiptController extends Controller
 
             Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
 
-            return redirect()->route('receipt.create')->with('success', 'Recibo creado y enviado exitosamente.');
+            return redirect()->route('receipt.create')->with('toast', [
+                'title' => 'Recibo creado',
+                'message' => 'Recibo creado y enviado correctamente.',
+                'type' => 'success',
+            ]);
         }
-        return redirect()->route('receipt.create')->with('success', 'Recibo creado exitosamente.');
+        
+        return redirect()->route('receipt.create')->with('toast', [
+            'title' => 'Recibo creado',
+            'message' => 'Recibo creado y almacenado exitosamente.',
+            'type' => 'success',
+        ]);
     }
 
     public function update(Request $request, Receipt $receipt){
@@ -154,7 +163,11 @@ class ReceiptController extends Controller
             
         ]);
         $receipt->update($request->all());
-        return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('success','Recibo Actualizado Correctamente');
+        return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('toast', [
+            'title' => 'Recibo actualizado',
+            'message' => 'Recibo actualizado correctamente.',
+            'type' => 'success',
+        ]);
 
     }
 
@@ -162,7 +175,11 @@ class ReceiptController extends Controller
 
         $receipt = Receipt::findOrFail($receipt->id);
         $receipt->delete();
-        return redirect()->route('receipt.index')->with('success','Recibo Borrado Exitosamente');
+        return redirect()->route('receipt.index')->with('toast', [
+            'title' => 'Recibo borrado',
+            'message' => 'Recibo borrado correctamente.',
+            'type' => 'success',
+        ]);
 
 
     }
@@ -204,17 +221,25 @@ class ReceiptController extends Controller
             $receipt->sello = substr($response['sello'], -8);
             $receipt->save();
 
-            return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('success', 'Recibo Timbrado Exitosamente');
+            return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('toast', [
+                'title' => 'Recibo timbrado',
+                'message' => 'Recibo timbrado correctamente.',
+                'type' => 'success',
+            ]);
         }
 
-        return redirect()->route('receipt.show', ['identificator' => $receipt->id]);
+        return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('toast', [
+            'title' => 'Recibo timbrado',
+            'message' => 'Recibo timbrado correctamente.',
+            'type' => 'success',
+        ]);
     }
     
     // public function destroydos(Receipt $receipt2){
 
     //     $receipt = Receipt::findOrFail($receipt2->id);
     //     $receipt->delete();
-    //     return redirect()->refresh()->with('success','Recibo Borrado Exitosamente');
+    //     return redirect()->refresh()->with('toast', []);
 
     // }
 }
