@@ -54,7 +54,11 @@ class DataEmisorController extends Controller
         // Actualizar o crear los datos
         CompanyData::updateOrCreate([], $request->all());
 
-        return redirect()->route('emisor.index')->with('success', 'Datos del emisor actualizados exitosamente.');
+        return redirect()->route('emisor.index')->with('toast', [
+            'title' => 'Datos actualizados correctamente',
+            'message' => 'Los datos del despacho han sido actualizados correctamente.',
+            'type' => 'success',
+        ]);
     }
 
 }

@@ -30,10 +30,6 @@ final class FielTable extends PowerGridComponent
 
         return [
             PowerGrid::exportable('export')
-                ->striped()
-                ->columnWidth([
-                    2 => 30,
-                ])
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV),
 
             PowerGrid::header()

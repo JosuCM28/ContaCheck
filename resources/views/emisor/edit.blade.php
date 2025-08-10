@@ -15,7 +15,7 @@
                         </p>
 
                         <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Nombre</flux:label>
                                     <flux:input name="name" id="name" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -24,7 +24,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Apellido</flux:label>
                                     <flux:input name="last_name" id="last_name" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -34,7 +34,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>CURP</flux:label>
                                     <flux:input name="curp" id="curp" type="text" oninput="this.value = this.value.toUpperCase();" maxlength="18"
@@ -43,7 +43,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>RFC</flux:label> 
                                     <flux:input name="rfc" id="rfc" type="text" oninput="this.value = this.value.toUpperCase();" maxlength="13"
@@ -52,7 +52,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Nombre comercial</flux:label>
                                     <flux:input name="nombre_comercial" id="nombre_comercial" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -62,7 +62,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Correo</flux:label>
                                     <flux:input name="email" id="email" type="email" autocomplete="email"
@@ -71,7 +71,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Teléfono</flux:label>
                                     <flux:input name="phone" id="phone" type="phone" maxlength="10" oninput="this.value = this.value.slice(0, 10);"
@@ -80,7 +80,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Teléfono secundario</flux:label>
                                     <flux:input name="phone2" id="phone2" type="text" maxlength="10" oninput="this.value = this.value.slice(0, 10);"
@@ -90,7 +90,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Calle</flux:label>
                                     <flux:input name="street" id="street" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -99,7 +99,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Número exterior</flux:label>
                                     <flux:input name="num_ext" id="num_ext" type="text"
@@ -109,7 +109,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Colonia</flux:label>
                                     <flux:input name="col" id="col" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -118,7 +118,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>CP</flux:label>
                                     <flux:input name="cp" id="cp" type="text" maxlength="5" oninput="this.value = this.value.slice(0, 5);"
@@ -127,7 +127,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Estado</flux:label>
                                     <flux:input name="state" id="state" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -136,7 +136,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Ciudad</flux:label>
                                     <flux:input name="city" id="city" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -145,7 +145,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Localidad</flux:label>
                                     <flux:input name="localities" id="localities" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -155,7 +155,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Referencia</flux:label>
                                     <flux:input name="referer" id="referer" type="text" oninput="this.value = this.value.toUpperCase();"
@@ -164,7 +164,7 @@
                                 </flux:field>
                             </div>
 
-                            <div class="sm:col-span-3">
+                            <div class="sm:col-span-2">
                                 <flux:field>
                                     <flux:label>Régimen fiscal</flux:label>
                                     <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen">

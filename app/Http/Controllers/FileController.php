@@ -27,7 +27,11 @@ class FileController extends Controller
         $document->file_path = $path;
         
         $document->save();
-        return redirect()->back();
+        return redirect()->back()->with('toast', [
+            'title' => 'Archivo subido correctamente',
+            'message' => 'El archivo ha sido subido correctamente.',
+            'type'
+        ]);
     }
 
     public function destroy(Document $document)
@@ -37,7 +41,12 @@ class FileController extends Controller
             Storage::disk('public')->delete($document->file_path); // Eliminar archivo
         }
         $document->delete();
-        return redirect()->back()->with('success', 'Documento Borrado Exitosamente');
+        
+        return redirect()->back()->with('toast', [
+            'title' => 'Archivo eliminado correctamente',
+            'message' => 'El archivo ha sido eliminado correctamente.',
+            'type' => 'success',
+        ]);
     }
 
     public function download(Document $document)

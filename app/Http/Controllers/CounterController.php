@@ -25,7 +25,6 @@ class CounterController extends Controller
         $password = Str::random(10);
         $regimes = Regime::all();
         return view('counters.create', compact('password', 'regimes'));
-
     }
 
     public function store(Request $request)
@@ -69,7 +68,11 @@ class CounterController extends Controller
             'full_name' => $fullname,
         ]);
 
-        return redirect()->route('counter.index')->with('success', 'Contador creado exitosamente.');
+        return redirect()->route('counter.index')->with('toast', [
+            'title' => 'Éxito',
+            'message' => 'Contador creado exitosamente.',
+            'type' => 'success',
+        ]);
     }
 
     public function show(Counter $counter, Regime $regime, Document $document)
@@ -84,8 +87,6 @@ class CounterController extends Controller
 
     public function edit(Counter $counter)
     {
-
-
        return view('counters.edit', [
             'counter' => $counter->load('regime', 'user'),
             'regimes' => Regime::all(),
@@ -94,8 +95,9 @@ class CounterController extends Controller
 
     public function update(Request $request, Counter $counter, User $user)
     {
-        
         $fullname = $request->name . ' ' . $request->last_name;
+
+                dd($request->all());
         
         $request->validate([
             'name' => 'required|string|max:255,', 
@@ -104,20 +106,26 @@ class CounterController extends Controller
             'rfc' => 'required|string|size:13', 
             'curp' => 'nullable|string|size:18', 
             'phone' => 'nullable|string|size:10',
-            'birthdate' => 'nullable|date',
             'city' => 'nullable|string|max:255',
             'cp' => 'required|string|max:255',
+            'address' => 'required|string|max:255',
             'state' => 'nullable|string|max:255',
             'regime_id' => 'required',
+            'birthdate' => 'nullable|date',
         ]);
         
         $request->merge(['full_name' => $fullname]);
+
         
         $counter->update($request->all());
         $user = User::findOrFail($counter->user_id);
         $user->update($request->only(['name', 'email']));
 
-        return redirect()->route('counter.index')->with('success', 'Contador actualizado exitosamente.');
+        return redirect()->route('counter.index')->with('toast', [
+            'title' => 'Éxito',
+            'message' => 'Contador actualizado exitosamente.',
+            'type' => 'success',
+        ]);
         
     }
 
@@ -125,7 +133,11 @@ class CounterController extends Controller
     {
         $counter = Counter::findOrFail($counter->id);
         $counter->delete();
-        return redirect()->route('counter.index')->with('success', 'Contador Borrado Exitosamente');
+        return redirect()->route('counter.index')->with('toast', [
+            'title' => 'Éxito',
+            'message' => 'Contador borrado exitosamente',
+            'type' => 'success',
+        ]);
     }
 
 }

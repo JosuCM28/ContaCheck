@@ -141,3 +141,6 @@ select:focus[data-flux-control] {
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
+body.sorting {
+  user-select: none !important;
+}

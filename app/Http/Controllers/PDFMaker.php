@@ -56,7 +56,11 @@ class PDFMaker extends Controller
         Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
 
         return redirect()->route('receipt.index')
-            ->with('success', 'Recibo enviado exitosamente a ' . $receipt->client->email . '.');
+            ->with('toast', [
+                'title' => 'Recibo enviado correctamente',
+                'message' => 'Recibo enviado exitosamente a ' . $receipt->client->email . '.',
+                'type' => 'success',
+            ]);
     }
 
     public function showPDF() {

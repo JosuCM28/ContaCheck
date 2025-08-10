@@ -6,14 +6,19 @@
             <p class="text-2xl font-bold">
                 Despacho Contable Baltazar Montes
             </p>
+            <p class="text-sm text-gray-500">
+                Emisor
+            </p>
         </div>
 
-         @if (session('success'))
+        <flux:separator variant="subtle" class="mb-4" />
+
+        {{-- @if (session('success'))
             <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
                 class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 m-4" role="alert">
                 {{ session('success') }}
             </div>
-        @endif
+        @endif --}}
 
         <div class="p-8">
             <h2 class="text-lg font-semibold text-gray-800">Detalles del emisor</h2>

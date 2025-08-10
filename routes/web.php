@@ -8,11 +8,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\VerifyReceipt;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\TaskController;
 use App\Services\CancelarTimbradoService;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
-use App\Http\Controllers\ReceiptController;
 
+use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataEmisorController;
 use App\Http\Controllers\InventorieController;
@@ -32,9 +33,9 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     //DataCompany
-    Route::get('/emisor', [DataEmisorController::class, 'index'])->name('emisor.index');
-    Route::get('/emisor/edit', [DataEmisorController::class, 'edit'])->name('emisor.edit');
-    Route::put('/emisor/update', [DataEmisorController::class, 'update'])->name('emisor.update');
+    Route::get('emisor', [DataEmisorController::class, 'index'])->name('emisor.index');
+    Route::get('emisor/edit', [DataEmisorController::class, 'edit'])->name('emisor.edit');
+    Route::put('emisor/update', [DataEmisorController::class, 'update'])->name('emisor.update');
     
     Route::get('counter/index', [CounterController::class, 'index'])->name('counter.index');
     Route::get('counter/create', [CounterController::class, 'create'])->name('counter.create');
@@ -73,12 +74,15 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
 
     Route::get('cancelar/timbrado/{id}', [CancelarTimbradoService::class, 'cancelarCFDI'])->name('cancelarCFDI');
 
-    // Route::get('cancelar/timbrado/{id}', function ($id) {
-    //     $service = new CancelarTimbradoService();
-    //     return $service->cancelarCFDI($id);
-    // })->name('cancelarCFDI');
-
     Route::get('timbrar/recibo/{id}', [ReceiptController::class, 'timbrarRecibo'])->name('timbrar.recibo');
+
+    
+    Route::get('kanban', [TaskController::class, 'index'])->name('kanban.index');
+    Route::post('kanban', [TaskController::class, 'store'])->name('kanban.store');
+    Route::post('kanban/update-draggable', [TaskController::class, 'updateDraggable'])->name('kanban.update-draggable');
+    Route::put('kanban/{task}', [TaskController::class, 'update'])->name('kanban.update');
+    Route::delete('kanban/{task}', [TaskController::class, 'destroy'])->name('kanban.destroy');
+    
 });
 
 Route::get('downloadPDF/{id}',[PDFMaker::class,'downloadPDF'])->name('downloadPDF');
