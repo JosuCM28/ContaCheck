@@ -27,6 +27,7 @@ RUN apk add --no-cache \
     libjpeg \
     libjpeg-turbo \
     imagemagick \
+    imagemagick-dev \
     && docker-php-ext-install \
         pdo \
         pdo_mysql \
@@ -37,6 +38,8 @@ RUN apk add --no-cache \
     && docker-php-ext-install gd \
     && docker-php-ext-configure intl \
     && docker-php-ext-install intl \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
     && rm -rf /var/cache/apk/*
 
 # Instala Composer
