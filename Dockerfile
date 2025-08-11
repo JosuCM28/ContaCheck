@@ -58,7 +58,4 @@ RUN php artisan storage:link
 # Puerto expuesto por php artisan serve o nginx
 EXPOSE 8080
 # Comando para iniciar Laravel
-COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["php","artisan","serve","--host=0.0.0.0","--port=8080"]
+CMD php artisan serve --host=0.0.0.0 --port=8080
