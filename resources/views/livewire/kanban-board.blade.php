@@ -80,7 +80,7 @@
             </div>
             <flux:field>
                 <flux:label>Tarea</flux:label>
-                <flux:input wire:model.defer="newTask.title" placeholder="Escribe la tarea..." required />
+                <flux:input wire:model.defer="newTask.title" placeholder="Escribe la tarea.." required />
             </flux:field>
 
             <flux:field>
