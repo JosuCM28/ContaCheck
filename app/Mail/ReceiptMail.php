@@ -33,8 +33,8 @@ class ReceiptMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address(config('app.email'), config('app.name')),
-            subject: 'Recibo de Pago'
+            from: new Address('despachobm28@gmail.com', 'Despacho Contable BM'),
+            subject:'Recibo de Pago'
         );
     }
 
@@ -56,7 +56,7 @@ class ReceiptMail extends Mailable
     public function attachments(): array
     {
         return [
-            Attachment::fromData(fn() => $this->pdf, 'Report.pdf')
+            Attachment::fromData(fn()=> $this->pdf,'Report.pdf')
                 ->withMime('application/pdf')
         ];
     }
