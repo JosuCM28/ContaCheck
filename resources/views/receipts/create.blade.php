@@ -139,7 +139,7 @@
                                 <flux:description>Por favor seleccione una opción</flux:description>
                                 <flux:select name="timbrar" id="timbrar" placeholder="Por favor seleccione una opción" required>
                                     <flux:select.option value="true">SÍ, TIMBRAR</flux:select.option>
-                                    <flux:select.option value="false">NO, TIMBRAR</flux:select.option>
+                                    <flux:select.option value="false">NO TIMBRAR</flux:select.option>
                                 </flux:select>
                                 <flux:error name="pay_method" />
                             </flux:field>
@@ -212,7 +212,7 @@
             
             if (category !== 'HONORARIOS') {
                 timbrar.disabled = true;
-                timbrar.selectedIndex = index
+                timbrar.selectedIndex = 2;
                 timbrarInput.value = 'false';
             } else {
                 timbrar.disabled = false;

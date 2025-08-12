@@ -66,7 +66,6 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::put('receipt/update/{receipt}/', [ReceiptController::class, 'update'])->name('receipt.update');
     Route::delete('receipt/destroy/{receipt}', [ReceiptController::class, 'destroy'])->name('receipt.destroy');
     
-    Route::get('receipt/verify/{identificator}',[VerifyReceipt::class,'__invoke'])->name('receipt.verify');
 
     Route::get('sendPDF/{id}',[PDFMaker::class,'sendPDF'])->name('sendPDF');
 
@@ -92,6 +91,9 @@ Route::middleware(['auth', 'role:cliente'])->group(function () {
     Route::get('recibos', [ClientPortalController::class, 'receipts'])->name('client.receipts');
     Route::get('archivos', [ClientPortalController::class, 'files'])->name('client.files');
 });
+
+//verificacion pdf
+Route::get('receipt/verify/{identificator}',[VerifyReceipt::class,'__invoke'])->name('receipt.verify');
 
 Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');

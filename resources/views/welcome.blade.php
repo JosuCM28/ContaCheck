@@ -245,7 +245,7 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="space-y-4">
                 <h2 class="text-3xl font-bold mb-10">Contáctanos</h2>
-                <p class="mt-4 text-md"><span class="font-bold">Calle:</span> Av. Mariano Abasolo No. 37, Colonia Centro, Altotonga, Veracruz, México, 93700</p>
+                <p class="mt-4 text-md"><span class="font-bold">Dirección:</span> Av. Mariano Abasolo No. 37, Colonia Centro, Altotonga, Veracruz, México, 93700</p>
                 <p class="mt-2 text-md"><span class="font-bold">Email:</span> baltazarmontes77@prodigy.net.mx</p>
                 <p class="mt-2 text-md"><span class="font-bold">Tel:</span> +52 226 316 1354 / +52 226 316 0629</p>
             </div>
