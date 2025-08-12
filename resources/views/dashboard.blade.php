@@ -1,7 +1,8 @@
 <x-layouts.app :title="__('Dashboard')">
     <div class="flex h-full w-full flex-1 flex-col gap-4 rounded-xl">
         <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+            <div
+                class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
@@ -18,7 +19,8 @@
                         </div>
                     </div>
                     <div>
-                        <a href="{{ route('receipt.index') }}" class="text-md text-blue-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('receipt.index') }}"
+                            class="text-md text-blue-600 hover:underline flex items-center gap-1">
                             Ver más
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -30,7 +32,8 @@
                 </div>
             </div>
 
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+            <div
+                class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
@@ -48,7 +51,8 @@
                         </div>
                     </div>
                     <div>
-                        <a href="{{ route('receipt.index') }}" class="text-md text-green-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('receipt.index') }}"
+                            class="text-md text-green-600 hover:underline flex items-center gap-1">
                             Ver más
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -60,7 +64,8 @@
                 </div>
             </div>
 
-            <div class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
+            <div
+                class="relative aspect-video overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-700">
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
@@ -77,7 +82,8 @@
                         </div>
                     </div>
                     <div>
-                        <a href="{{ route('client.index') }}" class="text-md text-yellow-600 hover:underline flex items-center gap-1">
+                        <a href="{{ route('client.index') }}"
+                            class="text-md text-yellow-600 hover:underline flex items-center gap-1">
                             Ver más
                             <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd"
@@ -87,12 +93,13 @@
                         </a>
                     </div>
                 </div>
-            </div>   
+            </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
-            <div class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 shadow max-h-[500px] overflow-y-auto">
+            <div
+                class="rounded-xl border border-neutral-200 dark:border-neutral-700 bg-white p-6 shadow max-h-[500px] overflow-y-auto">
                 <livewire:upcoming-credentials />
-            </div>            
+            </div>
 
             <div class="rounded-xl border border-gray-200 bg-white p-6 shadow-md overflow-y-auto max-h-[500px]">
                 <livewire:task-actions />
@@ -102,27 +109,26 @@
                 </h3>
 
                 <ul class="space-y-3">
-                    @foreach ($tasks as $task)
-                        <li
-                            class="relative group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 hover:bg-yellow-50/40 hover:border-blue-200 transition-colors"
-                            id="task-li-{{ $task->id }}"
-                        >
-                            <span class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-l-xl bg-blue-500/70"></span>
-                            <input 
-                                type="checkbox" 
-                                onchange="window.Livewire.dispatch('markAsDone', { 0: {{ $task->id }} })" 
+                    @forelse ($tasks as $task)
+                        <li class="relative group flex items-start gap-3 rounded-xl border border-gray-200 bg-white p-4 hover:bg-yellow-50/40 hover:border-blue-200 transition-colors"
+                            id="task-li-{{ $task->id }}">
+                            <span
+                                class="pointer-events-none absolute left-0 top-0 h-full w-1 rounded-l-xl bg-blue-500/70"></span>
+                            <input type="checkbox"
+                                onchange="window.Livewire.dispatch('markAsDone', { 0: {{ $task->id }} })"
                                 class="peer mt-1.5 shrink-0 accent-blue-600 rounded cursor-pointer"
-                                style="transform: scale(1.4);"
-                            >
+                                style="transform: scale(1.4);">
                             <div class="flex-1 min-w-0">
 
-                                <p class="text-sm font-semibold text-gray-900 truncate peer-checked:text-gray-500 peer-checked:line-through">
+                                <p
+                                    class="text-sm font-semibold text-gray-900 truncate peer-checked:text-gray-500 peer-checked:line-through">
                                     {{ $task->title }}
                                 </p>
 
                                 <div class="mt-1 flex items-center gap-2 text-xs text-gray-600">
                                     {{-- Avatar inicial --}}
-                                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-gray-700 font-medium">
+                                    <span
+                                        class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-gray-100 text-gray-700 font-medium">
                                         {{ strtoupper(mb_substr($task->counter_name, 0, 1)) }}
                                     </span>
                                     <span class="truncate">
@@ -132,7 +138,8 @@
 
 
                                 <div class="mt-2 flex items-center gap-2">
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-[11px] font-medium">
+                                    <span
+                                        class="inline-flex items-center gap-1 rounded-full bg-blue-100 text-blue-700 px-2 py-0.5 text-[11px] font-medium">
                                         <span class="inline-block h-1.5 w-1.5 rounded-full bg-current"></span>
                                         Por hacer
                                     </span>
@@ -143,7 +150,14 @@
                                 </div>
                             </div>
                         </li>
-                    @endforeach
+                    @empty
+                        <div class="min-h-80 grid place-items-center">
+                            <div class="flex flex-col items-center justify-center p-6 text-gray-400">
+                                <flux:icon.information-circle class="w-8 h-8 mb-2" />
+                                <span class="text-sm">No hay tareas pendientes por hacer.</span>
+                            </div>
+                        </div>
+                    @endforelse
                 </ul>
             </div>
 

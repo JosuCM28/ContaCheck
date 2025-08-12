@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('receipts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('counter_id')->constrained('counters')->onDelete('cascade');  
-            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');  
+            $table->foreignId('counter_id')->constrained('counters');  
+            $table->foreignId('client_id')->constrained('clients');  
             $table->foreignId('category_id')->constrained('categories');  
             $table->string('identificator')->unique();
             $table->datetime('payment_date');
