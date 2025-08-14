@@ -166,9 +166,9 @@
             <flux:modal name="confirm-modal" class="min-w-[22rem]">
                 <div class="space-y-6">
                     <div>
-                        <flux:heading size="lg">¿Quieres enviar el recibo por correo?</flux:heading>
+                        <flux:heading size="lg">¿Quieres enviar el recibo por WhatsApp?</flux:heading>
                         <flux:text class="mt-2">
-                            <p>Si confirmas, el recibo será enviado por correo a la dirección de correo del cliente.</p>
+                            <p>Al confirmar, el recibo se enviará al cliente por correo electrónico y WhatsApp.</p>
                         </flux:text>
                     </div>
                     <div class="flex gap-2">
@@ -179,7 +179,7 @@
                         </flux:modal.close>
                         <flux:modal.close>
                             <flux:button type="submit" name="action" value="send" variant="primary"
-                                class="cursor-pointer">Enviar por correo</flux:button>
+                                class="cursor-pointer">Enviar</flux:button>
                         </flux:modal.close>
                     </div>
                 </div>

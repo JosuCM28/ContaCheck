@@ -40,4 +40,10 @@ return [
         'api_key' => env('FACTURAFIEL_API_KEY'),
     ],
 
+    'evolution' => [
+        'base_url' => env('EVOLUTION_BASE_URL'),
+        'api_key' => env('EVOLUTION_API_KEY'),
+        'instance' => env('EVOLUTION_INSTANCE'),
+    ]
+
 ];

@@ -12,7 +12,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Services\TimbradoService;
+use App\Services\EvolutionService;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Client\RequestException;
 
 class ReceiptController extends Controller
 {
@@ -134,8 +137,36 @@ class ReceiptController extends Controller
             
             $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url', 'company'))->setPaper('a4', 'portrait')->output();
 
-            Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
+            if(!empty($receipt->client->email)) {
+                Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
+            }
 
+            if (!empty($receipt->client->phone)) {
+                $dataEvolution = [
+                    'number' => $receipt->client->phone,
+                    'pdf_data' => base64_encode($pdf),
+                    'concept' => $receipt->concept,
+                    'payment_date' => $receipt->payment_date,
+                ];
+
+                $serviceEvolution = new EvolutionService();
+                $res = $serviceEvolution->sendMessage($dataEvolution);
+
+                if (!$res) {
+                    return redirect()->route('receipt.create')->with('toast', [
+                        'title' => 'Recibo creado',
+                        'message' => 'Recibo creado, pero hubo un problema al enviar por WhatsApp.',
+                        'type' => 'success',
+                    ]);
+                }
+            } else {
+                return redirect()->route('receipt.create')->with('toast', [
+                    'title' => 'Recibo creado',
+                    'message' => 'Recibo creado, pero hubo un problema al enviar por WhatsApp.',
+                    'type' => 'success',
+                ]);
+            }
+            
             return redirect()->route('receipt.create')->with('toast', [
                 'title' => 'Recibo creado',
                 'message' => 'Recibo creado y enviado correctamente.',
