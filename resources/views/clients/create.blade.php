@@ -91,7 +91,7 @@
                             <flux:field>
                                 <flux:label>Calle <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="street" id="street" type="text" class="w-full"
-                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                     oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('street') }}" placeholder="Escribe la calle" />
                                 <flux:error name="street" />
                             </flux:field>
@@ -102,7 +102,7 @@
                             <flux:field>
                                 <flux:label>Colonia <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="col" id="col" type="text" class="w-full"
-                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                 oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('col') }}" placeholder="Escribe la colonia" />
                                 <flux:error name="col" />
                             </flux:field>
@@ -113,7 +113,7 @@
                             <flux:field>
                                 <flux:label>Número Ext. <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="num_ext" id="num_ext" type="text" class="w-full"
-                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                     oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('num_ext') }}" placeholder="Escribe el número exterior" />
                                 <flux:error name="num_ext" />
                             </flux:field>
@@ -124,7 +124,7 @@
                             <flux:field>
                                 <flux:label>Municipio <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="city" id="city" type="text" class="w-full"
-                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                    oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('city') }}" placeholder="Escribe el municipio" />
                                 <flux:error name="city" />
                             </flux:field>
@@ -138,7 +138,7 @@
                             <flux:field>
                                 <flux:label>Localidad <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="localities" id="localities" type="text" class="w-full"
-                                    maxlength="18" oninput="this.value = this.value.toUpperCase();"
+                                     oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('localities') }}" placeholder="Escribe la localidad" />
                                 <flux:error name="localities" />
                             </flux:field>
