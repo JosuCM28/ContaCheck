@@ -12,6 +12,7 @@ use App\Http\Controllers\TaskController;
 use App\Services\CancelarTimbradoService;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
+use App\Http\Controllers\EvolutionWebhookController;
 
 use App\Http\Controllers\ReceiptController;
 use App\Http\Controllers\DashboardController;
@@ -98,6 +99,8 @@ Route::get('receipt/verify/{identificator}',[VerifyReceipt::class,'__invoke'])->
 Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->name('file.destroy');
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');
 Route::get('file/download/{document}', [FileController::class, 'download'])->name('file.download');
+
+
 
 Route::get('pdfview', [PDFMaker::class, 'showPDF'])->name('pdfview');
 

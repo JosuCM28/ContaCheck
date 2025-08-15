@@ -5,6 +5,7 @@ use App\Models\Receipt;
 use App\Mail\ReceiptMail;
 use App\Models\CompanyData;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\EvolutionService;
 use Illuminate\Support\Facades\Mail;
 
 class PDFMaker extends Controller
@@ -53,12 +54,40 @@ class PDFMaker extends Controller
             ->setPaper('a4', 'portrait')
             ->output();
 
-        Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
+        if (!empty($receipt->client->email)) {
+            Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
+        }
+
+        if (!empty($receipt->client->phone)) {
+            $dataEvolution = [
+                'number' => $receipt->client->phone,
+                'pdf_data' => base64_encode($pdf),
+                'concept' => $receipt->concept,
+                'payment_date' => $receipt->payment_date,
+            ];
+
+            $serviceEvolution = new EvolutionService();
+            $res = $serviceEvolution->sendMessage($dataEvolution);
+
+            if (!$res) {
+                return redirect()->route('receipt.create')->with('toast', [
+                    'title' => 'No se pudo enviar el recibo',
+                    'message' => 'Hubo un problema al enviar el recibo por WhatsApp.',
+                    'type' => 'error',
+                ]);
+            }
+        } else {
+            return redirect()->route('receipt.create')->with('toast', [
+                'title' => 'No se pudo enviar el recibo',
+                'message' => 'Hubo un problema al enviar el recibo por WhatsApp.',
+                'type' => 'success',
+            ]);
+        }
 
         return redirect()->route('receipt.index')
             ->with('toast', [
                 'title' => 'Recibo enviado correctamente',
-                'message' => 'Recibo enviado exitosamente a ' . $receipt->client->email . '.',
+                'message' => 'Recibo enviado por correo y WhatsApp exitosamente.',
                 'type' => 'success',
             ]);
     }

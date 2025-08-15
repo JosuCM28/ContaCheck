@@ -91,7 +91,7 @@
                             <flux:field>
                                 <flux:label>Calle <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="street" id="street" type="text" class="w-full"
-                                     oninput="this.value = this.value.toUpperCase();"
+                                    oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('street') }}" placeholder="Escribe la calle" />
                                 <flux:error name="street" />
                             </flux:field>
@@ -102,7 +102,7 @@
                             <flux:field>
                                 <flux:label>Colonia <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="col" id="col" type="text" class="w-full"
-                                 oninput="this.value = this.value.toUpperCase();"
+                                    oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('col') }}" placeholder="Escribe la colonia" />
                                 <flux:error name="col" />
                             </flux:field>
@@ -138,7 +138,7 @@
                             <flux:field>
                                 <flux:label>Localidad <span class="text-red-500">*</span></flux:label>
                                 <flux:input required name="localities" id="localities" type="text" class="w-full"
-                                     oninput="this.value = this.value.toUpperCase();"
+                                    oninput="this.value = this.value.toUpperCase();"
                                     value="{{ old('localities') }}" placeholder="Escribe la localidad" />
                                 <flux:error name="localities" />
                             </flux:field>
@@ -295,8 +295,7 @@
                             <flux:field>
                                 <flux:label>Nota</flux:label>
                                 <flux:description>Escribe una nota para el cliente</flux:description>
-                                <flux:textarea name="note" id="note" rows="5" maxlength="255"
-                                    style="resize: none;" />
+                                <flux:textarea name="note" id="note" rows="5"                                     style="resize: none;" />
                                 <flux:error name="note" />
                             </flux:field>
                         </div>
@@ -307,7 +306,8 @@
                 <div class="mt-6 pb-2 flex items-center justify-end gap-x-6">
                     <a href="#" onclick="history.back()">
                         <flux:button class="cursor-pointer">
-                            Cancelar</flux:button>
+                            Cancelar
+                        </flux:button>
                     </a>
                     <flux:button variant="primary" type="submit" class="cursor-pointer" id="saveButton">
                         <flux:icon.loading class="size-4 hidden" id="saveButtonIcon"/>

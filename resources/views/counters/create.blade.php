@@ -90,7 +90,7 @@
                             <flux:field>
                                 <flux:label>Dirección <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor escribe la dirección</flux:description>
-                                <flux:input name="address" id="address" type="text" maxlength="150"
+                                <flux:input name="address" id="address" type="text"
                                     oninput="this.value = this.value.toUpperCase();" required/>
                                 <flux:error name="address" />
                             </flux:field>
@@ -101,7 +101,7 @@
                             <flux:field>
                                 <flux:label>Ciudad</flux:label>
                                 <flux:description>Por favor escribe la ciudad</flux:description>
-                                <flux:input name="city" id="city" type="text" maxlength="18"
+                                <flux:input name="city" id="city" type="text"
                                     oninput="this.value = this.value.toUpperCase();" />
                                 <flux:error name="city" />
                             </flux:field>

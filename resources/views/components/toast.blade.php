@@ -131,7 +131,7 @@
         setTimeout(() => {
             toast.classList.remove('show');
             setTimeout(() => toast.remove(), 300);
-        }, 3200);
+        }, 4000);
     }
 
     // Autodisparo desde sesión Laravel
