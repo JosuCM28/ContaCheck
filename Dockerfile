@@ -67,13 +67,9 @@ RUN php artisan config:cache \
  && php artisan route:cache \
  && php artisan view:cache
 
- # Configura php.ini personalizado directamente en el contenedor
-RUN echo "upload_max_filesize=5M\n\
-post_max_size=9000M\n\
-max_execution_time=600\n\
-max_input_time=600\n\
-memory_limit=1024M\n\
-max_file_uploads=2000" > /usr/local/etc/php/conf.d/zz-custom-php.ini
+
+# 🛠 Configura php.ini personalizado para manejar grandes volúmenes de archivos
+RUN printf "upload_max_filesize = 100M\npost_max_size = 2000M\nmax_execution_time = 600\nmax_input_time = 600\nmemory_limit = 1024M\nmax_file_uploads = 2000\n" > /usr/local/etc/php/conf.d/zz-custom-php.ini
 
 # Copia entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh
