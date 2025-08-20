@@ -84,8 +84,7 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::put('kanban/{task}', [TaskController::class, 'update'])->name('kanban.update');
     Route::delete('kanban/{task}', [TaskController::class, 'destroy'])->name('kanban.destroy');
 
-    Route::get('/cfdi/convert', [CfdiConvertController::class, 'form'])->name('cfdi.form');
-    Route::post('/cfdi/convert', [CfdiConvertController::class, 'convert'])->name('cfdi.convert');
+    
     
 });
 
@@ -104,7 +103,8 @@ Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->na
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');
 Route::get('file/download/{document}', [FileController::class, 'download'])->name('file.download');
 
-
+Route::get('/cfdi/convert', [CfdiConvertController::class, 'form'])->name('cfdi.form');
+Route::post('/cfdi/convert', [CfdiConvertController::class, 'convert'])->name('cfdi.convert');
 
 Route::get('pdfview', [PDFMaker::class, 'showPDF'])->name('pdfview');
 
