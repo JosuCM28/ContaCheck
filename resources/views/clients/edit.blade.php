@@ -82,7 +82,7 @@
                         <!-- Contraseña SIEC -->
                         <div class="sm:col-span-2">
                             <flux:field>
-                                <flux:label>Contraseña SIEC</flux:label>
+                                <flux:label>Contraseña FIEL</flux:label>
                                 <flux:input name="siec" id="siec" type="text"
                                     value="{{ old('siec', optional($client->credentials)->siec) }}"
                                     placeholder="{{ $client->credentials ? 'Escribe la contraseña SIEC' : 'Dato no registrado aún' }}" />

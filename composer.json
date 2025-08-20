@@ -15,6 +15,7 @@
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
         "openspout/openspout": "^4.28",
+        "phpoffice/phpspreadsheet": "^5.0",
         "power-components/livewire-powergrid": "^6.4",
         "simplesoftwareio/simple-qrcode": "4.2.0"
     },

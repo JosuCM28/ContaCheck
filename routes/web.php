@@ -12,13 +12,14 @@ use App\Http\Controllers\TaskController;
 use App\Services\CancelarTimbradoService;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CounterController;
-use App\Http\Controllers\EvolutionWebhookController;
-
 use App\Http\Controllers\ReceiptController;
+
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataEmisorController;
 use App\Http\Controllers\InventorieController;
+use App\Http\Controllers\CfdiConvertController;
 use App\Http\Controllers\ClientPortalController;
+use App\Http\Controllers\EvolutionWebhookController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('redirect');
 
@@ -82,6 +83,8 @@ Route::middleware(['auth', 'role:contador'])->group(function () {
     Route::post('kanban/update-draggable', [TaskController::class, 'updateDraggable'])->name('kanban.update-draggable');
     Route::put('kanban/{task}', [TaskController::class, 'update'])->name('kanban.update');
     Route::delete('kanban/{task}', [TaskController::class, 'destroy'])->name('kanban.destroy');
+
+    
     
 });
 
@@ -100,7 +103,8 @@ Route::delete('file/destroy/{document}', [FileController::class, 'destroy'])->na
 Route::post('file/{client}', [FileController::class, 'store'])->name('file.store');
 Route::get('file/download/{document}', [FileController::class, 'download'])->name('file.download');
 
-
+Route::get('/cfdi/convert', [CfdiConvertController::class, 'form'])->name('cfdi.form');
+Route::post('/cfdi/convert', [CfdiConvertController::class, 'convert'])->name('cfdi.convert');
 
 Route::get('pdfview', [PDFMaker::class, 'showPDF'])->name('pdfview');
 

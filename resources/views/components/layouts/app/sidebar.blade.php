@@ -15,6 +15,7 @@
                 <flux:navlist.group :heading="__('Plataforma')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
                     <flux:navlist.item icon="list-bullet" :href="route('kanban.index')" :current="request()->routeIs('kanban.index')" wire:navigate>{{ __('Tareas') }}</flux:navlist.item>
+                    <flux:navlist.item icon="document" :href="route('cfdi.form')" :current="request()->routeIs('cfdi.form')" wire:navigate>{{ __('Exportar CFDIs') }}</flux:navlist.item>
                     <flux:navlist.item icon="banknotes" :href="route('emisor.index')" :current="request()->routeIs('emisor.index')" wire:navigate>{{ __('Datos emisor') }}</flux:navlist.item>
                 </flux:navlist.group>
 
@@ -142,5 +143,6 @@
         {{ $slot }}
 
         @fluxScripts
+        @livewireScripts
     </body>
 </html>

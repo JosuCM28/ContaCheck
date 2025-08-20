@@ -18,6 +18,7 @@ php artisan view:clear   || true
 php artisan config:cache || true
 php artisan route:cache  || true
 php artisan view:cache   || true
+php -i | grep -E 'upload_max_filesize|post_max_size|max_file_uploads|memory_limit'
 
 # (Opcional) migraciones automáticas controladas por variable
 if [ "${RUN_MIGRATIONS:-0}" = "1" ]; then

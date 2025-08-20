@@ -136,6 +136,7 @@ final class ClientTable extends PowerGridComponent
             ->add('state')
             ->add('cp')
             ->add('nss')
+            ->add('token')
             ->add('is_active', fn($item) => $item->status === 'active' ? true : false)
         ;
     }
@@ -158,7 +159,12 @@ final class ClientTable extends PowerGridComponent
                 ->sortable()
                 ->searchable(),
 
-            Column::make('SIEC', 'siec')
+            Column::make('TOKEN', 'token')
+                ->sortable()
+                ->searchable(),
+
+            Column::make('CONTRASEÑA FIEL', 'siec')
+                ->hidden(isHidden: true, isForceHidden: false)
                 ->sortable(),
             Column::make('IDSE', 'idse')
                 ->hidden(isHidden: true, isForceHidden: false)
