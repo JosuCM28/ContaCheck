@@ -179,7 +179,7 @@
                         <!-- Contraseña SIEC -->
                         <div class="sm:col-span-2">
                             <flux:field>
-                                <flux:label>Contraseña SIEC</flux:label>
+                                <flux:label>Contraseña FIEL</flux:label>
                                 <flux:input name="siec" id="siec" type="text"
                                     placeholder="Por favor escribe la contraseña SIEC" />
                                 <flux:error name="siec" />

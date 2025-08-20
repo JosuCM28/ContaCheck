@@ -1,9 +1,9 @@
 <x-layouts.app :title="__('Sellos')" :subheading="__('Fechas de vencimiento (SELLO)')">
     <div class="flex items-center gap-2 mb-4">
-        <flux:heading size="lg" level="1">SELLO IMSS</flux:heading>
+        <flux:heading size="lg" level="1">SELLO CSD</flux:heading>
     </div>
 
-    <flux:subheading class="mb-4">Fechas de vencimiento (SELLO)</flux:subheading>
+    <flux:subheading class="mb-4">Fechas de vencimiento (CSD)</flux:subheading>
     <flux:separator variant="subtle" class="mb-4" />
 
     <div class="relative mb-6 w-full">

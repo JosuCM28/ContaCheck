@@ -24,6 +24,31 @@ class CfdiExcelConverter extends Component
     public bool $completed = false;
     public int $duration = 0;
 
+    private array $formasDePago = [
+        '01' => '01 - Efectivo',
+        '02' => '02 - Cheque nominativo',
+        '03' => '03 - Transferencia electrónica de fondos',
+        '04' => '04 -Tarjeta de crédito',
+        '05' => '05 - Monedero electrónico',
+        '06' => '06 - Dinero electrónico',
+        '08' => '08 - Vales de despensa',
+        '12' => '12 - Dación en pago',
+        '13' => '13 - Pago por subrogación',
+        '14' => '14 - Pago por consignación',
+        '15' => '15 - Condonación',
+        '17' => '17 - Compensación',
+        '23' => '23 - Novación',
+        '24' => '24 - Confusión',
+        '25' => '25 - Remisión de deuda',
+        '26' => '26 - Prescripción o caducidad',
+        '27' => '27 - A satisfacción del acreedor',
+        '28' => '28 - Tarjeta de débito',
+        '29' => '29 - Tarjeta de servicios',
+        '30' => '30 - Aplicación de anticipos',
+        '31' => '31 - Intermediario de pagos',
+        '99' => '99 - Por definir',
+    ];
+
     public function mount()
     {
         $this->fileName = 'Reportes-facturas-' . now()->format('d-m-Y');
@@ -54,12 +79,40 @@ class CfdiExcelConverter extends Component
         $sheet = $spreadsheet->getActiveSheet();
 
         $sheet->fromArray([
-            'CfdiRelacionados', 'UUID', 'Serie', 'Folio', 'TipoComprobante', 'FechaTimbradoXML', 'FechaEmisionXML',
-            'RFC Emisor', 'Nombre Emisor', 'RegimenFiscal', 'RFC Receptor', 'Nombre Receptor', 'UsoCFDI',
-            'RegimenFiscalReceptor', 'DomicilioFiscalReceptor', 'FormaDePago', 'Metodo de Pago', 'Complementos comprobante',
-            'Conceptos', 'ClaveProdServ', 'Cantidad', 'ClaveUnidad', 'Unidad', 'ValorUnitario', 'Importe',
-            'Complementos conceptos', 'SubTotal', 'Descuento', 'Total Trasladados', 'Total Retenidos',
-            'Total', 'IVA 16 Importe', 'ISR Retenido', 'IVA Retenido', 'IEPS Retenido'
+            'CfdiRelacionados',
+            'TipoComprobante',
+            'FechaEmisionXML',
+            'FechaTimbradoXML',
+            'Serie',
+            'Folio',
+            'UUID',
+            'RFC Emisor',
+            'Nombre Emisor',
+            'RFC Receptor',
+            'Nombre Receptor',
+            'UsoCFDI',
+            'SubTotal',
+            'Descuento',
+            'Total IEPS',
+            'IVA 16 Importe',
+            'IVA Retenido',
+            'ISR Retenido',
+            'ISH',
+            'Total',
+            'Total Trasladados',
+            'Total Retenidos',
+            'Total Local Trasladado',
+            'Total Local Retenido',
+            'FormaDePago',
+            'Metodo de Pago',
+            'Conceptos',
+            'RegimenFiscalReceptor',
+            'DomicilioFiscalReceptor',
+            // Campos adicionales al final
+            'IEPS Retenido',
+            'Complementos comprobante',
+            'Complementos conceptos',
+
         ], null, 'A1');
 
         $highestColumn = $sheet->getHighestColumn();
@@ -109,17 +162,17 @@ class CfdiExcelConverter extends Component
             }
 
             $conceptos = [];
-            $claveProdServ = $cantidad = $claveUnidad = $unidad = $valorUnitario = $importe = [];
+            #$claveProdServ = $cantidad = $claveUnidad = $unidad = $valorUnitario = $importe = [];
             $complementosConceptos = [];
             foreach ($xmlContent->xpath('//cfdi:Conceptos/cfdi:Concepto') as $concepto) {
                 $attrs = $concepto->attributes();
                 $conceptos[] = (string) ($attrs['Descripcion'] ?? '');
-                $claveProdServ[] = (string) ($attrs['ClaveProdServ'] ?? '');
-                $cantidad[] = (string) ($attrs['Cantidad'] ?? '');
-                $claveUnidad[] = (string) ($attrs['ClaveUnidad'] ?? '');
-                $unidad[] = (string) ($attrs['Unidad'] ?? '');
-                $valorUnitario[] = (string) ($attrs['ValorUnitario'] ?? '');
-                $importe[] = (string) ($attrs['Importe'] ?? '');
+                #$claveProdServ[] = (string) ($attrs['ClaveProdServ'] ?? '');
+                #$cantidad[] = (string) ($attrs['Cantidad'] ?? '');
+                #$claveUnidad[] = (string) ($attrs['ClaveUnidad'] ?? '');
+                #$unidad[] = (string) ($attrs['Unidad'] ?? '');
+                #$valorUnitario[] = (string) ($attrs['ValorUnitario'] ?? '');
+                #$importe[] = (string) ($attrs['Importe'] ?? '');
 
                 foreach ($concepto->children() as $child) {
                     $complementosConceptos[] = $child->getName();
@@ -128,6 +181,31 @@ class CfdiExcelConverter extends Component
 
             $trasladados = $retenidos = 0;
             $iva16 = $isrRet = $ivaRet = $iepsRet = '';
+
+            $totalIEPS = '0';
+            $ish = '0';
+            $totalLocalTrasladado = '0';
+            $totalLocalRetenido = '0';
+
+            foreach ($xmlContent->xpath('//cfdi:Complemento/*') as $comp) {
+                $compName = $comp->getName();
+                if (stripos($compName, 'ImpuestosLocales') !== false) {
+                    $attrs = $comp->attributes();
+                    $totalLocalTrasladado = (string) ($attrs['TotaldeTraslados'] ?? '0');
+                    $totalLocalRetenido = (string) ($attrs['TotaldeRetenciones'] ?? '0');
+
+                    foreach ($comp->children() as $child) {
+                        if ($child->getName() === 'TrasladosLocales') {
+                            $childAttrs = $child->attributes();
+                            if (isset($childAttrs['ImpLocTrasladado']) && strtoupper((string) $childAttrs['ImpLocTrasladado']) === 'ISH') {
+                                $ish = (string) ($childAttrs['Importe'] ?? '0');
+                            }
+                        }
+                    }
+                }
+            }
+
+
 
             $impuestos = $xmlContent->children($namespaces['cfdi'])->Impuestos ?? null;
 
@@ -140,55 +218,66 @@ class CfdiExcelConverter extends Component
                     $attrs = $ret->attributes();
                     $imp = (string) $attrs['Impuesto'];
                     $impVal = (string) $attrs['Importe'];
-                    if ($imp === '001') $isrRet = $impVal;
-                    if ($imp === '002') $ivaRet = $impVal;
-                    if ($imp === '003') $iepsRet = $impVal;
+                    if ($imp === '001')
+                        $isrRet = $impVal;
+                    if ($imp === '002')
+                        $ivaRet = $impVal;
+                    if ($imp === '003')
+                        $iepsRet = $impVal;
                 }
 
                 foreach ($impuestos->Traslados->Traslado ?? [] as $tra) {
                     $attrs = $tra->attributes();
-                    if ((string) $attrs['Impuesto'] === '002' && (string) $attrs['TasaOCuota'] === '0.160000') {
-                        $iva16 = (string) $attrs['Importe'];
+                    $impuesto = (string) ($attrs['Impuesto'] ?? '');
+                    $importe = (string) ($attrs['Importe'] ?? '');
+
+                    if ($impuesto === '002' && (string) ($attrs['TasaOCuota'] ?? '') === '0.160000') {
+                        $iva16 = $importe;
+                    }
+
+                    if ($impuesto === '003') {
+                        $totalIEPS = $importe;
                     }
                 }
+
             }
+
+
 
             $sheet->fromArray([
                 $tipoRelacion,
-                $uuid,
+                (string) ($comprobante['TipoDeComprobante'] ?? ''),
+                (string) ($comprobante['Fecha'] ?? ''),
+                $fechaTimbrado,
                 (string) ($comprobante['Serie'] ?? ''),
                 (string) ($comprobante['Folio'] ?? ''),
-                (string) ($comprobante['TipoDeComprobante'] ?? ''),
-                $fechaTimbrado,
-                (string) ($comprobante['Fecha'] ?? ''),
+                $uuid,
                 (string) ($emisor['Rfc'] ?? ''),
                 (string) ($emisor['Nombre'] ?? ''),
-                (string) ($emisor['RegimenFiscal'] ?? ''),
                 (string) ($receptor['Rfc'] ?? ''),
                 (string) ($receptor['Nombre'] ?? ''),
                 (string) ($receptor['UsoCFDI'] ?? ''),
-                (string) ($receptor['RegimenFiscalReceptor'] ?? ''),
-                (string) ($receptor['DomicilioFiscalReceptor'] ?? ''),
-                (string) ($comprobante['FormaPago'] ?? ''),
-                (string) ($comprobante['MetodoPago'] ?? ''),
-                implode(' | ', $complementos),
-                implode(' | ', $conceptos),
-                implode(' | ', $claveProdServ),
-                implode(' | ', $cantidad),
-                implode(' | ', $claveUnidad),
-                implode(' | ', $unidad),
-                implode(' | ', $valorUnitario),
-                implode(' | ', $importe),
-                implode(' | ', $complementosConceptos),
                 (string) ($comprobante['SubTotal'] ?? ''),
                 (string) ($comprobante['Descuento'] ?? ''),
+                $totalIEPS,
+                $iva16,
+                $ivaRet,
+                $isrRet,
+                $ish,
+                (string) ($comprobante['Total'] ?? ''),
                 $trasladados,
                 $retenidos,
-                (string) ($comprobante['Total'] ?? ''),
-                $iva16,
-                $isrRet,
-                $ivaRet,
+                $totalLocalTrasladado,
+                $totalLocalRetenido,
+                $this->formasDePago[(string) ($comprobante['FormaPago'] ?? '')] ?? (string) ($comprobante['FormaPago'] ?? ''),
+                (string) ($comprobante['MetodoPago'] ?? ''),
+                implode(' | ', $conceptos),
+                (string) ($receptor['RegimenFiscalReceptor'] ?? ''),
+                (string) ($receptor['DomicilioFiscalReceptor'] ?? ''),
+                // Campos adicionales al final
                 $iepsRet,
+                implode(' | ', $complementos),
+                implode(' | ', $complementosConceptos),
             ], null, 'A' . $row);
 
             $row++;
@@ -220,7 +309,7 @@ class CfdiExcelConverter extends Component
     public function removeXml($index)
     {
         unset($this->xmls[$index]);
-        $this->xmls = array_values($this->xmls); 
+        $this->xmls = array_values($this->xmls);
     }
 
     public function render()

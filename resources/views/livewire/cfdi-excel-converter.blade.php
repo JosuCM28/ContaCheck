@@ -95,7 +95,7 @@
                 @else
                     <div class="border border-dashed border-gray-300 rounded-xl text-center bg-gray-50 h-[40vw] max-h-[500px] min-h-[200px] flex flex-col items-center justify-center mx-auto">
                         <p class="text-md text-gray-700 mb-6">
-                            Arrastra aquí tus CFDI o selecciónalos
+                            {{-- Arrastra aquí tus CFDI o selecciónalos --}}
                         </p>
 
                         <input type="file" wire:model="newXmls" multiple accept=".xml" id="fileInput" class="hidden">
