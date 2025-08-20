@@ -69,7 +69,8 @@ RUN php artisan config:cache \
 
 
 # 🛠 Configura php.ini personalizado para manejar grandes volúmenes de archivos
-RUN printf "upload_max_filesize = 100M\npost_max_size = 2000M\nmax_execution_time = 600\nmax_input_time = 600\nmemory_limit = 1024M\nmax_file_uploads = 2000\n" > /usr/local/etc/php/conf.d/zz-custom-php.ini
+RUN printf "file_uploads = On\nupload_max_filesize = 500M\npost_max_size = 2000M\nmax_execution_time = 600\nmax_input_time = 600\nmemory_limit = 2048M\nmax_file_uploads = 2000\n" > /usr/local/etc/php/conf.d/zz-custom-php.ini
+
 
 # Copia entrypoint
 COPY docker/entrypoint.sh /entrypoint.sh
