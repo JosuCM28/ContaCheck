@@ -111,14 +111,14 @@
                                 $refs.fileInput.files = $event.dataTransfer.files; 
                                 $refs.fileInput.dispatchEvent(new Event('change', { bubbles:true }));">
                         <!-- Encabezado -->
-                        <div class="flex items-center gap-2 px-5 pt-5">
-                            <flux:icon.arrow-down-tray class="size-5" />
-                            <h2 class="text-lg font-semibold text-gray-900">Cargar Archivos XML</h2>
-                        </div>
-
-                        <p class="px-5 pt-1 text-sm text-gray-600">
+                        <div class="flex items-center  px-5 pt-5">
+                           
+                            <p class="px-2 pt-1 text-sm text-gray-600">
                             Arrastra y suelta tus archivos XML aquí o haz clic para seleccionarlos
                         </p>
+                        </div>
+
+                        
 
                         <!-- Dropzone -->
                         <div class="p-5">
