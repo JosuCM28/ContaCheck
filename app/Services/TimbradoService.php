@@ -94,7 +94,7 @@ class TimbradoService
         $cadena .= "AmbienteDePruebas=NO\n";
         $cadena .= "TipoDeComprobante=Ingreso\n";
         $cadena .= "TipoDeFormato=ReciboDeHonorarios\n";
-        $cadena .= "Serie=H\n";
+        $cadena .= "Serie=A\n";
         $cadena .= "Exportacion=01\n";
         $cadena .= "FormaDePago={$this->data['forma_pago']}\n";
         $cadena .= "CondicionesDePago=Contado\n";
@@ -108,10 +108,10 @@ class TimbradoService
         $cadena .= "RegimenEmisor={$this->data['regimenEmisor']}\n";
 
         // Receptor
-        $cadena .= "UsoCFDI=G03\n";
+        $cadena .= "UsoCFDI={$this->data['usocfdi']}\n";
         $cadena .= "RFCReceptor={$this->data['rfcReceptor']}\n";
         $cadena .= "NombreReceptor={$this->data['nombreReceptor']}\n";
-        $cadena .= "RegimenFiscalReceptor={$this->data['regimenFiscalReceptor']}\n";
+        $cadena .= "RegimenFiscalReceptor={$this->data['regimen']}\n";
         $cadena .= "DomicilioFiscalReceptor={$this->data['domicilioFiscalReceptor']}\n"; // Código postal registrado ante el sat 
         $cadena .= "Pais=México\n";
         $cadena .= "Estado={$this->data['estado']}\n";

@@ -39,7 +39,7 @@
                                 nacimiento</label>
                             <div class="mt-2 input input-filled peer">
                                 <p class="{{ $counter->birthdate ? '' : 'text-gray-400 italic' }} text-sm">
-                                    {{ \Carbon\Carbon::parse($counter->birthdate)->format('d/m/Y') ?? 'Sin datos existentes' }} </p>
+                                    {{$counter?->birthdate ? \Carbon\Carbon::parse($counter->birthdate)->format('d/m/Y') : 'Sin datos existentes' }}
                             </div>
                         </div>
 

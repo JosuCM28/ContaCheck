@@ -130,7 +130,7 @@
                                     <p><strong>Identificador:</strong> {{ $receipt->identificator }}</p>
                                     <p><strong>TIPO DE COMPROBANTE:</strong> {{ $receipt->category->name }}</p>
                                     <p><strong>EXPEDIDO EN:</strong>{{ $company->cp }}</p>
-                                    <p><strong>USO DEL CFDI:</strong> G03 - Gastos en general</p>
+                                    <p><strong>USO DEL CFDI:</strong> {{ $receipt->usocfdi?->title ?? 'G03 - GASTOS EN GENERAL' }}</p>
                                 </div>
                             </td>
                         </tr>
@@ -153,7 +153,7 @@
                                 <h3 style="color:red;">RECEPTOR DEL COMPROBANTE FISCAL</h3>
                                 <p><strong>R.F.C. - NOMBRE O RAZÓN SOCIAL:</strong></p>
                                 <p style="color:red;">{{ $receipt->client->rfc }} - {{ $receipt->client->full_name }}</p>
-                                <p><strong>Régimen Fiscal: </strong> {{ $receipt->client->regime->code . ' - ' . $receipt->client->regime->title }}</p>
+                                <p><strong>Régimen Fiscal: </strong> {{ $receipt->regime->title  }}</p>
                                 <p><strong>Domicilio Fiscal: </strong>{{ $receipt->client->address }}</p>
                             </td>
                         </tr>
@@ -180,12 +180,19 @@
                             <tr class="item">
                                 <td>001</td>
                                 <td>84111500</td>
+                                @if ($receipt->is_timbred == 1) 
                                 <td>
                                     {{$receipt->concept }}<br>
                                     IVA Trasladado 16% = ${{ number_format(($receipt->mount / 1.16) * 0.16, 2) }}<br>
                                     IVA Retenido 0% = $0.00 <br>
                                     ISR Retenido 0% = $0.00
                                 </td>
+                                @else
+                                <td>
+                                    {{$receipt->concept }}<br>
+                                </td>
+                                @endif
+                                
                                 <td>E48 - Unidad de servicio</td>
                                 <td>1</td>
                                 <td> ${{ $receipt->mount }}</td>
@@ -207,10 +214,17 @@
                 <td>
                     <div class="text-right">
                         <h3>TOTALES</h3>
+                         @if ($receipt->is_timbred == 1)
                         <p><strong>Subtotal:</strong> ${{ number_format($receipt->mount / 1.16, 2) }}</p>
                         <p><strong>IVA:</strong> ${{ number_format(($receipt->mount / 1.16) * 0.16, 2) }}</p>
                         <p><strong>ISR Retenido:</strong> $0.00</p>
                         <p><strong>Total:</strong> <span>${{ $receipt->mount }}</span></p>
+                        @else
+                        <p><strong>Subtotal:</strong> ${{ $receipt->mount }}</p>
+                        <p><strong>IVA:</strong> $0.00</p>
+                        <p><strong>ISR Retenido:</strong> $0.00</p>
+                        <p><strong>Total:</strong> <span>${{ $receipt->mount }}</span></p>
+                        @endif
                     </div>
                 </td>
             </tr>
@@ -222,7 +236,11 @@
         </div>
 
         <div class="footer">
+         @if ($receipt->is_timbred == 1)
             <p>ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN CFDI</p>
+            @else
+            <p> </p>
+            @endif
         </div>
     </div>
 </body>

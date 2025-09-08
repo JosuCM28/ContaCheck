@@ -6,7 +6,7 @@
                 <div class="border-b border-gray-900/10 pb-12">
                     <h2 class="text-base font-semibold leading-7 text-gray-900">Información del Recibo</h2>
                     <p class="mt-1 text-sm leading-6 text-gray-600">Ingresa los datos para crear un nuevo recibo</p>
-                    
+
                     {{-- @if (session('success'))
                         <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" x-transition
                             class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 m-4" role="alert">
@@ -23,7 +23,10 @@
                                 <flux:select name="category_id" id="category_id" placeholder="Selecciona una categoría"
                                     required>
                                     @foreach ($categories as $category)
-                                        <flux:select.option value="{{ $category->id }}" data-category="{{ $category->name }}" data-description="{{ $category->description }}">{{ $category->name }}</flux:select.option>
+                                        <flux:select.option value="{{ $category->id }}"
+                                            data-category="{{ $category->name }}"
+                                            data-description="{{ $category->description }}">{{ $category->name }}
+                                        </flux:select.option>
                                     @endforeach
                                 </flux:select>
                                 <flux:error name="category_id" />
@@ -36,9 +39,14 @@
                                 <flux:label>Contribuyente <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Selecciona el contribuyente beneficiario</flux:description>
                                 <flux:select name="client_id" id="client_id" placeholder="Selecciona un cliente"
-                                    required >
+                                    required>
                                     @foreach ($clients as $client)
-                                        <flux:select.option value="{{ $client->id }}" data-counter-name="{{ $client->counter->full_name }}" data-counter-id="{{ $client->counter->id }}">{{ strtoupper($client->full_name) }}
+                                        <flux:select.option value="{{ $client->id }}"
+                                            data-counter-name="{{ $client->counter->full_name }}"
+                                            data-counter-id="{{ $client->counter->id }}"
+                                            data-regime-id="{{ $client->regime_id }}">
+
+                                            {{ strtoupper($client->full_name) }}
                                         </flux:select.option>
                                     @endforeach
                                 </flux:select>
@@ -89,9 +97,11 @@
                         {{-- Fecha del Recibo --}}
                         <div class="sm:col-span-2">
                             <flux:field>
-                                <flux:label>Descripción<noscript></noscript> <span class="text-red-500">*</span></flux:label>
+                                <flux:label>Descripción<noscript></noscript> <span class="text-red-500">*</span>
+                                </flux:label>
                                 <flux:description>Escribe la fecha del pago</flux:description>
-                                <flux:input name="concept" id="concept" type="text" oninput="this.value = this.value.toUpperCase();" placeholder="MES DE ABRIL DEL 2025"
+                                <flux:input name="concept" id="concept" type="text"
+                                    oninput="this.value = this.value.toUpperCase();" placeholder="MES DE ABRIL DEL 2025"
                                     required />
                                 <flux:error name="concept" />
                             </flux:field>
@@ -137,7 +147,8 @@
                             <flux:field>
                                 <flux:label>¿Desea timbrar el recibo? <span class="text-red-500">*</span></flux:label>
                                 <flux:description>Por favor seleccione una opción</flux:description>
-                                <flux:select name="timbrar" id="timbrar" placeholder="Por favor seleccione una opción" required>
+                                <flux:select name="timbrar" id="timbrar" placeholder="Por favor seleccione una opción"
+                                    required>
                                     <flux:select.option value="true">SÍ, TIMBRAR</flux:select.option>
                                     <flux:select.option value="false">NO TIMBRAR</flux:select.option>
                                 </flux:select>
@@ -145,8 +156,49 @@
                             </flux:field>
                             <input type="text" name="timbrarInput" id="timbrarInput" hidden>
                         </div>
+
+                        <div id="opcionTimbrado" class="sm:col-span-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 hidden">
+                            {{-- Uso cfdi --}}
+                            <div class="sm:col-span-2">
+                                <flux:field>
+                                    <flux:label>Uso CFDI <span class="text-red-500">*</span></flux:label>
+                                    <flux:description>Por favor introduce el UsoCFDI con el que deseas timbrar
+                                    </flux:description>
+                                    <flux:select name="usocfdi_id" id="cfdi" placeholder="Selecciona un UsoCFDI"
+                                        >
+                                        @foreach ($usoscfdi as $usocfdi)
+                                            <flux:select.option value="{{ $usocfdi->id }}">
+                                                {{ strtoupper($usocfdi->title) }}
+                                            </flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+                                    <flux:error name="usocfdi_id" />
+                                </flux:field>
+                            </div>
+
+                            {{-- regimes --}}
+                            <div class="sm:col-span-2">
+                                <flux:field>
+                                    <flux:label>Regímen del cliente <span class="text-red-500">*</span></flux:label>
+                                    <flux:description>Por favor introduce el régimen con el que deseas timbrar
+                                    </flux:description>
+                                    <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen"
+                                        required>
+                                        @foreach ($regimens as $regime)
+                                            <flux:select.option value="{{ $regime->id }}">
+                                                {{ strtoupper($regime->title) }}
+                                            </flux:select.option>
+                                        @endforeach
+                                    </flux:select>
+
+                                    <flux:error name="regime_id" />
+                                </flux:field>
+                            </div>
+                        </div>
                     </div>
                 </div>
+
+
 
                 <div class="mt-6 flex items-center justify-end gap-x-6">
                     <a href="#" onclick="history.back()">
@@ -154,10 +206,10 @@
                     </a>
                     {{-- <flux:button variant="primary" type="button" data-overlay="#modal-confirm">Guardar</flux:button> --}}
                     <flux:modal.trigger name="confirm-modal">
-                        
+
                         <flux:button variant="primary" type="button" class="cursor-pointer" id="saveButton">
                             <flux:icon.loading class="size-4 hidden" id="saveButtonIcon" />
-                            <span id="saveButtonText">Guardar</span> 
+                            <span id="saveButtonText">Guardar</span>
                         </flux:button>
                     </flux:modal.trigger>
                 </div>
@@ -192,8 +244,10 @@
             var selectedOption = this.options[this.selectedIndex];
             var counterName = selectedOption.getAttribute('data-counter-name');
             var counterId = selectedOption.getAttribute('data-counter-id');
+            var regimeId = selectedOption.getAttribute('data-regime-id');
             document.getElementById('counter_name').value = counterName;
             document.getElementById('counter_id').value = counterId;
+            document.getElementById('regime_id').value = regimeId;
         });
 
         document.getElementById('category_id').addEventListener('change', function() {
@@ -209,7 +263,7 @@
 
             descriptionInput.value = descriptionCategory;
 
-            
+
             if (category !== 'HONORARIOS') {
                 timbrar.disabled = true;
                 timbrar.selectedIndex = 2;
@@ -221,20 +275,29 @@
             }
         });
 
-        document.getElementById('timbrar').addEventListener('change', function () {
+        document.getElementById('timbrar').addEventListener('change', function() {
             var timbrarInput = document.getElementById('timbrarInput');
+
+
             timbrarInput.value = this.value;
+            if (this.value === 'true') {
+                    document.getElementById('opcionTimbrado').classList.remove('hidden');
+                } else {
+                    document.getElementById('opcionTimbrado').classList.add('hidden');
+                }
+            
+
         });
 
-        document.getElementById('status').addEventListener('change', function () {
+        document.getElementById('status').addEventListener('change', function() {
             var selectedOption = this.value;
             var timbrar = document.getElementById('timbrar');
             var timbrarInput = document.getElementById('timbrarInput');
 
-            if ( globalCategoryName !== 'HONORARIOS') return;
+            if (globalCategoryName !== 'HONORARIOS') return;
 
             if (selectedOption === 'PENDIENTE') {
-                timbrar.selectedIndex = 2;       
+                timbrar.selectedIndex = 2;
                 timbrarInput.value = 'false';
                 console.log(timbrarInput.value)
                 timbrar.disabled = true;
@@ -243,7 +306,7 @@
             }
         });
 
-        document.getElementById('form').addEventListener('submit', function () {
+        document.getElementById('form').addEventListener('submit', function() {
             document.getElementById('saveButton').disabled = true;
             document.getElementById('saveButtonText').classList.add('hidden');
             document.getElementById('saveButtonIcon').classList.remove('hidden');

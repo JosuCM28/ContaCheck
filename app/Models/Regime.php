@@ -24,4 +24,7 @@ class Regime extends Model
         return $this->hasMany(CompanyData::class);
     
     }
+    public function receipts(){
+        return $this->hasMany(Receipt::class);
+    }
 }
