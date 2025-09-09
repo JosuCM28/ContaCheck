@@ -126,6 +126,20 @@
                         </div>
                     </div>
                 @endif
+                
+                <div class="sm:col-span-3 form-control  sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">Regimen</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="text-sm">{{ $receipt->regime->title }}</p>
+                    </div>
+                </div>
+
+                <div class="sm:col-span-3 form-control w-full sm:w-96">
+                    <label class="block text-sm font-medium leading-6 text-gray-900">UsoCFDI</label>
+                    <div class="mt-2 input input-filled peer">
+                        <p class="text-sm">{{ $receipt->usocfdi->title }}</p>
+                    </div>
+                </div>
 
                 <!-- Identificador -->
                 <div class="sm:col-span-3 form-control w-full sm:w-96">

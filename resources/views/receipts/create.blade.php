@@ -142,6 +142,45 @@
                             </flux:field>
                         </div>
 
+
+
+
+                        {{-- Uso cfdi --}}
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Uso CFDI <span class="text-red-500">*</span></flux:label>
+                                <flux:description>Por favor introduce el UsoCFDI con el que deseas timbrar
+                                </flux:description>
+                                <flux:select name="usocfdi_id" id="cfdi" placeholder="Selecciona un UsoCFDI">
+                                    @foreach ($usoscfdi as $usocfdi)
+                                        <flux:select.option value="{{ $usocfdi->id }}">
+                                            {{ strtoupper($usocfdi->title) }}
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+                                <flux:error name="usocfdi_id" />
+                            </flux:field>
+                        </div>
+
+                        {{-- regimes --}}
+                        <div class="sm:col-span-2">
+                            <flux:field>
+                                <flux:label>Regímen del cliente <span class="text-red-500">*</span></flux:label>
+                                <flux:description>Por favor introduce el régimen con el que deseas timbrar
+                                </flux:description>
+                                <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen"
+                                    required>
+                                    @foreach ($regimens as $regime)
+                                        <flux:select.option value="{{ $regime->id }}">
+                                            {{ strtoupper($regime->title) }}
+                                        </flux:select.option>
+                                    @endforeach
+                                </flux:select>
+
+                                <flux:error name="regime_id" />
+                            </flux:field>
+                        </div>
+
                         {{-- Timbrar recibo --}}
                         <div class="sm:col-span-2">
                             <flux:field>
@@ -155,45 +194,6 @@
                                 <flux:error name="pay_method" />
                             </flux:field>
                             <input type="text" name="timbrarInput" id="timbrarInput" hidden>
-                        </div>
-
-                        <div id="opcionTimbrado" class="sm:col-span-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 hidden">
-                            {{-- Uso cfdi --}}
-                            <div class="sm:col-span-2">
-                                <flux:field>
-                                    <flux:label>Uso CFDI <span class="text-red-500">*</span></flux:label>
-                                    <flux:description>Por favor introduce el UsoCFDI con el que deseas timbrar
-                                    </flux:description>
-                                    <flux:select name="usocfdi_id" id="cfdi" placeholder="Selecciona un UsoCFDI"
-                                        >
-                                        @foreach ($usoscfdi as $usocfdi)
-                                            <flux:select.option value="{{ $usocfdi->id }}">
-                                                {{ strtoupper($usocfdi->title) }}
-                                            </flux:select.option>
-                                        @endforeach
-                                    </flux:select>
-                                    <flux:error name="usocfdi_id" />
-                                </flux:field>
-                            </div>
-
-                            {{-- regimes --}}
-                            <div class="sm:col-span-2">
-                                <flux:field>
-                                    <flux:label>Regímen del cliente <span class="text-red-500">*</span></flux:label>
-                                    <flux:description>Por favor introduce el régimen con el que deseas timbrar
-                                    </flux:description>
-                                    <flux:select name="regime_id" id="regime_id" placeholder="Selecciona un régimen"
-                                        required>
-                                        @foreach ($regimens as $regime)
-                                            <flux:select.option value="{{ $regime->id }}">
-                                                {{ strtoupper($regime->title) }}
-                                            </flux:select.option>
-                                        @endforeach
-                                    </flux:select>
-
-                                    <flux:error name="regime_id" />
-                                </flux:field>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -280,12 +280,7 @@
 
 
             timbrarInput.value = this.value;
-            if (this.value === 'true') {
-                    document.getElementById('opcionTimbrado').classList.remove('hidden');
-                } else {
-                    document.getElementById('opcionTimbrado').classList.add('hidden');
-                }
-            
+
 
         });
 

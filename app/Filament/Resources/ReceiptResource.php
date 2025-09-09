@@ -45,8 +45,8 @@ class ReceiptResource extends Resource
                 Forms\Components\Select::make('pay_method')
                     ->label('Método de Pago')
                     ->options([
-                        'PUE' => 'Pago en Una Exhibición (PUE)',
-                        'PPD' => 'Pago en Parcialidades o Diferido (PPD)',
+                        'EFECTIVO' => 'EFECTIVO',
+                        'TRANSFERENCIA' => 'TRANSFERENCIA',
                         // Agrega más métodos de pago según el SAT
                     ])
                     ->required(),
@@ -63,14 +63,24 @@ class ReceiptResource extends Resource
                 Forms\Components\Select::make('status')
                     ->label('Estatus')
                     ->options([
-                        'pendiente' => 'Pendiente',
-                        'pagado' => 'Pagado',
-                        'cancelado' => 'Cancelado',
+                        'PENDIENTE' => 'PENDIENTE',
+                        'PAGADO' => 'PAGADO',
+                        'CANCELADO' => 'CANCELADO',
                     ])
                     ->required(),
                 Forms\Components\TextInput::make('sello')
                     ->label('Sello')
                     ->maxLength(255)
+                    ->nullable(),
+                Forms\Components\Select::make('usocfdi_id')
+                    ->label('UsoCFDI')
+                    ->relationship('usocfdi', 'title')
+                    
+                    ->nullable(),
+                Forms\Components\Select::make('regime_id')
+                    ->label('Régimen')
+                    ->relationship('regime', 'title')
+                    
                     ->nullable(),
             ]);
     }

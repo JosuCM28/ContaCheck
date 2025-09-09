@@ -56,7 +56,9 @@ class ReceiptController extends Controller
         $categories = Category::all();
         $counters = Counter::all();
         $clients = Client::all();
-        return view('receipts.edit', compact('receipt', 'categories', 'counters', 'clients'));
+        $regimes = Regime::all();
+        $usoscfdi = Usocfdi::all();
+        return view('receipts.edit', compact('receipt', 'categories', 'counters', 'clients', 'regimes', 'usoscfdi'));
 
     }
 
@@ -125,10 +127,9 @@ class ReceiptController extends Controller
                 'noExterior' => $client->num_ext,
                 'codigoPostal' => $client->cp,
                 'concepto_descripcion' => $request->input('concept'),
-                'usocfdi_id' => $request->input('usocfdi_id'),
-                'regime_id' => $request->input('regime_id'),
+                'usocfdi' => $receipt->usocfdi->code,
+                'regime' => $receipt->regime->code,
             ];
-
             $service = new TimbradoService($data);
             $response = $service->timbrar();
 
@@ -202,6 +203,8 @@ class ReceiptController extends Controller
             'counter_id' => 'required|exists:counters,id',
             'client_id' => 'required|exists:clients,id',
             'category_id' => 'required|exists:categories,id',
+            'usocfdi_id' => 'nullable|exists:usocfdis,id', 
+            'regime_id' => 'nullable|exists:regimes,id',
             'payment_date' => 'required|string',
             'pay_method' => 'required|string',
             'mount' => 'required',

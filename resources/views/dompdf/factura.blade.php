@@ -180,7 +180,7 @@
                             <tr class="item">
                                 <td>001</td>
                                 <td>84111500</td>
-                                @if ($receipt->is_timbred == 1) 
+                                @if ($receipt->category->name == 'HONORARIOS') 
                                 <td>
                                     {{$receipt->concept }}<br>
                                     IVA Trasladado 16% = ${{ number_format(($receipt->mount / 1.16) * 0.16, 2) }}<br>
@@ -214,7 +214,7 @@
                 <td>
                     <div class="text-right">
                         <h3>TOTALES</h3>
-                         @if ($receipt->is_timbred == 1)
+                         @if ($receipt->category->name == 'HONORARIOS')
                         <p><strong>Subtotal:</strong> ${{ number_format($receipt->mount / 1.16, 2) }}</p>
                         <p><strong>IVA:</strong> ${{ number_format(($receipt->mount / 1.16) * 0.16, 2) }}</p>
                         <p><strong>ISR Retenido:</strong> $0.00</p>
@@ -236,7 +236,7 @@
         </div>
 
         <div class="footer">
-         @if ($receipt->is_timbred == 1)
+        @if ($receipt->category->name == 'HONORARIOS')
             <p>ESTE DOCUMENTO ES UNA REPRESENTACIÓN IMPRESA DE UN CFDI</p>
             @else
             <p> </p>
