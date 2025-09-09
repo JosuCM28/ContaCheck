@@ -81,7 +81,7 @@
                         nacimiento</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->birthdate ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ \Carbon\Carbon::parse($client->birthdate)->format('d/m/Y') ?? 'Sin datos existentes' }}
+                            {{$client?->birthdate ? \Carbon\Carbon::parse($client->birthdate)->format('d/m/Y') : 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>
@@ -266,9 +266,7 @@
                         inicio (SELLO)</label>
                     <div class="mt-2 input input-filled peer">
                         <p class="{{ $client->credentials->iniciosello ? '' : 'text-gray-400 italic' }} text-sm">
-                            {{ $client->credentials?->iniciosello 
-                                ? \Carbon\Carbon::parse($client->credentials->iniciosello)->format('d/m/Y') 
-                                : 'Sin datos existentes' }}
+                            {{ $client->credentials?->iniciosello ? \Carbon\Carbon::parse($client->credentials->iniciosello)->format('d/m/Y') : 'Sin datos existentes' }}
                         </p>
                     </div>
                 </div>

@@ -140,11 +140,11 @@
             
             <div class="payment-details">
                 <div class="detail-row">
-                    <span class="detail-label">Monto del pago:</span>
+                    <span class="detail-label">Monto del pago: </span>
                     <span class="detail-value" id="monto">${{$receipt->mount}}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Método de pago:</span>
+                    <span class="detail-label">Método de pago: </span>
                     <span class="detail-value" id="metodo">
                      @switch($receipt->pay_method)
                         @case('EFECTIVO') Efectivo @break
@@ -155,11 +155,11 @@
                     </span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Fecha del pago:</span>
+                    <span class="detail-label">Fecha del pago: </span>
                     <span class="detail-value" id="fecha">{{ \Carbon\Carbon::parse($receipt->payment_date)->format('d/m/Y') }}</span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Estado:</span>
+                    <span class="detail-label">Estado: </span>
                     <span class="detail-value status-pagado" id="estado">@switch($receipt->status)
                         @case('PAGADO') Pagado @break
                         @case('PENDIENTE') Pendiente @break

@@ -7,6 +7,8 @@ use App\Models\Receipt;
 use App\Models\Category;
 use App\Mail\ReceiptMail;
 use App\Models\CompanyData;
+use App\Models\Regime;
+use App\Models\Usocfdi;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -32,10 +34,12 @@ class ReceiptController extends Controller
         $categories = Category::all();
         $clients = Client::with('counter')->get();
         $identificator = Str::uuid();
+        $usoscfdi = Usocfdi::all();
+        $regimens = Regime::all();
 
 
 
-        return view('receipts.create', compact('counters', 'categories', 'clients', 'identificator'));
+        return view('receipts.create', compact('counters', 'categories', 'clients', 'identificator', 'usoscfdi', 'regimens'));
     }
 
     public function show($identificator)
@@ -44,14 +48,17 @@ class ReceiptController extends Controller
         return view('receipts.show', compact('receipt'));
     }
 
-    public function edit($receipt){
+    public function edit($receipt)
+    {
 
         $receipt = Receipt::findOrFail($receipt);
         $receipt->payment_date = Carbon::parse($receipt->payment_date)->format('Y-m-d');
         $categories = Category::all();
         $counters = Counter::all();
         $clients = Client::all();
-        return view ('receipts.edit', compact('receipt', 'categories','counters','clients'));
+        $regimes = Regime::all();
+        $usoscfdi = Usocfdi::all();
+        return view('receipts.edit', compact('receipt', 'categories', 'counters', 'clients', 'regimes', 'usoscfdi'));
 
     }
 
@@ -70,6 +77,8 @@ class ReceiptController extends Controller
             'mount' => 'required',
             'concept' => 'required|string',
             'status' => 'required|string',
+            'usocfdi_id' => 'nullable|exists:usocfdis,id', 
+            'regime_id' => 'nullable|exists:regimes,id',
         ]);
 
         $receipt = Receipt::create([
@@ -82,7 +91,12 @@ class ReceiptController extends Controller
             'mount' => $request->input('mount'),
             'concept' => $request->input('concept'),
             'status' => $request->input('status'),
+            'usocfdi_id' => $request->input('usocfdi_id'),
+            'regime_id' => $request->input('regime_id'),
+
         ]);
+
+
 
         if ($request->input('timbrarInput') == 'true') {
             $total = $request->input('mount');
@@ -93,7 +107,7 @@ class ReceiptController extends Controller
             $company = CompanyData::first();
 
             $rfcReceptor = $client->rfc;
-            
+
             $data = [
                 'regimenEmisor' => $company->regime->code,
                 'codigoPostalCompany' => $company->cp,
@@ -113,8 +127,9 @@ class ReceiptController extends Controller
                 'noExterior' => $client->num_ext,
                 'codigoPostal' => $client->cp,
                 'concepto_descripcion' => $request->input('concept'),
+                'usocfdi' => $receipt->usocfdi->code,
+                'regime' => $receipt->regime->code,
             ];
-
             $service = new TimbradoService($data);
             $response = $service->timbrar();
 
@@ -130,14 +145,14 @@ class ReceiptController extends Controller
             if (!empty($response)) {
                 $rfcEmisor = config('services.facturafiel.rfc');
                 $url = "https://verificacfdi.facturaelectronica.sat.gob.mx/default.aspx?id={$response['uuid']}&re={$rfcEmisor}&rr={$rfcReceptor}&tt={$response['total']}&fe={$response['sello']}";
-                
+
             } else {
                 $url = route('receipt.verify', $receipt->identificator);
             }
-            
+
             $pdf = Pdf::loadView('dompdf.factura', compact('receipt', 'url', 'company'))->setPaper('a4', 'portrait')->output();
 
-            if(!empty($receipt->client->email)) {
+            if (!empty($receipt->client->email)) {
                 Mail::to($receipt->client->email)->send(new ReceiptMail($receipt, $pdf));
             }
 
@@ -166,14 +181,14 @@ class ReceiptController extends Controller
                     'type' => 'success',
                 ]);
             }
-            
+
             return redirect()->route('receipt.create')->with('toast', [
                 'title' => 'Recibo creado',
                 'message' => 'Recibo creado y enviado correctamente.',
                 'type' => 'success',
             ]);
         }
-        
+
         return redirect()->route('receipt.create')->with('toast', [
             'title' => 'Recibo creado',
             'message' => 'Recibo creado y almacenado exitosamente.',
@@ -181,18 +196,22 @@ class ReceiptController extends Controller
         ]);
     }
 
-    public function update(Request $request, Receipt $receipt){
-        
+    public function update(Request $request, Receipt $receipt)
+    {
+
         $request->validate([
             'counter_id' => 'required|exists:counters,id',
             'client_id' => 'required|exists:clients,id',
             'category_id' => 'required|exists:categories,id',
+            'usocfdi_id' => 'nullable|exists:usocfdis,id', 
+            'regime_id' => 'nullable|exists:regimes,id',
             'payment_date' => 'required|string',
             'pay_method' => 'required|string',
             'mount' => 'required',
             'description' => 'required|string',
             'status' => 'required|string',
-            
+
+
         ]);
         $receipt->update($request->all());
         return redirect()->route('receipt.show', ['identificator' => $receipt->id])->with('toast', [
@@ -203,7 +222,8 @@ class ReceiptController extends Controller
 
     }
 
-    public function destroy(Receipt $receipt){
+    public function destroy(Receipt $receipt)
+    {
 
         $receipt = Receipt::findOrFail($receipt->id);
         $receipt->delete();
@@ -216,7 +236,8 @@ class ReceiptController extends Controller
 
     }
 
-    public function timbrarRecibo($id) {
+    public function timbrarRecibo($id)
+    {
         $receipt = Receipt::findOrFail($id);
         $company = CompanyData::first();
 
@@ -243,6 +264,8 @@ class ReceiptController extends Controller
             'noExterior' => $receipt->client->num_ext,
             'codigoPostal' => $receipt->client->cp,
             'concepto_descripcion' => $receipt->concept,
+            'usocfdi' => $receipt->usocfdi->code,
+            'regimen' => $receipt->regime->code,
         ];
 
         $service = new TimbradoService($data);
@@ -267,7 +290,7 @@ class ReceiptController extends Controller
             'type' => 'success',
         ]);
     }
-    
+
     // public function destroydos(Receipt $receipt2){
 
     //     $receipt = Receipt::findOrFail($receipt2->id);

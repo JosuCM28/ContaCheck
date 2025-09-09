@@ -23,6 +23,8 @@ class Receipt extends Model
         'payment_date',
         'status',
         'concept',
+        'usocfdi_id',
+        'regime_id',
     ];
 
     public function counter(): BelongsTo
@@ -38,5 +40,14 @@ class Receipt extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function usocfdi(): BelongsTo
+    {
+        return $this->belongsTo(Usocfdi::class);
+    }
+    public function regime(): BelongsTo
+    {
+        return $this->belongsTo(Regime::class);
     }
 }

@@ -47,12 +47,14 @@ class EvolutionWebhookController extends Controller
                             ])
                             ->post($base_url, [
                                 'number' => "52" . $phoneNumber,
-                                'text' => "📢 *Estimado {$clientName}*,\n\n" .
+                                'text' => "📢 *Estimado(a) {$clientName}*,\n\n" .
                                     "Para más información, por favor contacte a su contador asignado:\n\n" .
                                     "👨‍💼 *{$counterName}*\n" .
                                     "📞 *Número:* {$counterNumber}\n\n" .
                                     "🕒 *Horario de atención:*\n" .
-                                    "Lunes a Viernes de 9:00 a.m. a 6:30 p.m.\n\n" .
+                                    "Lunes a Viernes de:\n" .
+                                    "9:00 a.m - 2:00 p.m " .
+                                    "3:30 pm - 6:30 p.m.\n\n" .
                                     "✅ Gracias por su atención."
                             ])
                             ->throw()
@@ -73,7 +75,9 @@ class EvolutionWebhookController extends Controller
                                     "Para más información, por favor contacte a el despacho contable Baltazar Montes:\n\n" .
                                     "📞 *Número:* 2263161354 / 2263160629 \n\n" .
                                     "🕒 *Horario de atención:*\n" .
-                                    "Lunes a Viernes de 9:00 a.m. a 6:30 p.m.\n\n" .
+                                    "Lunes a Viernes de:\n" .
+                                    "9:00 a.m - 2:00 p.m " .
+                                    "3:30 pm - 6:30 p.m.\n\n" .
                                     "✅ Gracias por su atención."
                             ])
                             ->throw()
@@ -95,7 +99,9 @@ class EvolutionWebhookController extends Controller
                                 "Para más información, por favor contacte a el despacho contable Baltazar Montes:\n\n" .
                                 "📞 *Número:* 2263161354 / 2263160629 \n\n" .
                                 "🕒 *Horario de atención:*\n" .
-                                "Lunes a Viernes de 9:00 a.m. a 6:30 p.m.\n\n" .
+                                "Lunes a Viernes de:\n" .
+                                "9:00 a.m - 2:00 p.m " .
+                                "3:30 pm - 6:30 p.m.\n\n" .
                                 "✅ Gracias por su atención."
                         ])
                         ->throw()
@@ -107,7 +113,7 @@ class EvolutionWebhookController extends Controller
         }
 
         // Log::info('Received Evolution webhook data:', $payload);
-        
+
         return response()->json(['status' => 'success'], 200);
     }
 }
