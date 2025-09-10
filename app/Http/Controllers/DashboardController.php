@@ -22,6 +22,9 @@ class DashboardController extends Controller
         $kpiMontoTotalMes = Receipt::whereMonth('created_at', Carbon::now()->month)
             ->whereYear('created_at', Carbon::now()->year)
             ->where('status', 'PAGADO')
+            ->whereHas('category', function ($q) {
+                $q->where('name', 'HONORARIOS');
+            })
             ->sum('mount');
 
         $kpiClientesNuevos = Client::whereMonth('created_at', Carbon::now()->month)

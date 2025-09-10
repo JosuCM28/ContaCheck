@@ -37,7 +37,7 @@
                 <div class="absolute inset-0 p-8 flex flex-col justify-between">
                     <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-md">Monto total de recibos en el mes</p>
+                            <p class="text-md">Monto total de HONORARIOS en el mes</p>
                             <h2 class="text-3xl font-bold text-black mt-8">${{ number_format($kpiMontoTotalMes, 2) }}
                             </h2>
                         </div>

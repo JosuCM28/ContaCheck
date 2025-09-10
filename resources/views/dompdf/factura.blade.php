@@ -124,13 +124,21 @@
                             </td>
                             <td>
                                 <div class="text-right">
+                                @if ($receipt->category->name == 'HONORARIOS')
                                     <p>COMPROBANTE FISCAL DIGITAL POR INTERNET</p>
                                     <p>CFDI v4.0</p>
+                                    @else
+                                    <p> </p>
+                                    @endif
                                     <p><strong>FECHA DE EMISIÓN:</strong> {{ $receipt->payment_date }}</p>
                                     <p><strong>Identificador:</strong> {{ $receipt->identificator }}</p>
                                     <p><strong>TIPO DE COMPROBANTE:</strong> {{ $receipt->category->name }}</p>
                                     <p><strong>EXPEDIDO EN:</strong>{{ $company->cp }}</p>
+                                    @if ($receipt->category->name == 'HONORARIOS')
                                     <p><strong>USO DEL CFDI:</strong> {{ $receipt->usocfdi?->title ?? 'G03 - GASTOS EN GENERAL' }}</p>
+                                    @else
+                                    <p> </p>
+                                    @endif
                                 </div>
                             </td>
                         </tr>
@@ -220,9 +228,6 @@
                         <p><strong>ISR Retenido:</strong> $0.00</p>
                         <p><strong>Total:</strong> <span>${{ $receipt->mount }}</span></p>
                         @else
-                        <p><strong>Subtotal:</strong> ${{ $receipt->mount }}</p>
-                        <p><strong>IVA:</strong> $0.00</p>
-                        <p><strong>ISR Retenido:</strong> $0.00</p>
                         <p><strong>Total:</strong> <span>${{ $receipt->mount }}</span></p>
                         @endif
                     </div>
