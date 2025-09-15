@@ -128,7 +128,7 @@ class ReceiptController extends Controller
                 'codigoPostal' => $client->cp,
                 'concepto_descripcion' => $request->input('concept'),
                 'usocfdi' => $receipt->usocfdi->code,
-                'regime' => $receipt->regime->code,
+                'regimen' => $receipt->regime->code,
             ];
             $service = new TimbradoService($data);
             $response = $service->timbrar();
