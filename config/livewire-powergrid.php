@@ -50,9 +50,10 @@ return [
             'locales' => [
                 'es' => [
                     'locale'     => 'es',
-                    'dateFormat' => 'd/m/Y H:i',
+                    'dateFormat' => 'd/m/Y H:i:s',
                     'enableTime' => true,
                     'time_24hr'  => true,
+                    'rangeSeparator' => ' to ',  
                 ],
             ],
         ],
