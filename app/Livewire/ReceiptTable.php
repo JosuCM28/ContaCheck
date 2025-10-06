@@ -72,41 +72,67 @@ final class ReceiptTable extends PowerGridComponent
         if ($this->client !== 0) {
             $receipt->where('client_id', $this->client);
         }
-        $filters = request()->input('filters'); // PowerGrid manda aquí los filtros
-        $range = data_get($filters, 'payment_date'); // puede ser string o array según versión
+        $filters = request()->input('filters', []);
+        $range = data_get($filters, 'payment_date');
 
         if ($range) {
-            // Soporta formatos "YYYY-MM-DD - YYYY-MM-DD" o "DD/MM/YYYY - DD/MM/YYYY" y payloads en array
             $from = $to = null;
 
             if (is_array($range)) {
                 $from = $range['start'] ?? $range['from'] ?? null;
                 $to = $range['end'] ?? $range['to'] ?? null;
             } elseif (is_string($range)) {
-                $delim = str_contains($range, ' - ') ? ' - ' : (str_contains($range, ' a ') ? ' a ' : null);
-                if ($delim) {
-                    [$from, $to] = explode($delim, $range);
+                // Soporta "YYYY-MM-DD to YYYY-MM-DD", "DD/MM/YYYY to DD/MM/YYYY" y "DD/MM/YYYY to 15"
+                // 1) Separa por " to "
+                $parts = preg_split('/\s+to\s+/i', trim($range));
+                if (count($parts) === 2) {
+                    [$from, $to] = [$parts[0], $parts[1]];
+                } else {
+                    // fallback a " - " o " a "
+                    $delim = str_contains($range, ' - ') ? ' - ' : (str_contains($range, ' a ') ? ' a ' : null);
+                    if ($delim) {
+                        [$from, $to] = explode($delim, $range);
+                    }
                 }
             }
+
+            // Función local para parsear flexible
+            $parse = function (string $s, ?\Carbon\Carbon $base = null) {
+                $s = trim($s);
+                // Caso "solo día" (p.ej. "15"): usa mes/año del $base
+                if (preg_match('/^\d{1,2}$/', $s) && $base instanceof \Carbon\Carbon) {
+                    return $base->copy()->day((int) $s)->startOfDay();
+                }
+                // YYYY-MM-DD
+                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $s)) {
+                    return \Carbon\Carbon::createFromFormat('Y-m-d', $s, config('app.timezone', 'UTC'))->startOfDay();
+                }
+                // DD/MM/YYYY
+                if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', $s)) {
+                    return \Carbon\Carbon::createFromFormat('d/m/Y', $s, config('app.timezone', 'UTC'))->startOfDay();
+                }
+                // Último recurso
+                return \Carbon\Carbon::parse($s, config('app.timezone', 'UTC'))->startOfDay();
+            };
 
             if ($from && $to) {
                 $tzApp = config('app.timezone', 'UTC');
 
-                $fromC = \Carbon\Carbon::parse(trim($from), $tzApp)->startOfDay();
-                $toC = \Carbon\Carbon::parse(trim($to), $tzApp)->endOfDay();
+                $fromC = $parse((string) $from)->setTimezone($tzApp)->startOfDay();
+                // para "to 15" tomamos día 15 del mismo mes/año que $from
+                $toC = $parse((string) $to, $fromC)->setTimezone($tzApp)->endOfDay();
 
-                // Si tu MySQL trabaja en UTC (recomendado), convierte:
+                // Si tu conexión MySQL está en UTC, convierte
                 $dbTz = config('database.connections.mysql.timezone');
                 if ($dbTz === '+00:00' || $dbTz === 'UTC' || empty($dbTz)) {
                     $fromC = $fromC->utc();
                     $toC = $toC->utc();
                 }
 
-                // Aplica el filtro definitivo sobre el campo REAL (no el formateado)
                 $receipt->whereBetween('payment_date', [$fromC, $toC]);
             }
         }
-        // ---
+
         return $receipt;
 
     }
@@ -129,7 +155,7 @@ final class ReceiptTable extends PowerGridComponent
             ->add('identificator')
             ->add('pay_method')
             ->add('mount')
-            ->add('payment_date_formatted', fn(Receipt $model) => Carbon::parse($model->payment_date)->setTimezone(config('app.timezone'))->format('d/m/Y H:i:s'))
+            ->add('payment_date_formatted', fn(Receipt $model) => Carbon::parse($model->payment_date)->setTimezone(config('app.timezone'))->format('d/m/Y H:i'))
             ->add('status')
             ->add('concept')
             ->add('counter_id')
@@ -196,15 +222,17 @@ final class ReceiptTable extends PowerGridComponent
     {
         return [
             Filter::datetimepicker('payment_date')
-    ->params([
-        'timezone' => config('app.timezone', 'America/Mexico_City'),
-        'config' => [
-            'altInput'   => true,
-            'altFormat'  => 'd/m/Y',
-            'dateFormat' => 'Y-m-d',   // <-- backend-friendly, estable en prod
-            'enableTime' => false,
-        ],
-    ]),
+                ->params([
+                    'timezone' => config('app.timezone', 'America/Mexico_City'),
+                    'config' => [
+                        'mode' => 'range',     // asegura rango
+                        'rangeSeparator' => ' to ',      // << coincide con tu UI
+                        'altInput' => true,
+                        'altFormat' => 'd/m/Y',     // lo que ve el usuario
+                        'dateFormat' => 'Y-m-d',     // lo que se envía al backend
+                        'enableTime' => false,
+                    ],
+                ]),
             Filter::select('category_name', 'category_id')
                 ->dataSource(Category::all())
                 ->optionLabel('name')

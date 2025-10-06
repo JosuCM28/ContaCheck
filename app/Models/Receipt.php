@@ -25,7 +25,17 @@ class Receipt extends Model
         'concept',
         'usocfdi_id',
         'regime_id',
+        'is_timbred',
     ];
+
+    protected $casts = [
+        'payment_date' => 'datetime',  // <- clave para el filtro
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'is_timbred' => 'boolean',
+        'mount' => 'decimal:2', // si tu columna es DECIMAL(… ,2)
+    ];
+
 
     public function counter(): BelongsTo
     {
