@@ -19,6 +19,7 @@ use App\Models\Counter;
 use App\Models\Client;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+
 final class ReceiptTable extends PowerGridComponent
 {
     public string $tableName = 'receipt-table-2gepz9-table';
@@ -52,7 +53,6 @@ final class ReceiptTable extends PowerGridComponent
 
     public function datasource(): Builder
     {
-
         $receipt = Receipt::query()
             ->with('client')
             ->with('category')
@@ -69,26 +69,28 @@ final class ReceiptTable extends PowerGridComponent
                     ->limit(1),
             ])
             ->orderBy('created_at', 'desc');
+
         if ($this->client !== 0) {
             $receipt->where('client_id', $this->client);
         }
+
+        // === RANGO DE FECHAS ROBUSTO (acepta "01/10/2025 00:00 to 15") ===
         $filters = request()->input('filters', []);
-        $range = data_get($filters, 'payment_date');
+        $range   = data_get($filters, 'payment_date');
 
         if ($range) {
             $from = $to = null;
 
             if (is_array($range)) {
                 $from = $range['start'] ?? $range['from'] ?? null;
-                $to = $range['end'] ?? $range['to'] ?? null;
+                $to   = $range['end']   ?? $range['to']   ?? null;
             } elseif (is_string($range)) {
-                // Soporta "YYYY-MM-DD to YYYY-MM-DD", "DD/MM/YYYY to DD/MM/YYYY" y "DD/MM/YYYY to 15"
-                // 1) Separa por " to "
+                // Primero, separador " to "
                 $parts = preg_split('/\s+to\s+/i', trim($range));
                 if (count($parts) === 2) {
                     [$from, $to] = [$parts[0], $parts[1]];
                 } else {
-                    // fallback a " - " o " a "
+                    // Alternativos
                     $delim = str_contains($range, ' - ') ? ' - ' : (str_contains($range, ' a ') ? ' a ' : null);
                     if ($delim) {
                         [$from, $to] = explode($delim, $range);
@@ -96,55 +98,66 @@ final class ReceiptTable extends PowerGridComponent
                 }
             }
 
-            // Función local para parsear flexible
-            $parse = function (string $s, ?\Carbon\Carbon $base = null) {
+            // Parser flexible (Y-m-d[ H:i[:s]] y d/m/Y[ H:i[:s]] y "solo día")
+            $tzApp = config('app.timezone', 'UTC');
+
+            $parse = function (string $s, ?Carbon $base = null) use ($tzApp): Carbon {
                 $s = trim($s);
-                // Caso "solo día" (p.ej. "15"): usa mes/año del $base
-                if (preg_match('/^\d{1,2}$/', $s) && $base instanceof \Carbon\Carbon) {
-                    return $base->copy()->day((int) $s)->startOfDay();
+
+                // Solo día (p.ej. "15"): usa mes/año de $base
+                if (preg_match('/^\d{1,2}$/', $s) && $base instanceof Carbon) {
+                    return $base->copy()->day((int) $s);
                 }
-                // YYYY-MM-DD
-                if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $s)) {
-                    return \Carbon\Carbon::createFromFormat('Y-m-d', $s, config('app.timezone', 'UTC'))->startOfDay();
+
+                // YYYY-MM-DD [HH:mm[:ss]]
+                if (preg_match('/^\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?$/', $s)) {
+                    $fmt = 'Y-m-d';
+                    if (str_contains($s, ':')) {
+                        $fmt .= substr_count($s, ':') === 2 ? ' H:i:s' : ' H:i';
+                    }
+                    return Carbon::createFromFormat($fmt, $s, $tzApp);
                 }
-                // DD/MM/YYYY
-                if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}$/', $s)) {
-                    return \Carbon\Carbon::createFromFormat('d/m/Y', $s, config('app.timezone', 'UTC'))->startOfDay();
+
+                // DD/MM/YYYY [HH:mm[:ss]]
+                if (preg_match('/^\d{1,2}\/\d{1,2}\/\d{4}(?:\s+\d{2}:\d{2}(?::\d{2})?)?$/', $s)) {
+                    $fmt = 'd/m/Y';
+                    if (str_contains($s, ':')) {
+                        $fmt .= substr_count($s, ':') === 2 ? ' H:i:s' : ' H:i';
+                    }
+                    return Carbon::createFromFormat($fmt, $s, $tzApp);
                 }
-                // Último recurso
-                return \Carbon\Carbon::parse($s, config('app.timezone', 'UTC'))->startOfDay();
+
+                // Último recurso (puede ser ambiguo)
+                return Carbon::parse($s, $tzApp);
             };
 
             if ($from && $to) {
-                $tzApp = config('app.timezone', 'UTC');
+                $fromC = $parse((string) $from)->startOfDay();
+                // "to 15" -> toma día 15 del mismo mes/año que $from
+                $toC   = $parse((string) $to, $fromC)->endOfDay();
 
-                $fromC = $parse((string) $from)->setTimezone($tzApp)->startOfDay();
-                // para "to 15" tomamos día 15 del mismo mes/año que $from
-                $toC = $parse((string) $to, $fromC)->setTimezone($tzApp)->endOfDay();
-
-                // Si tu conexión MySQL está en UTC, convierte
+                // Si la conexión MySQL está en UTC, convierte
                 $dbTz = config('database.connections.mysql.timezone');
                 if ($dbTz === '+00:00' || $dbTz === 'UTC' || empty($dbTz)) {
                     $fromC = $fromC->utc();
-                    $toC = $toC->utc();
+                    $toC   = $toC->utc();
                 }
 
+                // Filtro final sobre el campo real
                 $receipt->whereBetween('payment_date', [$fromC, $toC]);
             }
         }
+        // === FIN RANGO DE FECHAS ===
 
         return $receipt;
-
     }
 
     public function relationSearch(): array
     {
         return [
             'counter' => ['full_name'],
-            'client' => ['full_name'],
-            'category' => ['name'],
-
-
+            'client'  => ['full_name'],
+            'category'=> ['name'],
         ];
     }
 
@@ -155,20 +168,22 @@ final class ReceiptTable extends PowerGridComponent
             ->add('identificator')
             ->add('pay_method')
             ->add('mount')
-            ->add('payment_date_formatted', fn(Receipt $model) => Carbon::parse($model->payment_date)->setTimezone(config('app.timezone'))->format('d/m/Y H:i'))
+            ->add('payment_date_formatted', fn (Receipt $model) =>
+                Carbon::parse($model->payment_date)
+                    ->setTimezone(config('app.timezone'))
+                    ->format('d/m/Y H:i')
+            )
             ->add('status')
             ->add('concept')
             ->add('counter_id')
             ->add('is_timbred')
-            ->add('timbrado_name', fn($model) => $model->is_timbred ? 'Timbrado' : 'No timbrado')
+            ->add('timbrado_name', fn ($model) => $model->is_timbred ? 'Timbrado' : 'No timbrado')
             ->add('created_at');
-
     }
 
     public function columns(): array
     {
         return [
-
             Column::add()
                 ->title('Contador')
                 ->field('counter_name')
@@ -183,9 +198,7 @@ final class ReceiptTable extends PowerGridComponent
                 ->title('Categoría')
                 ->field('category_name'),
 
-
             Column::make('Metodo de Pago', 'pay_method')
-
                 ->hidden(isHidden: true, isForceHidden: false)
                 ->searchable(),
 
@@ -214,29 +227,32 @@ final class ReceiptTable extends PowerGridComponent
                 ->hidden(isHidden: true, isForceHidden: false)
                 ->searchable(),
 
-            Column::action('Acción')
+            Column::action('Acción'),
         ];
     }
 
     public function filters(): array
     {
         return [
+            // DateTimePicker configurado para coincidir con tu input en prod
             Filter::datetimepicker('payment_date')
                 ->params([
                     'timezone' => config('app.timezone', 'America/Mexico_City'),
                     'config' => [
-                        'mode' => 'range',     // asegura rango
-                        'rangeSeparator' => ' to ',      // << coincide con tu UI
-                        'altInput' => true,
-                        'altFormat' => 'd/m/Y',     // lo que ve el usuario
-                        'dateFormat' => 'Y-m-d',     // lo que se envía al backend
-                        'enableTime' => false,
+                        'mode'           => 'range',
+                        'rangeSeparator' => ' to ',
+                        'altInput'       => true,
+                        'altFormat'      => 'd/m/Y H:i', // lo que ve el usuario
+                        'dateFormat'     => 'Y-m-d H:i', // lo que envía al backend
+                        'enableTime'     => true,        // en prod aparece "00:00"
                     ],
                 ]),
+
             Filter::select('category_name', 'category_id')
                 ->dataSource(Category::all())
                 ->optionLabel('name')
                 ->optionValue('id'),
+
             Filter::select('is_timbred', 'is_timbred')
                 ->dataSource(collect([
                     ['value' => 1, 'label' => 'Si'],
@@ -244,10 +260,13 @@ final class ReceiptTable extends PowerGridComponent
                 ]))
                 ->optionLabel('label')
                 ->optionValue('value'),
+
+            // (Dejo tus selects tal cual, no borro lógica)
             Filter::select('receipt_status', 'status')
                 ->dataSource(Receipt::all())
                 ->optionLabel('Estado')
                 ->optionValue('id'),
+
             Filter::select('status', 'status')
                 ->dataSource(collect([
                     ['value' => 'PAGADO', 'label' => 'Pagado'],
@@ -256,6 +275,7 @@ final class ReceiptTable extends PowerGridComponent
                 ]))
                 ->optionLabel('label')
                 ->optionValue('value'),
+
             Filter::select('pay_method', 'pay_method')
                 ->dataSource(collect([
                     ['value' => 'EFECTIVO', 'label' => 'Efectivo'],
@@ -264,12 +284,11 @@ final class ReceiptTable extends PowerGridComponent
                 ]))
                 ->optionLabel('label')
                 ->optionValue('value'),
+
             Filter::select('client_id', 'client_id')
                 ->dataSource(Client::query()->select('id', 'full_name')->orderBy('full_name')->get())
                 ->optionLabel('full_name')
                 ->optionValue('id'),
-
-
         ];
     }
 
@@ -324,15 +343,15 @@ final class ReceiptTable extends PowerGridComponent
     {
         return [
             Rule::button('edit')
-                ->when(fn($row) => $row->status !== 'PENDIENTE')
+                ->when(fn ($row) => $row->status !== 'PENDIENTE')
                 ->hide(),
 
             Rule::button('send')
-                ->when(fn() => auth()->user()->rol === 'cliente')
+                ->when(fn () => auth()->user()->rol === 'cliente')
                 ->hide(),
 
             Rule::button('show')
-                ->when(fn() => auth()->user()->rol === 'cliente')
+                ->when(fn () => auth()->user()->rol === 'cliente')
                 ->hide(),
         ];
     }
