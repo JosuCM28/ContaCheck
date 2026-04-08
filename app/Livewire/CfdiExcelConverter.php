@@ -291,22 +291,25 @@ class CfdiExcelConverter extends Component
                 (string) ($comprobante['MetodoPago']          ?? ''),
             ];
 
+            // Comprobantes de pago (tipo P) u otros sin conceptos gravados
+            // se registran como una sola fila vacía, sin mandarlos a DeepSeek
+            $tipoComprobante = (string) ($comprobante['TipoDeComprobante'] ?? '');
+            $cfdiNs          = $namespaces['cfdi'] ?? 'http://www.sat.gob.mx/cfd/4';
+            $conceptosNodos  = $xmlContent->xpath('//cfdi:Conceptos/cfdi:Concepto');
+
             // Iterar concepto a concepto → una fila por producto
             $todasDescripciones = [];
-            foreach ($xmlContent->xpath('//cfdi:Conceptos/cfdi:Concepto') as $concepto) {
+            foreach ($conceptosNodos as $concepto) {
                 $todasDescripciones[] = (string) ($concepto->attributes()['Descripcion'] ?? '');
             }
             $conceptosJoined = implode(' | ', $todasDescripciones);
 
-            foreach ($xmlContent->xpath('//cfdi:Conceptos/cfdi:Concepto') as $concepto) {
+            foreach ($conceptosNodos as $concepto) {
                 $attrs       = $concepto->attributes();
                 $descripcion = (string) ($attrs['Descripcion'] ?? '');
-
-                // Registrar descripción única para clasificar después
-                $uniqueDescriptions[$descripcion] = true;
+                $objetoImp   = (string) ($attrs['ObjetoImp']   ?? '');
 
                 // ── Columnas IEPS por tasa ────────────────────────────────────────
-                // El orden debe coincidir exactamente con los headers del Excel
                 $iepsColumns = [
                     '0.030000' => '',   // 3%
                     '0.060000' => '',   // 6%
@@ -320,11 +323,11 @@ class CfdiExcelConverter extends Component
                     '1.600000' => '',   // 160%
                 ];
 
-                $cfdiNs = $namespaces['cfdi'] ?? 'http://www.sat.gob.mx/cfd/4';
                 $impuestosConcepto = $concepto->children($cfdiNs)->Impuestos ?? null;
                 $baseIva      = '';
                 $importeIeps  = '';
                 $importeIva   = '';
+
                 if ($impuestosConcepto) {
                     $traslados = iterator_to_array($impuestosConcepto->Traslados->Traslado ?? [], false);
                     foreach ($traslados as $traslado) {
@@ -334,7 +337,6 @@ class CfdiExcelConverter extends Component
                         $importe  = (string) ($tAttrs['Importe']    ?? '');
 
                         if ($impuesto === '003') {
-                            // IEPS → columna por tasa + total pagado
                             if ($tasa !== '') {
                                 $nearestKey = $this->findNearestIepsKey((float) $tasa, array_keys($iepsColumns));
                                 if ($nearestKey !== null) {
@@ -345,11 +347,23 @@ class CfdiExcelConverter extends Component
                         }
 
                         if ($impuesto === '002') {
-                            // IVA → base antes de impuestos + total pagado
                             $baseIva    = (string) ($tAttrs['Base'] ?? '');
                             $importeIva = $importe;
                         }
                     }
+                }
+
+                // Solo mandar a DeepSeek si:
+                // - No es comprobante de pago (tipo P)
+                // - El concepto está sujeto a impuestos (ObjetoImp != '01')
+                // - Tiene IEPS real con importe > 0
+                $tieneIeps = $importeIeps !== '' && (float) $importeIeps > 0;
+                $necesitaIA = $tipoComprobante !== 'P'
+                    && $objetoImp !== '01'
+                    && $tieneIeps;
+
+                if ($necesitaIA) {
+                    $uniqueDescriptions[$descripcion] = true;
                 }
 
                 $pendingRows[] = [
@@ -365,6 +379,7 @@ class CfdiExcelConverter extends Component
                     'domFiscal'   => (string) ($receptor['DomicilioFiscalReceptor'] ?? ''),
                     'iepsRet'     => $iepsRet,
                     'complementos'=> implode(' | ', array_unique($complementos)),
+                    'necesitaIA'  => $necesitaIA,
                 ];
             }
         }
@@ -385,15 +400,21 @@ class CfdiExcelConverter extends Component
 
         $row = 2;
         foreach ($pendingRows as $entry) {
-            $cls           = $allClassifications[$entry['descripcion']] ?? [];
-            $tipoProd      = $cls['tipo']    ?? '000';
-            $claveGenerica = $cls['generica'] ?? '000';
-            $empaque       = $cls['empaque']  ?? '000';
-            $unidadMedida  = $cls['unidad']   ?? '000';
+            // Si el concepto no necesitaba IA, las columnas de clasificación van vacías
+            if ($entry['necesitaIA']) {
+                $cls           = $allClassifications[$entry['descripcion']] ?? [];
+                $tipoProd      = $cls['tipo']     ?? '000';
+                $claveGenerica = $cls['generica'] ?? '000';
+                $empaque       = $cls['empaque']  ?? '000';
+                $unidadMedida  = $cls['unidad']   ?? '000';
+                $iepsEspCat    = $cls['ieps']     ?? 'ninguno';
+            } else {
+                $tipoProd = $claveGenerica = $empaque = $unidadMedida = '';
+                $iepsEspCat = 'ninguno';
+            }
 
             // Distribuir el importe IEPS en la columna especial que corresponda
             $iepsEspCols = array_fill(0, 14, '');
-            $iepsEspCat  = $cls['ieps'] ?? 'ninguno';
             $iepsEspIdx  = array_search($iepsEspCat, $iepsEspKeys, true);
             if ($iepsEspIdx !== false && $entry['importeIeps'] !== '') {
                 $iepsEspCols[$iepsEspIdx] = $entry['importeIeps'];
