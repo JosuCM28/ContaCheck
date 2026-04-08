@@ -1,0 +1,26 @@
+<?php
+
+return [
+    ['code' => '000', 'description' => 'Sin selección'],
+    ['code' => '001', 'description' => 'Bebidas alcohólicas'],
+    ['code' => '002', 'description' => 'Cerveza'],
+    ['code' => '003', 'description' => 'Bebidas refrescantes'],
+    ['code' => '004', 'description' => 'Gasolinas'],
+    ['code' => '005', 'description' => 'Diésel'],
+    ['code' => '006', 'description' => 'Alcohol'],
+    ['code' => '007', 'description' => 'Alcohol desnaturalizado'],
+    ['code' => '008', 'description' => 'Refrescos'],
+    ['code' => '009', 'description' => 'Jarabes o concentrados para refrescos en envases abiertos'],
+    ['code' => '010', 'description' => 'Bebidas hidratantes'],
+    ['code' => '011', 'description' => 'Concentrados, polvos, jarabes, esencias o extractos de sabores'],
+    ['code' => '012', 'description' => 'Mieles incristalizables'],
+    ['code' => '013', 'description' => 'Tabacos labrados'],
+    ['code' => '014', 'description' => 'Puros y otros tabacos labrados'],
+    ['code' => '015', 'description' => 'Puros y otros tabacos labrados hechos enteramente a mano'],
+    ['code' => '016', 'description' => 'Bebidas energetizantes, concentrados, polvos y jarabes para preparar bebidas energetizantes'],
+    ['code' => '017', 'description' => 'Bebidas saborizadas'],
+    ['code' => '018', 'description' => 'Combustibles fósiles'],
+    ['code' => '019', 'description' => 'Plaguicidas'],
+    ['code' => '020', 'description' => 'Alimentos no básicos con alta densidad calórica'],
+    ['code' => '021', 'description' => 'Combustibles automotrices'],
+];

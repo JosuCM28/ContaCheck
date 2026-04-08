@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(BASE=/c/Users/cruzj/Documents/Unknow/LARAVEL/ContaCheckResi echo '=== Kanban references in views ===' grep -r \"kanban\\\\|task\" $BASE/resources/views)",
+      "Bash(php -l app/Http/Controllers/FielSello.php)",
+      "Bash(php -l routes/web.php)",
+      "WebFetch(domain:api-docs.deepseek.com)",
+      "Bash(composer require:*)",
+      "Bash(php artisan:*)",
+      "Bash(php -l app/Livewire/CfdiExcelConverter.php)",
+      "Bash(php -l app/Services/DeepSeekService.php)"
+    ]
+  }
+}
