@@ -42,6 +42,11 @@ RUN apk add --no-cache \
     && docker-php-ext-enable imagick \
     && rm -rf /var/cache/apk/*
 
+# Extensiones requeridas por openai-php/laravel → Guzzle → DeepSeek API
+RUN apk add --no-cache curl-dev \
+ && docker-php-ext-install curl mbstring \
+ && rm -rf /var/cache/apk/*
+
 # Instala Composer
 ENV COMPOSER_ALLOW_SUPERUSER=1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
