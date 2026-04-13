@@ -57,14 +57,29 @@ class CfdiExcelConverter extends Component
 
     public function updatedNewXmls(): void
     {
-        $this->validate([
-            'newXmls.*' => 'file|mimetypes:text/xml,application/xml|max:2048',
-        ]);
+        if (!$this->newXmls) {
+            return;
+        }
 
-        if ($this->newXmls) {
-            foreach ($this->newXmls as $file) {
-                $this->xmls[] = $file;
+        Storage::disk('local')->makeDirectory('cfdi_tmp');
+
+        foreach ($this->newXmls as $file) {
+            if (!$file->isValid()) {
+                continue;
             }
+
+            $extension = strtolower($file->getClientOriginalExtension());
+            if ($extension !== 'xml') {
+                continue;
+            }
+
+            $originalName = $file->getClientOriginalName();
+            $diskPath     = $file->storeAs('cfdi_tmp', uniqid('cfdi_', true) . '.xml', 'local');
+
+            $this->xmls[] = [
+                'name' => $originalName,
+                'path' => $diskPath,
+            ];
         }
 
         $this->newXmls = null;
@@ -80,37 +95,46 @@ class CfdiExcelConverter extends Component
         $sheet       = $spreadsheet->getActiveSheet();
 
         // ── Cabeceras ────────────────────────────────────────────────────────────
+        // COLUMNAS COMENTADAS (datos calculados, disponibles para reactivar):
+        // 'CfdiRelacionados',
+        // 'FechaEmisionXML',
+        // 'FechaTimbradoXML',
+        // 'Serie',
+        // 'Folio',
+        // 'UUID',
+        // 'UsoCFDI',
+        // 'SubTotal',
+        // 'Descuento',
+        // 'Total IEPS',
+        // 'IVA 16 Importe',
+        // 'IVA Retenido',
+        // 'ISR Retenido',
+        // 'ISH',
+        // 'Total',
+        // 'Total Trasladados',
+        // 'Total Retenidos',
+        // 'Total Local Trasladado',
+        // 'Total Local Retenido',
+        // 'FormaDePago',
+        // 'Metodo de Pago',
+        // 'Conceptos',
+        // 'Descripción',
+        // 'RegimenFiscalReceptor',
+        // 'IEPS Retenido',
+        // 'Complementos comprobante',
+        // 'Complementos concepto',
+
         $headers = [
-            'CfdiRelacionados',
-            'TipoComprobante',
-            'FechaEmisionXML',
-            'FechaTimbradoXML',
-            'Serie',
-            'Folio',
-            'UUID',
+            // ── COLUMNAS ACTIVAS (orden solicitado) ──────────────────────────────
+            'Tipo de operación',
             'RFC Emisor',
             'Nombre Emisor',
             'RFC Receptor',
             'Nombre Receptor',
-            'UsoCFDI',
-            'SubTotal',
-            'Descuento',
-            'Total IEPS',
-            'IVA 16 Importe',
-            'IVA Retenido',
-            'ISR Retenido',
-            'ISH',
-            'Total',
-            'Total Trasladados',
-            'Total Retenidos',
-            'Total Local Trasladado',
-            'Total Local Retenido',
-            'FormaDePago',
-            'Metodo de Pago',
-            'Conceptos',
-            'Descripción',
-            'Volumen total de enajenación por tipo de producto',
+            'Clave de la entidad Federativa',
+            'Lugar de Expedición',
             'Tipo de Producto',
+            'Empresa tabacalera',
             'Clave generica del producto',
             'IEPS 3%',
             'IEPS 6%',
@@ -122,9 +146,12 @@ class CfdiExcelConverter extends Component
             'IEPS 30%',
             'IEPS 53%',
             'IEPS 160%',
+            'Volumen total de enajenación por tipo de producto',
             'Empaque',
+            'Presentacion',
             'Unidad de Medida',
             'Valor de la operación (antes de impuestos)',
+            'Valor de la operación valuada al precio de venta al detallista',
             'IEPS Pagado / Trasladado',
             'IVA Pagado / Trasladado',
             'IEPS trasladado por la aplicación de la cuota específica de cigarros enajenados',
@@ -141,12 +168,6 @@ class CfdiExcelConverter extends Component
             'IEPS trasladado por la aplicación de la tasa a bebidas alcohólicas enajenadas',
             'IEPS trasladado por la aplicación de la tasa a bebidas alcohólicas importadas',
             'IEPS pagado en la importación por la aplicación de la tasa a alimentos no básicos con alta densidad calórica',
-            // Campos adicionales
-            'RegimenFiscalReceptor',
-            'Clave de la entidad Federativa',
-            'IEPS Retenido',
-            'Complementos comprobante',
-            'Complementos concepto',
         ];
 
         $sheet->fromArray($headers, null, 'A1');
@@ -164,222 +185,161 @@ class CfdiExcelConverter extends Component
         ]);
 
         // ── Paso 1: parsear todos los XMLs y recolectar filas ───────────────────
-        $pendingRows          = [];   // todas las filas a escribir
-        $uniqueDescriptions   = [];   // descripciones únicas para clasificar
+        // Solo se extraen los campos que usan las columnas activas del reporte.
+        // Los campos comentados se dejaron documentados para reactivar fácil.
+        $pendingRows        = [];
+        $uniqueDescriptions = [];
 
         foreach ($this->xmls as $xml) {
 
-            $xmlContent = simplexml_load_string($xml->get());
+            $rawXml     = Storage::disk('local')->get($xml['path']);
+            $xmlContent = $rawXml ? @simplexml_load_string($rawXml) : false;
+
+            // Saltar XMLs inválidos, vacíos o de esquema desconocido
+            if ($xmlContent === false || $xmlContent === null) {
+                continue;
+            }
+
             $namespaces = $xmlContent->getNamespaces(true);
+            $cfdiNs     = $namespaces['cfdi'] ?? 'http://www.sat.gob.mx/cfd/4';
 
-            $xmlContent->registerXPathNamespace('cfdi', $namespaces['cfdi'] ?? 'http://www.sat.gob.mx/cfd/4');
-            $xmlContent->registerXPathNamespace('tfd',  $namespaces['tfd']  ?? 'http://www.sat.gob.mx/TimbreFiscalDigital');
+            $xmlContent->registerXPathNamespace('cfdi', $cfdiNs);
 
-            $comprobante = $xmlContent->attributes();
-            $emisor      = $xmlContent->xpath('//cfdi:Emisor')[0]?->attributes()   ?? [];
-            $receptor    = $xmlContent->xpath('//cfdi:Receptor')[0]?->attributes() ?? [];
-
-            // UUID y fecha timbrado
-            $uuid          = '';
-            $fechaTimbrado = '';
-            $tfd = $xmlContent->xpath('//cfdi:Complemento/tfd:TimbreFiscalDigital')[0] ?? null;
-            if ($tfd) {
-                $attrs         = $tfd->attributes();
-                $uuid          = (string) ($attrs['UUID']          ?? '');
-                $fechaTimbrado = (string) ($attrs['FechaTimbrado'] ?? '');
-            }
-
-            // Tipo relación
-            $tipoRelacion = '';
-            $relacionado  = $xmlContent->xpath('//cfdi:CfdiRelacionados')[0] ?? null;
-            if ($relacionado) {
-                $tipoRelacion = (string) ($relacionado->attributes()['TipoRelacion'] ?? '');
-            }
-
-            // Complementos del comprobante
-            $complementos = [];
-            foreach ($xmlContent->xpath('//cfdi:Complemento/*') as $comp) {
-                $complementos[] = $comp->getName();
-            }
-
-            // Impuestos locales
-            $totalLocalTrasladado = '0';
-            $totalLocalRetenido   = '0';
-            $ish                  = '0';
-            foreach ($xmlContent->xpath('//cfdi:Complemento/*') as $comp) {
-                if (stripos($comp->getName(), 'ImpuestosLocales') !== false) {
-                    $attrs                = $comp->attributes();
-                    $totalLocalTrasladado = (string) ($attrs['TotaldeTraslados']   ?? '0');
-                    $totalLocalRetenido   = (string) ($attrs['TotaldeRetenciones'] ?? '0');
-                    foreach ($comp->children() as $child) {
-                        if ($child->getName() === 'TrasladosLocales') {
-                            $childAttrs = $child->attributes();
-                            if (isset($childAttrs['ImpLocTrasladado']) &&
-                                strtoupper((string) $childAttrs['ImpLocTrasladado']) === 'ISH') {
-                                $ish = (string) ($childAttrs['Importe'] ?? '0');
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Impuestos globales del comprobante
-            $trasladados = '0';
-            $retenidos   = '0';
-            $iva16       = '';
-            $isrRet      = '';
-            $ivaRet      = '';
-            $iepsRet     = '';
-            $totalIEPS   = '0';
-
-            $impuestos = $xmlContent->children($namespaces['cfdi'])->Impuestos ?? null;
-            if ($impuestos) {
-                $impAttrs    = $impuestos->attributes();
-                $trasladados = (string) ($impAttrs['TotalImpuestosTrasladados'] ?? '0');
-                $retenidos   = (string) ($impAttrs['TotalImpuestosRetenidos']   ?? '0');
-
-                foreach ($impuestos->Retenciones->Retencion ?? [] as $ret) {
-                    $attrs  = $ret->attributes();
-                    $imp    = (string) $attrs['Impuesto'];
-                    $impVal = (string) $attrs['Importe'];
-                    if ($imp === '001') $isrRet  = $impVal;
-                    if ($imp === '002') $ivaRet  = $impVal;
-                    if ($imp === '003') $iepsRet = $impVal;
-                }
-
-                foreach ($impuestos->Traslados->Traslado ?? [] as $tra) {
-                    $attrs    = $tra->attributes();
-                    $impuesto = (string) ($attrs['Impuesto']    ?? '');
-                    $importe  = (string) ($attrs['Importe']     ?? '');
-
-                    if ($impuesto === '002' && (string) ($attrs['TasaOCuota'] ?? '') === '0.160000') {
-                        $iva16 = $importe;
-                    }
-                    if ($impuesto === '003') {
-                        $totalIEPS = $importe;
-                    }
-                }
-            }
-
-            // Datos comunes del comprobante (se repiten en cada fila de concepto)
-            $cfdiBase = [
-                $tipoRelacion,
-                (string) ($comprobante['TipoDeComprobante']   ?? ''),
-                (string) ($comprobante['Fecha']               ?? ''),
-                $fechaTimbrado,
-                (string) ($comprobante['Serie']               ?? ''),
-                (string) ($comprobante['Folio']               ?? ''),
-                $uuid,
-                (string) ($emisor['Rfc']                      ?? ''),
-                (string) ($emisor['Nombre']                   ?? ''),
-                (string) ($receptor['Rfc']                    ?? ''),
-                (string) ($receptor['Nombre']                 ?? ''),
-                (string) ($receptor['UsoCFDI']                ?? ''),
-                (string) ($comprobante['SubTotal']            ?? ''),
-                (string) ($comprobante['Descuento']           ?? ''),
-                $totalIEPS,
-                $iva16,
-                $ivaRet,
-                $isrRet,
-                $ish,
-                (string) ($comprobante['Total']               ?? ''),
-                $trasladados,
-                $retenidos,
-                $totalLocalTrasladado,
-                $totalLocalRetenido,
-                $this->formasDePago[(string) ($comprobante['FormaPago'] ?? '')] ?? (string) ($comprobante['FormaPago'] ?? ''),
-                (string) ($comprobante['MetodoPago']          ?? ''),
-            ];
-
-            // Comprobantes de pago (tipo P) u otros sin conceptos gravados
-            // se registran como una sola fila vacía, sin mandarlos a DeepSeek
+            $comprobante     = $xmlContent->attributes();
             $tipoComprobante = (string) ($comprobante['TipoDeComprobante'] ?? '');
-            $cfdiNs          = $namespaces['cfdi'] ?? 'http://www.sat.gob.mx/cfd/4';
-            $conceptosNodos  = $xmlContent->xpath('//cfdi:Conceptos/cfdi:Concepto');
 
-            // Iterar concepto a concepto → una fila por producto
-            $todasDescripciones = [];
-            foreach ($conceptosNodos as $concepto) {
-                $todasDescripciones[] = (string) ($concepto->attributes()['Descripcion'] ?? '');
+            // Campos del nivel comprobante que usan columnas activas
+            $emisor   = $xmlContent->xpath('//cfdi:Emisor')[0]?->attributes()   ?? [];
+            $receptor = $xmlContent->xpath('//cfdi:Receptor')[0]?->attributes() ?? [];
+
+            $rfcEmisor      = (string) ($emisor['Rfc']                       ?? '');
+            $nomEmisor      = (string) ($emisor['Nombre']                    ?? '');
+            $rfcReceptor    = (string) ($receptor['Rfc']                     ?? '');
+            $nomReceptor    = (string) ($receptor['Nombre']                  ?? '');
+            $domFiscal      = (string) ($receptor['DomicilioFiscalReceptor'] ?? '');
+            $lugarExpedicion = (string) ($comprobante['LugarExpedicion']     ?? '');
+
+            // Campos comentados (no usados en columnas activas — reactivar si se necesitan):
+            // $uuid = $fechaTimbrado = '';
+            // $tfd  = $xmlContent->xpath('//cfdi:Complemento/tfd:TimbreFiscalDigital')[0] ?? null;
+            // if ($tfd) { $uuid = $tfd->attributes()['UUID']; $fechaTimbrado = $tfd->attributes()['FechaTimbrado']; }
+            // $tipoRelacion = (string) ($xmlContent->xpath('//cfdi:CfdiRelacionados')[0]?->attributes()['TipoRelacion'] ?? '');
+            // $complementos = array_map(fn($c) => $c->getName(), $xmlContent->xpath('//cfdi:Complemento/*'));
+            // $ish = $totalLocalTrasladado = $totalLocalRetenido = '0'; // ImpuestosLocales
+            // $impuestos   = $xmlContent->children($cfdiNs)->Impuestos ?? null;
+            // $trasladados = $retenidos = $iva16 = $isrRet = $ivaRet = $iepsRet = $totalIEPS = '';
+
+            // Conceptos — si no hay, no hay nada que procesar
+            $conceptosNodos = $xmlContent->xpath('//cfdi:Conceptos/cfdi:Concepto');
+            if (empty($conceptosNodos)) {
+                continue;
             }
-            $conceptosJoined = implode(' | ', $todasDescripciones);
 
+            // Plantilla IEPS y claves extraídas UNA SOLA VEZ por XML (no por concepto)
+            $iepsTemplate = [
+                '0.030000' => '',   // 3%
+                '0.060000' => '',   // 6%
+                '0.070000' => '',   // 7%
+                '0.080000' => '',   // 8%
+                '0.090000' => '',   // 9%
+                '0.160000' => '',   // 16%
+                '0.265000' => '',   // 26.5%
+                '0.300000' => '',   // 30%
+                '0.530000' => '',   // 53%
+                '1.600000' => '',   // 160%
+            ];
+            $iepsKeys = array_keys($iepsTemplate); // calculado una vez, reutilizado por cada concepto
+
+            // Para tipo P (pago) u otros sin datos IEPS, aún creamos filas
+            // pero no mandamos nada a DeepSeek
             foreach ($conceptosNodos as $concepto) {
                 $attrs       = $concepto->attributes();
                 $descripcion = (string) ($attrs['Descripcion'] ?? '');
                 $objetoImp   = (string) ($attrs['ObjetoImp']   ?? '');
 
-                // ── Columnas IEPS por tasa ────────────────────────────────────────
-                $iepsColumns = [
-                    '0.030000' => '',   // 3%
-                    '0.060000' => '',   // 6%
-                    '0.070000' => '',   // 7%
-                    '0.080000' => '',   // 8%
-                    '0.090000' => '',   // 9%
-                    '0.160000' => '',   // 16%
-                    '0.265000' => '',   // 26.5%
-                    '0.300000' => '',   // 30%
-                    '0.530000' => '',   // 53%
-                    '1.600000' => '',   // 160%
-                ];
+                // ── IEPS por tasa (columnas 10-19) ───────────────────────────────
+                $iepsColumns = $iepsTemplate; // reset rápido (copia de array ya construido)
 
-                $impuestosConcepto = $concepto->children($cfdiNs)->Impuestos ?? null;
-                $baseIva      = '';
-                $importeIeps  = '';
-                $importeIva   = '';
+                $baseIva     = '';
+                $importeIeps = '';
+                $importeIva  = '';
 
-                if ($impuestosConcepto) {
-                    $traslados = iterator_to_array($impuestosConcepto->Traslados->Traslado ?? [], false);
-                    foreach ($traslados as $traslado) {
-                        $tAttrs   = $traslado->attributes();
-                        $impuesto = (string) ($tAttrs['Impuesto']   ?? '');
-                        $tasa     = (string) ($tAttrs['TasaOCuota'] ?? '');
-                        $importe  = (string) ($tAttrs['Importe']    ?? '');
+                // Solo leer impuestos del concepto si el concepto los tiene
+                if ($objetoImp !== '01') {
+                    $impuestosConcepto = $concepto->children($cfdiNs)->Impuestos ?? null;
+                    if ($impuestosConcepto) {
+                        foreach ($impuestosConcepto->Traslados->Traslado ?? [] as $traslado) {
+                            $tAttrs   = $traslado->attributes();
+                            $impuesto = (string) ($tAttrs['Impuesto']   ?? '');
+                            $tasa     = (string) ($tAttrs['TasaOCuota'] ?? '');
+                            $importe  = (string) ($tAttrs['Importe']    ?? '');
 
-                        if ($impuesto === '003') {
-                            if ($tasa !== '') {
-                                $nearestKey = $this->findNearestIepsKey((float) $tasa, array_keys($iepsColumns));
-                                if ($nearestKey !== null) {
-                                    $iepsColumns[$nearestKey] = $importe;
+                            if ($impuesto === '003') {
+                                if ($tasa !== '') {
+                                    $nearestKey = $this->findNearestIepsKey((float) $tasa, $iepsKeys);
+                                    if ($nearestKey !== null) {
+                                        $iepsColumns[$nearestKey] = $importe;
+                                    }
                                 }
+                                $importeIeps = $importe;
                             }
-                            $importeIeps = $importe;
-                        }
-
-                        if ($impuesto === '002') {
-                            $baseIva    = (string) ($tAttrs['Base'] ?? '');
-                            $importeIva = $importe;
+                            if ($impuesto === '002') {
+                                $baseIva    = (string) ($tAttrs['Base'] ?? '');
+                                $importeIva = $importe;
+                            }
                         }
                     }
                 }
 
-                // Solo mandar a DeepSeek si:
-                // - No es comprobante de pago (tipo P)
-                // - El concepto está sujeto a impuestos (ObjetoImp != '01')
-                // - Tiene IEPS real con importe > 0
-                $tieneIeps = $importeIeps !== '' && (float) $importeIeps > 0;
+                // ¿Necesita clasificación IA?
+                // Condiciones: no es pago, está gravado, tiene IEPS real > 0
                 $necesitaIA = $tipoComprobante !== 'P'
                     && $objetoImp !== '01'
-                    && $tieneIeps;
+                    && $importeIeps !== ''
+                    && (float) $importeIeps > 0;
 
                 if ($necesitaIA) {
                     $uniqueDescriptions[$descripcion] = true;
                 }
 
                 $pendingRows[] = [
-                    'base'        => $cfdiBase,
+                    // Campos activos en columnas del reporte
+                    'rfcEmisor'       => $rfcEmisor,
+                    'nomEmisor'       => $nomEmisor,
+                    'rfcReceptor'     => $rfcReceptor,
+                    'nomReceptor'     => $nomReceptor,
+                    'domFiscal'       => $domFiscal,
+                    'lugarExpedicion' => $lugarExpedicion,
                     'descripcion' => $descripcion,
-                    'conceptos'   => $conceptosJoined,
                     'cantidad'    => (string) ($attrs['Cantidad'] ?? ''),
                     'iepsColumns' => array_values($iepsColumns),
                     'baseIva'     => $baseIva,
                     'importeIeps' => $importeIeps,
                     'importeIva'  => $importeIva,
-                    'regimenRec'  => (string) ($receptor['RegimenFiscalReceptor']   ?? ''),
-                    'domFiscal'   => (string) ($receptor['DomicilioFiscalReceptor'] ?? ''),
-                    'iepsRet'     => $iepsRet,
-                    'complementos'=> implode(' | ', array_unique($complementos)),
                     'necesitaIA'  => $necesitaIA,
+                    // Campos comentados (reactivar cuando se necesiten):
+                    // 'tipoComprobante' => $tipoComprobante,
+                    // 'conceptos'       => implode(' | ', $todasDescripciones),
+                    // 'regimenRec'      => (string)($receptor['RegimenFiscalReceptor'] ?? ''),
+                    // 'iepsRet'         => $iepsRet,
+                    // 'complementos'    => implode(' | ', $complementos),
+                    // 'uuid'            => $uuid,
+                    // 'fechaEmision'    => (string)($comprobante['Fecha'] ?? ''),
+                    // 'fechaTimbrado'   => $fechaTimbrado,
+                    // 'serie'           => (string)($comprobante['Serie'] ?? ''),
+                    // 'folio'           => (string)($comprobante['Folio'] ?? ''),
+                    // 'subTotal'        => (string)($comprobante['SubTotal'] ?? ''),
+                    // 'total'           => (string)($comprobante['Total'] ?? ''),
+                    // 'descuento'       => (string)($comprobante['Descuento'] ?? ''),
+                    // 'formaPago'       => $this->formasDePago[...],
+                    // 'metodoPago'      => (string)($comprobante['MetodoPago'] ?? ''),
+                    // 'iva16'           => $iva16,
+                    // 'ivaRet'          => $ivaRet,
+                    // 'isrRet'          => $isrRet,
+                    // 'totalIEPS'       => $totalIEPS,
+                    // 'trasladados'     => $trasladados,
+                    // 'retenidos'       => $retenidos,
+                    // 'ish'             => $ish,
                 ];
             }
         }
@@ -390,15 +350,26 @@ class CfdiExcelConverter extends Component
 
         // ── Paso 3: escribir las filas en el Excel ───────────────────────────────
         $iepsEspKeys = [
-            'cigarros_enajenados', 'puros_enajenados', 'puros_mano_enajenados',
-            'bebidas_saborizadas_enajenados', 'bebidas_energetizantes_enajenados',
-            'cigarros_importacion', 'puros_importacion', 'puros_mano_importacion',
-            'bebidas_saborizadas_importacion', 'bebidas_energetizantes_importacion',
-            'alimentos_alta_densidad_enajenados', 'bebidas_alcoholicas_enajenados',
-            'bebidas_alcoholicas_importacion', 'alimentos_alta_densidad_importacion',
+            'cigarros_enajenados',
+            'puros_enajenados',
+            'puros_mano_enajenados',
+            'bebidas_saborizadas_enajenados',
+            'bebidas_energetizantes_enajenados',
+            'cigarros_importacion',
+            'puros_importacion',
+            'puros_mano_importacion',
+            'bebidas_saborizadas_importacion',
+            'bebidas_energetizantes_importacion',
+            'alimentos_alta_densidad_enajenados',
+            'bebidas_alcoholicas_enajenados',
+            'bebidas_alcoholicas_importacion',
+            'alimentos_alta_densidad_importacion',
         ];
 
-        $row = 2;
+        // Array de filas: se acumulan todas y se escriben en UNA sola llamada a PhpSpreadsheet
+        $excelRows    = [];
+        $emptyEsp14   = array_fill(0, 14, ''); // constante reutilizable (evita array_fill por fila)
+
         foreach ($pendingRows as $entry) {
             // Si el concepto no necesitaba IA, las columnas de clasificación van vacías
             if ($entry['necesitaIA']) {
@@ -413,34 +384,52 @@ class CfdiExcelConverter extends Component
                 $iepsEspCat = 'ninguno';
             }
 
-            // Distribuir el importe IEPS en la columna especial que corresponda
-            $iepsEspCols = array_fill(0, 14, '');
+            // Distribuir el importe IEPS en la columna especial que corresponda (14 columnas)
+            $iepsEspCols = $emptyEsp14;
             $iepsEspIdx  = array_search($iepsEspCat, $iepsEspKeys, true);
             if ($iepsEspIdx !== false && $entry['importeIeps'] !== '') {
                 $iepsEspCols[$iepsEspIdx] = $entry['importeIeps'];
             }
 
-            $sheet->fromArray(array_merge(
-                $entry['base'],
+            // ── Fila en el orden solicitado ───────────────────────────────────
+            $excelRows[] = array_merge(
                 [
-                    $entry['conceptos'],
-                    $entry['descripcion'],
-                    $entry['cantidad'],
-                    $tipoProd,
-                    $claveGenerica,
+                    '',                    // 1  Tipo de operación (vacía)
+                    $entry['rfcEmisor'],   // 2  RFC Emisor
+                    $entry['nomEmisor'],   // 3  Nombre Emisor
+                    $entry['rfcReceptor'], // 4  RFC Receptor
+                    $entry['nomReceptor'], // 5  Nombre Receptor
+                    $entry['domFiscal'],        // 6  Clave entidad federativa
+                    $entry['lugarExpedicion'],  // 7  Lugar de Expedición
+                    $tipoProd,                  // 8  Tipo de Producto
+                    '',                    // 8  Empresa tabacalera (vacía)
+                    $claveGenerica,        // 9  Clave genérica del producto
                 ],
-                $entry['iepsColumns'],
-                [$empaque, $unidadMedida, $entry['baseIva'], $entry['importeIeps'], $entry['importeIva']],
-                $iepsEspCols,
+                $entry['iepsColumns'],     // 10-19  IEPS 3% … 160% (10 columnas)
                 [
-                    $entry['regimenRec'],
-                    $entry['domFiscal'],
-                    $entry['iepsRet'],
-                    $entry['complementos'],
-                ]
-            ), null, 'A' . $row);
+                    $entry['cantidad'],    // 20  Volumen total de enajenación
+                    $empaque,              // 21  Empaque
+                    '',                    // 22  Presentación (vacía)
+                    $unidadMedida,         // 23  Unidad de Medida
+                    $entry['baseIva'],     // 24  Valor de la operación (antes de impuestos)
+                    '',                    // 25  Valor valuada precio detallista (vacía)
+                    $entry['importeIeps'], // 26  IEPS Pagado / Trasladado
+                    $entry['importeIva'],  // 27  IVA Pagado / Trasladado
+                ],
+                $iepsEspCols               // 28-41  IEPS específicos (14 columnas)
+                // COLUMNAS COMENTADAS (reactivar cuando se necesiten):
+                // $entry['tipoComprobante'], $entry['uuid'], $entry['fechaEmision'],
+                // $entry['serie'], $entry['folio'], $entry['subTotal'], $entry['total'],
+                // $entry['descuento'], $entry['formaPago'], $entry['metodoPago'],
+                // $entry['iva16'], $entry['ivaRet'], $entry['isrRet'], $entry['iepsRet'],
+                // $entry['totalIEPS'], $entry['trasladados'], $entry['retenidos'],
+                // $entry['ish'], $entry['regimenRec'], $entry['complementos'],
+            );
+        }
 
-            $row++;
+        // Escritura masiva: UNA sola llamada en lugar de N llamadas (una por fila)
+        if (!empty($excelRows)) {
+            $sheet->fromArray($excelRows, null, 'A2');
         }
 
         // Auto-ajuste de columnas
@@ -465,6 +454,11 @@ class CfdiExcelConverter extends Component
         $this->downloadLink = Storage::url($relativePath);
         $this->duration     = now()->diffInSeconds($startTime);
         $this->completed    = true;
+
+        // Limpiar archivos XML temporales del disco (ya fueron procesados)
+        foreach ($this->xmls as $xml) {
+            Storage::disk('local')->delete($xml['path']);
+        }
     }
 
     /**
@@ -525,43 +519,29 @@ class CfdiExcelConverter extends Component
         }
 
         $txtIeps = <<<TXT
-  cigarros_enajenados                 → Cigarros, cigarrillos nacionales
-  puros_enajenados                    → Puros y tabacos labrados enajenados
-  puros_mano_enajenados               → Puros a mano enajenados
-  bebidas_saborizadas_enajenados      → Refrescos, agua de sabor con azúcar (nacionales)
-  bebidas_energetizantes_enajenados   → Bebidas energetizantes nacionales
-  cigarros_importacion                → Cigarros importados
-  puros_importacion                   → Puros importados
+  cigarros_enajenados                 → Cigarros, cigarrillos nacionales enajenados en México
+  puros_enajenados                    → Puros y tabacos labrados enajenados en México
+  puros_mano_enajenados               → Puros y tabacos hechos enteramente a mano enajenados
+  bebidas_saborizadas_enajenados      → Refrescos, agua de sabor, bebidas con azúcar (nacionales)
+  bebidas_energetizantes_enajenados   → Bebidas energetizantes, shots energéticos (nacionales)
+  cigarros_importacion                → Cigarros y cigarrillos importados
+  puros_importacion                   → Puros y tabacos labrados importados
   puros_mano_importacion              → Puros a mano importados
   bebidas_saborizadas_importacion     → Bebidas saborizadas importadas
   bebidas_energetizantes_importacion  → Bebidas energetizantes importadas
-  alimentos_alta_densidad_enajenados  → Botanas, papas fritas, frituras, chocolates, dulces, helados, cereales, galletas (nacionales)
-  bebidas_alcoholicas_enajenados      → Cerveza, tequila, mezcal, vino, ron, whisky, vodka, brandy (nacionales)
-  bebidas_alcoholicas_importacion     → Bebidas alcohólicas importadas
-  alimentos_alta_densidad_importacion → Snacks, botanas, chocolates importados
-  ninguno                             → No aplica ninguna categoría IEPS anterior
+  alimentos_alta_densidad_enajenados  → Botanas, papas fritas, frituras, Takis, palomitas, nachos, chicharrones, cacahuates, chocolates, dulces, gomitas, helados, galletas, cereales, pasteles (producción nacional)
+  bebidas_alcoholicas_enajenados      → Cerveza, tequila, mezcal, vino, ron, whisky, vodka, brandy, aguardiente, sidra (nacionales, enajenadas en México)
+  bebidas_alcoholicas_importacion     → Bebidas alcohólicas importadas: whisky, vodka, cognac, ron, vino, cerveza importada
+  alimentos_alta_densidad_importacion → Snacks, frituras, chocolates, botanas importadas con alta densidad calórica
+  ninguno                             → No aplica ninguna categoría IEPS anterior (servicios, alimentos básicos, medicamentos, etc.)
 TXT;
 
-        // Procesar en lotes de 30
+        // ── Preparar lotes (chunks de 50 — mayor tamaño = menos peticiones paralelas) ──
         $descriptions = array_values($descriptions);
-        $chunks       = array_chunk($descriptions, 30, false);
-        $result       = [];
+        $chunks       = array_chunk($descriptions, 50, false);
 
-        /** @var DeepSeekService $deepseek */
-        $deepseek = app(DeepSeekService::class);
-
-        foreach ($chunks as $chunkOffset => $chunk) {
-            $baseIndex   = $chunkOffset * 30;
-            $numbered    = array_map(
-                fn ($i, $desc) => ($baseIndex + $i + 1) . '. ' . $desc,
-                array_keys($chunk),
-                $chunk
-            );
-            $productList = implode("\n", $numbered);
-
-            $prompt = <<<PROMPT
-Eres un experto en SAT México e IEPS. Clasifica cada producto en los 5 catálogos simultáneamente.
-
+        // Parte estática del prompt (catálogos) — construida UNA vez, compartida por todos los chunks
+        $staticCatalogs = <<<STATIC
 === CATÁLOGO 1: TIPO DE PRODUCTO (sat_catalogo_simple) ===
 {$txtSimple}
 
@@ -576,46 +556,86 @@ Eres un experto en SAT México e IEPS. Clasifica cada producto en los 5 catálog
 
 === CATÁLOGO 5: IEPS ESPECIAL ===
 {$txtIeps}
+STATIC;
 
-=== PRODUCTOS A CLASIFICAR ===
-{$productList}
+        // ── Guzzle async: todas las peticiones se lanzan en PARALELO ─────────────
+        // En lugar de esperar la respuesta de cada chunk antes de enviar el siguiente,
+        // todos los chunks se envían simultáneamente y se espera al más lento.
+        // Con 600 descripciones (12 chunks de 50) el tiempo pasa de ~96s a ~8s.
+        $apiKey    = config('deepseek.api_key');
+        $model     = config('deepseek.model', 'deepseek-chat');
+        $baseUri   = 'https://' . ltrim(config('deepseek.base_uri', 'api.deepseek.com/v1'), 'https://') . '/';
+        $timeout   = (int) config('deepseek.timeout', 300);
 
-=== INSTRUCCIONES ===
-Responde ÚNICAMENTE con un JSON array válido, sin texto ni markdown.
-Por cada producto devuelve exactamente este formato:
-[
-  {
-    "index": 1,
-    "tipo": "código de catálogo 1",
-    "generica": "código de catálogo 2",
-    "empaque": "código de catálogo 3",
-    "unidad": "código de catálogo 4",
-    "ieps": "clave_exacta de catálogo 5 o ninguno"
-  }
-]
-PROMPT;
+        $guzzle = new \GuzzleHttp\Client([
+            'base_uri'        => $baseUri,
+            'timeout'         => $timeout,
+            'connect_timeout' => 30,
+        ]);
 
-            try {
-                $response = $deepseek->chat($prompt, ['temperature' => 0.1]);
-                $cleaned  = preg_replace('/```(?:json)?\s*([\s\S]*?)\s*```/', '$1', trim($response));
-                $json     = json_decode($cleaned, true);
+        $promises = [];
+        foreach ($chunks as $chunkOffset => $chunk) {
+            $baseIndex   = $chunkOffset * 50;
+            $productList = implode("\n", array_map(
+                fn ($i, $desc) => ($baseIndex + $i + 1) . '. ' . $desc,
+                array_keys($chunk),
+                $chunk
+            ));
 
-                if (is_array($json)) {
-                    foreach ($json as $item) {
-                        $idx = (int) ($item['index'] ?? 0) - 1 - $baseIndex;
-                        if (isset($chunk[$idx])) {
-                            $result[$chunk[$idx]] = [
-                                'tipo'    => $item['tipo']    ?? '000',
-                                'generica'=> $item['generica'] ?? '000',
-                                'empaque' => $item['empaque']  ?? '000',
-                                'unidad'  => $item['unidad']   ?? '000',
-                                'ieps'    => $item['ieps']     ?? 'ninguno',
-                            ];
-                        }
-                    }
+            $prompt = "Eres un experto en SAT México e IEPS. Clasifica cada producto en los 5 catálogos simultáneamente.\n\n"
+                . $staticCatalogs
+                . "\n\n=== PRODUCTOS A CLASIFICAR ===\n{$productList}\n\n"
+                . "=== INSTRUCCIONES ===\n"
+                . "Responde ÚNICAMENTE con un JSON array válido, sin texto ni markdown.\n"
+                . "Por cada producto devuelve exactamente este formato:\n"
+                . "[{\"index\":1,\"tipo\":\"cód1\",\"generica\":\"cód2\",\"empaque\":\"cód3\",\"unidad\":\"cód4\",\"ieps\":\"clave5_o_ninguno\"}]";
+
+            $promises[$chunkOffset] = $guzzle->postAsync('chat/completions', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => [
+                    'model'       => $model,
+                    'messages'    => [['role' => 'user', 'content' => $prompt]],
+                    'temperature' => 0.1,
+                ],
+            ]);
+        }
+
+        // Esperar TODAS las respuestas (settle no lanza excepción si alguna falla)
+        $settled = \GuzzleHttp\Promise\Utils::settle($promises)->wait();
+
+        // ── Procesar respuestas ───────────────────────────────────────────────────
+        $result = [];
+        foreach ($settled as $chunkOffset => $outcome) {
+            if ($outcome['state'] !== 'fulfilled') {
+                continue; // el chunk falló — sus productos quedan con defaults
+            }
+
+            $body    = json_decode((string) $outcome['value']->getBody(), true);
+            $text    = $body['choices'][0]['message']['content'] ?? '';
+            $cleaned = preg_replace('/```(?:json)?\s*([\s\S]*?)\s*```/', '$1', trim($text));
+            $json    = json_decode($cleaned, true);
+
+            if (!is_array($json)) {
+                continue;
+            }
+
+            $chunk     = $chunks[$chunkOffset];
+            $baseIndex = $chunkOffset * 50;
+
+            foreach ($json as $item) {
+                $idx = (int) ($item['index'] ?? 0) - 1 - $baseIndex;
+                if (isset($chunk[$idx])) {
+                    $result[$chunk[$idx]] = [
+                        'tipo'    => $item['tipo']     ?? '000',
+                        'generica'=> $item['generica']  ?? '000',
+                        'empaque' => $item['empaque']   ?? '000',
+                        'unidad'  => $item['unidad']    ?? '000',
+                        'ieps'    => $item['ieps']      ?? 'ninguno',
+                    ];
                 }
-            } catch (\Throwable $e) {
-                // Si falla un lote, ese lote queda con defaults
             }
         }
 
@@ -824,6 +844,10 @@ PROMPT;
 
     public function removeXml(int $index): void
     {
+        if (isset($this->xmls[$index])) {
+            // Eliminar el archivo físico del disco al quitar de la lista
+            Storage::disk('local')->delete($this->xmls[$index]['path']);
+        }
         unset($this->xmls[$index]);
         $this->xmls = array_values($this->xmls);
     }
