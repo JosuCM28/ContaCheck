@@ -106,6 +106,8 @@ Route::get('file/download/{document}', [FileController::class, 'download'])->nam
 Route::get('/cfdi/convert', [CfdiConvertController::class, 'form'])->name('cfdi.form');
 Route::post('/cfdi/convert', [CfdiConvertController::class, 'convert'])->name('cfdi.convert');
 
+Route::get('/excel-to-txt', fn () => view('excel-to-txt.index'))->name('excel.to.txt');
+
 Route::get('pdfview', [PDFMaker::class, 'showPDF'])->name('pdfview');
 
 require __DIR__.'/auth.php';
