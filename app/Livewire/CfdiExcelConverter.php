@@ -136,6 +136,7 @@ class CfdiExcelConverter extends Component
             'Tipo de Producto',
             'Empresa tabacalera',
             'Clave generica del producto',
+            'Graduación',
             'IEPS 3%',
             'IEPS 6%',
             'IEPS 7%',
@@ -159,15 +160,19 @@ class CfdiExcelConverter extends Component
             'IEPS trasladado por la aplicación de la cuota específica por el peso total en gramos de los puros y otros tabacos labrados hechos enteramente a mano enajenados',
             'IEPS trasladado por la aplicación de la cuota de bebidas saborizadas',
             'IEPS trasladado por la aplicación de la cuota de bebidas energetizantes',
+            'IEPS TRASLADADO POR LA APLICACIÓN DE LA CUOTA DE BEBIDAS SABORIZADAS',
+            'IEPS TRASLADADO POR LA APLICACIÓN DE LA CUOTA DE BEBIDAS CON ENDULCORANTES AÑADIDOS',
+            'IEPS TRASLADADO POR LA APLICACIÓN DE LA CUOTA DE BEBIDAS ENERGETIZANTES O CONCENTRADOS, POLVOS Y JARABES PARA PREPARAR BEBIDAS ENERGETIZANTES CON AZÚCARES AÑADIDOS',
+            'IEPS TRASLADADO POR LA APLICACIÓN DE LA CUOTA DE BEBIDAS ENERGETIZANTES O CONCENTRADOS, POLVOS Y JARABES PARA PREPARAR BEBIDAS ENERGETIZANTES CON ENDULCORANTES AÑADIDOS',
             'IEPS pagados en la importación por la aplicación de la cuota específica de cigarros',
-            'IEPS pagados en la importación por la aplicación de la cuota específica de los puros y otros tabacos labrados',
+            'IEPS pagados en la importación por la aplicación de la cuota específica de los puros y otros tabacos labrados, ASÍ COMO DE OTROS PRODUCTOS QUE CONTENGAN NICOTINA',
             'IEPS pagados en la importación por la aplicación de la cuota específica de los puros y otros tabacos labrados hechos enteramente a mano',
             'IEPS pagado en la importación por la aplicación de la cuota de bebidas saborizadas',
             'IEPS pagado en la importación por la aplicación de la cuota de bebidas energetizantes',
-            'IEPS trasladado por la aplicación de la tasa a alimentos no básicos con alta densidad calórica enajenados',
-            'IEPS trasladado por la aplicación de la tasa a bebidas alcohólicas enajenadas',
-            'IEPS trasladado por la aplicación de la tasa a bebidas alcohólicas importadas',
-            'IEPS pagado en la importación por la aplicación de la tasa a alimentos no básicos con alta densidad calórica',
+            'IEPS pagado en la importación por la aplicación de la cuota de bebidas saborizadas CON AZUCARES AÑADIDOS',
+            'IEPS pagado en la importación por la aplicación de la cuota de bebidas saborizadas CON ENDULCORANTES AÑADIDOS',
+            'IEPS pagado en la importación por la aplicación de la cuota de bebidas energetizantes CON AZUCARES AÑADIDOS',
+            'IEPS pagado en la importación por la aplicación de la cuota de bebidas energetizantes CON ENDULCORANTES AÑADIDOS',
         ];
 
         $sheet->fromArray($headers, null, 'A1');
@@ -189,6 +194,7 @@ class CfdiExcelConverter extends Component
         // Los campos comentados se dejaron documentados para reactivar fácil.
         $pendingRows        = [];
         $uniqueDescriptions = [];
+        $uniqueCps          = []; // CPs únicos para resolver con DeepSeek
 
         foreach ($this->xmls as $xml) {
 
@@ -263,6 +269,7 @@ class CfdiExcelConverter extends Component
                 $baseIva     = '';
                 $importeIeps = '';
                 $importeIva  = '';
+                $graduacion  = '000'; // 000=sin alcohol, 001=26.5%, 002=30%, 003=53%
 
                 // Solo leer impuestos del concepto si el concepto los tiene
                 if ($objetoImp !== '01') {
@@ -280,6 +287,16 @@ class CfdiExcelConverter extends Component
                                     if ($nearestKey !== null) {
                                         $iepsColumns[$nearestKey] = $importe;
                                     }
+
+                                    // Graduación alcohólica según tasa IEPS
+                                    $tasaFloat = (float) $tasa;
+                                    if (abs($tasaFloat - 0.265) < 0.001) {
+                                        $graduacion = '001'; // 26.5% → grado bajo
+                                    } elseif (abs($tasaFloat - 0.300) < 0.001) {
+                                        $graduacion = '002'; // 30%   → grado medio
+                                    } elseif (abs($tasaFloat - 0.530) < 0.001) {
+                                        $graduacion = '003'; // 53%   → grado alto
+                                    }
                                 }
                                 $importeIeps = $importe;
                             }
@@ -292,14 +309,20 @@ class CfdiExcelConverter extends Component
                 }
 
                 // ¿Necesita clasificación IA?
-                // Condiciones: no es pago, está gravado, tiene IEPS real > 0
+                // Cualquier concepto gravado que no sea complemento de pago
                 $necesitaIA = $tipoComprobante !== 'P'
-                    && $objetoImp !== '01'
-                    && $importeIeps !== ''
-                    && (float) $importeIeps > 0;
+                    && $objetoImp !== '01';
 
                 if ($necesitaIA) {
                     $uniqueDescriptions[$descripcion] = true;
+                }
+
+                // Registrar CPs únicos para resolución por IA
+                if ($domFiscal !== '') {
+                    $uniqueCps[$domFiscal] = true;
+                }
+                if ($lugarExpedicion !== '') {
+                    $uniqueCps[$lugarExpedicion] = true;
                 }
 
                 $pendingRows[] = [
@@ -316,6 +339,7 @@ class CfdiExcelConverter extends Component
                     'baseIva'     => $baseIva,
                     'importeIeps' => $importeIeps,
                     'importeIva'  => $importeIva,
+                    'graduacion'  => $graduacion,
                     'necesitaIA'  => $necesitaIA,
                     // Campos comentados (reactivar cuando se necesiten):
                     // 'tipoComprobante' => $tipoComprobante,
@@ -344,79 +368,125 @@ class CfdiExcelConverter extends Component
             }
         }
 
-        // ── Paso 2: clasificar todas las descripciones en UNA sola llamada a DeepSeek ──
-        $descriptions   = array_keys($uniqueDescriptions);
-        $allClassifications = $this->classifyAllAtOnce($descriptions);
+        // ── Paso 2: clasificar descripciones Y resolver CPs en paralelo ─────────
+        $descriptions = array_keys($uniqueDescriptions);
+        $cpList       = array_keys($uniqueCps);
+
+        // Ambas llamadas se lanzan en paralelo dentro de classifyAllAtOnce
+        // aprovechando el pool Guzzle async que ya existe.
+        [$allClassifications, $cpCodigos] = $this->classifyAllAtOnce($descriptions, $cpList);
 
         // ── Paso 3: escribir las filas en el Excel ───────────────────────────────
-        $iepsEspKeys = [
-            'cigarros_enajenados',
-            'puros_enajenados',
-            'puros_mano_enajenados',
-            'bebidas_saborizadas_enajenados',
-            'bebidas_energetizantes_enajenados',
-            'cigarros_importacion',
-            'puros_importacion',
-            'puros_mano_importacion',
-            'bebidas_saborizadas_importacion',
-            'bebidas_energetizantes_importacion',
-            'alimentos_alta_densidad_enajenados',
-            'bebidas_alcoholicas_enajenados',
-            'bebidas_alcoholicas_importacion',
-            'alimentos_alta_densidad_importacion',
-        ];
-
         // Array de filas: se acumulan todas y se escriben en UNA sola llamada a PhpSpreadsheet
-        $excelRows    = [];
-        $emptyEsp14   = array_fill(0, 14, ''); // constante reutilizable (evita array_fill por fila)
+        $excelRows  = [];
+        $ceroEsp18  = array_fill(0, 18, '0'); // 18 columnas IEPS especiales, siempre en 0
+
+        // ── Paso 3a: agrupar pendingRows por descripción ─────────────────────
+        // Suma valores numéricos; los campos de clasificación se toman del primer registro.
+        $grouped = []; // [descripcion => acumulado]
 
         foreach ($pendingRows as $entry) {
-            // Si el concepto no necesitaba IA, las columnas de clasificación van vacías
+            $desc = $entry['descripcion'];
+
+            if (!isset($grouped[$desc])) {
+                // Primer aparición: guardar campos de metadatos + iniciar acumuladores
+                $grouped[$desc] = [
+                    'rfcEmisor'       => $entry['rfcEmisor'],
+                    'nomEmisor'       => $entry['nomEmisor'],
+                    'rfcReceptor'     => $entry['rfcReceptor'],
+                    'nomReceptor'     => $entry['nomReceptor'],
+                    'domFiscal'       => $entry['domFiscal'],
+                    'lugarExpedicion' => $entry['lugarExpedicion'],
+                    'descripcion'     => $desc,
+                    'necesitaIA'      => $entry['necesitaIA'],
+                    'graduacion'      => $entry['graduacion'],
+                    'cantidad'        => (float) ($entry['cantidad']    ?: 0),
+                    'baseIva'         => (float) ($entry['baseIva']     ?: 0),
+                    'importeIeps'     => (float) ($entry['importeIeps'] ?: 0),
+                    'importeIva'      => (float) ($entry['importeIva']  ?: 0),
+                    'iepsColumns'     => array_map(fn($v) => (float) ($v ?: 0), $entry['iepsColumns']),
+                ];
+            } else {
+                // Apariciones posteriores: sumar valores numéricos
+                $grouped[$desc]['cantidad']    += (float) ($entry['cantidad']    ?: 0);
+                $grouped[$desc]['baseIva']     += (float) ($entry['baseIva']     ?: 0);
+                $grouped[$desc]['importeIeps'] += (float) ($entry['importeIeps'] ?: 0);
+                $grouped[$desc]['importeIva']  += (float) ($entry['importeIva']  ?: 0);
+
+                foreach ($entry['iepsColumns'] as $i => $val) {
+                    $grouped[$desc]['iepsColumns'][$i] += (float) ($val ?: 0);
+                }
+
+                // Si cualquier aparición necesita IA, el grupo la necesita
+                if ($entry['necesitaIA']) {
+                    $grouped[$desc]['necesitaIA'] = true;
+                }
+
+                // Graduación: prevalece la más alta del grupo
+                if ($entry['graduacion'] > $grouped[$desc]['graduacion']) {
+                    $grouped[$desc]['graduacion'] = $entry['graduacion'];
+                }
+            }
+        }
+
+        // ── Paso 3b: construir filas Excel desde el concentrado ──────────────
+        foreach ($grouped as $desc => $entry) {
+            // Clasificación IA (una sola vez por descripción única)
             if ($entry['necesitaIA']) {
-                $cls           = $allClassifications[$entry['descripcion']] ?? [];
+                $cls           = $allClassifications[$desc] ?? [];
                 $tipoProd      = $cls['tipo']     ?? '000';
                 $claveGenerica = $cls['generica'] ?? '000';
                 $empaque       = $cls['empaque']  ?? '000';
                 $unidadMedida  = $cls['unidad']   ?? '000';
-                $iepsEspCat    = $cls['ieps']     ?? 'ninguno';
             } else {
-                $tipoProd = $claveGenerica = $empaque = $unidadMedida = '';
-                $iepsEspCat = 'ninguno';
+                $tipoProd      = '000';
+                $claveGenerica = '000';
+                $empaque       = '000';
+                $unidadMedida  = '000';
             }
 
-            // Distribuir el importe IEPS en la columna especial que corresponda (14 columnas)
-            $iepsEspCols = $emptyEsp14;
-            $iepsEspIdx  = array_search($iepsEspCat, $iepsEspKeys, true);
-            if ($iepsEspIdx !== false && $entry['importeIeps'] !== '') {
-                $iepsEspCols[$iepsEspIdx] = $entry['importeIeps'];
-            }
+            // Formatear columnas IEPS acumuladas ('0' cuando el total es cero)
+            $iepsColumnsFmt = array_map(
+                fn($v) => $v != 0 ? (string) $v : '0',
+                $entry['iepsColumns']
+            );
+
+            $importeIepsFmt = $entry['importeIeps'] != 0 ? (string) $entry['importeIeps'] : '0';
+            $importeIvaFmt  = $entry['importeIva']  != 0 ? (string) $entry['importeIva']  : '0';
+            $baseIvaFmt     = $entry['baseIva']     != 0 ? (string) $entry['baseIva']     : '0';
+            $cantidadFmt    = $entry['cantidad']    != 0 ? (string) $entry['cantidad']    : '0';
+
+            // Resolver clave de entidad federativa y lugar de expedición desde mapa IA
+            $claveEntidad    = $cpCodigos[$entry['domFiscal']]       ?? '00';
+            $claveExpedicion = $cpCodigos[$entry['lugarExpedicion']] ?? '00';
 
             // ── Fila en el orden solicitado ───────────────────────────────────
             $excelRows[] = array_merge(
                 [
-                    '',                    // 1  Tipo de operación (vacía)
-                    $entry['rfcEmisor'],   // 2  RFC Emisor
-                    $entry['nomEmisor'],   // 3  Nombre Emisor
-                    $entry['rfcReceptor'], // 4  RFC Receptor
-                    $entry['nomReceptor'], // 5  Nombre Receptor
-                    $entry['domFiscal'],        // 6  Clave entidad federativa
-                    $entry['lugarExpedicion'],  // 7  Lugar de Expedición
-                    $tipoProd,                  // 8  Tipo de Producto
-                    '',                    // 8  Empresa tabacalera (vacía)
-                    $claveGenerica,        // 9  Clave genérica del producto
+                    '00',                  // 1  Tipo de operación
+                    $entry['rfcEmisor']   ?: '00', // 2  RFC Emisor
+                    $entry['nomEmisor']   ?: '00', // 3  Nombre Emisor
+                    $entry['rfcReceptor'] ?: '00', // 4  RFC Receptor
+                    $entry['nomReceptor'] ?: '00', // 5  Nombre Receptor
+                    $claveEntidad,                 // 6  Clave entidad federativa
+                    $claveExpedicion,              // 7  Lugar de Expedición
+                    $tipoProd,                     // 8  Tipo de Producto
+                    '00',                  // 9  Empresa tabacalera
+                    $claveGenerica,        // 10 Clave genérica del producto
+                    $entry['graduacion'],  // 11 Graduación alcohólica
                 ],
-                $entry['iepsColumns'],     // 10-19  IEPS 3% … 160% (10 columnas)
+                $iepsColumnsFmt,           // 12-21  IEPS 3% … 160% (10 columnas, acumuladas)
                 [
-                    $entry['cantidad'],    // 20  Volumen total de enajenación
-                    $empaque,              // 21  Empaque
-                    '',                    // 22  Presentación (vacía)
-                    $unidadMedida,         // 23  Unidad de Medida
-                    $entry['baseIva'],     // 24  Valor de la operación (antes de impuestos)
-                    '',                    // 25  Valor valuada precio detallista (vacía)
-                    $entry['importeIeps'], // 26  IEPS Pagado / Trasladado
-                    $entry['importeIva'],  // 27  IVA Pagado / Trasladado
+                    $cantidadFmt,          // 21  Volumen total de enajenación (acumulado)
+                    $empaque,              // 22  Empaque
+                    '000',                 // 23  Presentación
+                    $unidadMedida,         // 24  Unidad de Medida
+                    $baseIvaFmt,           // 25  Valor de la operación (antes de impuestos, acumulado)
+                    '0',                   // 26  Valor valuada precio detallista
+                    $importeIepsFmt,       // 27  IEPS Pagado / Trasladado (acumulado)
+                    $importeIvaFmt,        // 28  IVA Pagado / Trasladado (acumulado)
                 ],
-                $iepsEspCols               // 28-41  IEPS específicos (14 columnas)
+                $ceroEsp18                 // 18 columnas IEPS especiales (siempre en 0)
                 // COLUMNAS COMENTADAS (reactivar cuando se necesiten):
                 // $entry['tipoComprobante'], $entry['uuid'], $entry['fechaEmision'],
                 // $entry['serie'], $entry['folio'], $entry['subTotal'], $entry['total'],
@@ -476,16 +546,18 @@ class CfdiExcelConverter extends Component
     // ─────────────────────────────────────────────────────────────────────────
 
     /**
-     * Clasifica todos los campos en una sola llamada a DeepSeek por lote.
-     * Devuelve: [descripcion => ['tipo'=>'','generica'=>'','empaque'=>'','unidad'=>'','ieps'=>'']]
+     * Clasifica descripciones de producto y resuelve CPs a códigos SAT de entidad,
+     * todo en un único pool de peticiones Guzzle async.
      *
      * @param  string[]  $descriptions
-     * @return array<string, array>
+     * @param  string[]  $cpList        Códigos postales únicos a resolver
+     * @return array{0: array<string,array>, 1: array<string,string>}
+     *         [clasificaciones_por_desc, codigo_estado_por_cp]
      */
-    private function classifyAllAtOnce(array $descriptions): array
+    private function classifyAllAtOnce(array $descriptions, array $cpList = []): array
     {
-        if (empty($descriptions)) {
-            return [];
+        if (empty($descriptions) && empty($cpList)) {
+            return [[], []];
         }
 
         // Construir textos de catálogos una sola vez
@@ -603,14 +675,52 @@ STATIC;
             ]);
         }
 
+        // ── Petición de CPs en el mismo pool async ────────────────────────────
+        $cpList = array_values($cpList);
+        if (!empty($cpList)) {
+            $catCp    = require resource_path('views/cfdi/config/sat_catalogo_cp.php');
+            $txtCp    = '';
+            foreach ($catCp as $item) {
+                $txtCp .= "  {$item['code']}: {$item['description']}\n";
+            }
+
+            $cpNumbered = implode("\n", array_map(
+                fn ($i, $cp) => ($i + 1) . '. ' . $cp,
+                array_keys($cpList),
+                $cpList
+            ));
+
+            $cpPrompt = "Eres un experto en códigos postales de México. "
+                . "Dado un código postal, determina a qué estado pertenece según el catálogo SAT de entidades federativas.\n\n"
+                . "=== CATÁLOGO SAT ENTIDADES FEDERATIVAS ===\n{$txtCp}\n\n"
+                . "=== CÓDIGOS POSTALES A RESOLVER ===\n{$cpNumbered}\n\n"
+                . "=== INSTRUCCIONES ===\n"
+                . "Responde ÚNICAMENTE con un JSON array válido, sin texto ni markdown.\n"
+                . "Si el CP no existe o es desconocido usa el código '00'.\n"
+                . "Formato exacto:\n"
+                . "[{\"index\":1,\"cp\":\"12345\",\"codigo\":\"14\"}]";
+
+            $promises['cp'] = $guzzle->postAsync('chat/completions', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $apiKey,
+                    'Content-Type'  => 'application/json',
+                ],
+                'json' => [
+                    'model'       => $model,
+                    'messages'    => [['role' => 'user', 'content' => $cpPrompt]],
+                    'temperature' => 0.1,
+                ],
+            ]);
+        }
+
         // Esperar TODAS las respuestas (settle no lanza excepción si alguna falla)
         $settled = \GuzzleHttp\Promise\Utils::settle($promises)->wait();
 
-        // ── Procesar respuestas ───────────────────────────────────────────────────
+        // ── Procesar respuestas de clasificación de productos ─────────────────
         $result = [];
         foreach ($settled as $chunkOffset => $outcome) {
-            if ($outcome['state'] !== 'fulfilled') {
-                continue; // el chunk falló — sus productos quedan con defaults
+            if ($chunkOffset === 'cp' || $outcome['state'] !== 'fulfilled') {
+                continue;
             }
 
             $body    = json_decode((string) $outcome['value']->getBody(), true);
@@ -639,7 +749,26 @@ STATIC;
             }
         }
 
-        return $result;
+        // ── Procesar respuesta de CPs ─────────────────────────────────────────
+        $cpCodigos = [];
+        if (!empty($cpList) && isset($settled['cp']) && $settled['cp']['state'] === 'fulfilled') {
+            $body    = json_decode((string) $settled['cp']['value']->getBody(), true);
+            $text    = $body['choices'][0]['message']['content'] ?? '';
+            $cleaned = preg_replace('/```(?:json)?\s*([\s\S]*?)\s*```/', '$1', trim($text));
+            $json    = json_decode($cleaned, true);
+
+            if (is_array($json)) {
+                foreach ($json as $item) {
+                    $idx    = (int) ($item['index'] ?? 0) - 1;
+                    $codigo = trim((string) ($item['codigo'] ?? '00'));
+                    if (isset($cpList[$idx])) {
+                        $cpCodigos[$cpList[$idx]] = $codigo !== '' ? $codigo : '00';
+                    }
+                }
+            }
+        }
+
+        return [$result, $cpCodigos];
     }
 
     private function classifyDescriptions(array $descriptions, string $catalogPath): array
