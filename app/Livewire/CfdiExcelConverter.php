@@ -335,6 +335,8 @@ class CfdiExcelConverter extends Component
                     'lugarExpedicion' => $lugarExpedicion,
                     'descripcion' => $descripcion,
                     'cantidad'    => (string) ($attrs['Cantidad'] ?? ''),
+                    'claveUnidad' => (string) ($attrs['ClaveUnidad'] ?? ''),
+                    'unidad'      => (string) ($attrs['Unidad']      ?? ''),
                     'iepsColumns' => array_values($iepsColumns),
                     'baseIva'     => $baseIva,
                     'importeIeps' => $importeIeps,
@@ -400,6 +402,8 @@ class CfdiExcelConverter extends Component
                     'descripcion'     => $desc,
                     'necesitaIA'      => $entry['necesitaIA'],
                     'graduacion'      => $entry['graduacion'],
+                    'claveUnidad'     => $entry['claveUnidad'],
+                    'unidad'          => $entry['unidad'],
                     'cantidad'        => (float) ($entry['cantidad']    ?: 0),
                     'baseIva'         => (float) ($entry['baseIva']     ?: 0),
                     'importeIeps'     => (float) ($entry['importeIeps'] ?: 0),
@@ -426,6 +430,14 @@ class CfdiExcelConverter extends Component
                 if ($entry['graduacion'] > $grouped[$desc]['graduacion']) {
                     $grouped[$desc]['graduacion'] = $entry['graduacion'];
                 }
+
+                // Unidad/ClaveUnidad: conservar el primer valor no vacío del grupo
+                if ($grouped[$desc]['claveUnidad'] === '' && $entry['claveUnidad'] !== '') {
+                    $grouped[$desc]['claveUnidad'] = $entry['claveUnidad'];
+                }
+                if ($grouped[$desc]['unidad'] === '' && $entry['unidad'] !== '') {
+                    $grouped[$desc]['unidad'] = $entry['unidad'];
+                }
             }
         }
 
@@ -451,10 +463,22 @@ class CfdiExcelConverter extends Component
                 $entry['iepsColumns']
             );
 
-            $importeIepsFmt = $entry['importeIeps'] != 0 ? (string) $entry['importeIeps'] : '0';
+            // IEPS Pagado / Trasladado: sólo números enteros (se redondea al entero más cercano)
+            $importeIepsFmt = (string) (int) round($entry['importeIeps']);
             $importeIvaFmt  = $entry['importeIva']  != 0 ? (string) $entry['importeIva']  : '0';
-            $baseIvaFmt     = $entry['baseIva']     != 0 ? (string) $entry['baseIva']     : '0';
+            // Valor de la operación (antes de impuestos): importe redondeado a 2 decimales
+            $baseIvaFmt     = number_format(round($entry['baseIva'], 2), 2, '.', '');
             $cantidadFmt    = $entry['cantidad']    != 0 ? (string) $entry['cantidad']    : '0';
+
+            // Empaque y Presentación derivados del XML (ClaveUnidad / Unidad del concepto)
+            $empaque      = $this->resolveEmpaque($entry['claveUnidad'], $entry['unidad'], $empaque);
+            // Presentación: un solo decimal
+            $presentacion = number_format(
+                round($this->resolvePresentacion($entry['unidad'], $entry['descripcion']), 1),
+                1,
+                '.',
+                ''
+            );
 
             // Resolver clave de entidad federativa y lugar de expedición desde mapa IA
             $claveEntidad    = $cpCodigos[$entry['domFiscal']]       ?? '00';
@@ -478,8 +502,8 @@ class CfdiExcelConverter extends Component
                 $iepsColumnsFmt,           // 12-21  IEPS 3% … 160% (10 columnas, acumuladas)
                 [
                     $cantidadFmt,          // 21  Volumen total de enajenación (acumulado)
-                    $empaque,              // 22  Empaque
-                    '000',                 // 23  Presentación
+                    $empaque,              // 22  Empaque (derivado del XML)
+                    $presentacion,         // 23  Presentación (un decimal)
                     $unidadMedida,         // 24  Unidad de Medida
                     $baseIvaFmt,           // 25  Valor de la operación (antes de impuestos, acumulado)
                     '0',                   // 26  Valor valuada precio detallista
@@ -943,6 +967,125 @@ PROMPT;
         } catch (\Throwable $e) {
             return [];
         }
+    }
+
+    /**
+     * Claves SAT de unidad (UN/ECE Rec 20) que identifican un tipo de empaque,
+     * mapeadas a los códigos de resources/views/cfdi/config/empaque_catalogo.php.
+     */
+    private const CLAVE_UNIDAD_EMPAQUE = [
+        'XBA' => '001', // Barrica / Barrel
+        'XBG' => '002', // Bolsa / Bag
+        'XSA' => '002', // Saco → bolsa
+        'XCI' => '003', // Bote / Canister
+        'XCA' => '003', // Lata-bote
+        'XBO' => '004', // Botella
+        'XBT' => '004', // Botella
+        'XBX' => '005', // Caja
+        'XCT' => '005', // Cartón / Caja
+        'XPK' => '005', // Paquete → caja
+        'XPA' => '006', // Cajetilla / Packet
+        'XBJ' => '012', // Cubeta / Bucket → otro contenedor
+        'XCS' => '008', // Estuche / Case
+        'XCY' => '009', // Garrafón / Cylinder
+        'XCN' => '010', // Lata / Can
+        'XBK' => '011', // Mazo / Basket
+        'XCH' => '012', // Otro contenedor
+    ];
+
+    /**
+     * Palabras del texto libre de `Unidad` que identifican un empaque.
+     * Se evalúan sobre el atributo Unidad del concepto (ej. "CUBETA 19/LT").
+     */
+    private const UNIDAD_TEXTO_EMPAQUE = [
+        'barrica'   => '001',
+        'barril'    => '001',
+        'tambo'     => '001',
+        'bolsa'     => '002',
+        'saco'      => '002',
+        'bulto'     => '002', // "BT50"/"BT25" = bulto de cemento/cal → bolsa
+        'costal'    => '007',
+        // 'botella' antes que 'bote' — 'bote' es subcadena de 'botella'
+        'botella'   => '004',
+        'bote'      => '003',
+        'frasco'    => '004',
+        // 'cajetilla' antes que 'caja' — 'caja' es subcadena de 'cajetilla'
+        'cajetilla' => '006',
+        'caja'      => '005',
+        'estuche'   => '008',
+        'garrafon'  => '009',
+        'garrafón'  => '009',
+        'garrafa'   => '009',
+        'lata'      => '010',
+        'mazo'      => '011',
+        'cubeta'    => '012',
+        'galon'     => '012',
+        'galón'     => '012',
+        'tanque'    => '012',
+        'cuñete'    => '012',
+        'cunete'    => '012',
+    ];
+
+    /**
+     * Resuelve la columna Empaque a partir de los datos reales del XML.
+     *
+     * Prioridad:
+     *   1. ClaveUnidad (código SAT normalizado — dato más confiable del XML)
+     *   2. Texto libre del atributo Unidad (ej. "CUBETA 19/LT" → 012)
+     *   3. Clasificación IA sobre la descripción (respaldo)
+     *   4. '000' — Sin selección
+     */
+    private function resolveEmpaque(string $claveUnidad, string $unidad, string $fallback = '000'): string
+    {
+        $clave = strtoupper(trim($claveUnidad));
+        if ($clave !== '' && isset(self::CLAVE_UNIDAD_EMPAQUE[$clave])) {
+            return self::CLAVE_UNIDAD_EMPAQUE[$clave];
+        }
+
+        $texto = mb_strtolower(trim($unidad));
+        if ($texto !== '') {
+            // "BT50" / "BT 25" = bulto (cemento, cal) → bolsa
+            if (preg_match('/^bt\s*\d/i', $texto)) {
+                return '002';
+            }
+
+            foreach (self::UNIDAD_TEXTO_EMPAQUE as $palabra => $codigo) {
+                if (str_contains($texto, $palabra)) {
+                    return $codigo;
+                }
+            }
+        }
+
+        // Respaldo: lo que haya dicho la IA sobre la descripción
+        return $fallback !== '' ? $fallback : '000';
+    }
+
+    /**
+     * Extrae la presentación (contenido por empaque) desde el XML.
+     * Busca una cifra con unidad de volumen/peso en el atributo Unidad y,
+     * si no la encuentra, en la Descripción del concepto.
+     * Ej. "CUBETA 19/LT" → 19.0 | "PRO 1000 PLUS NF V1 CONT 19.00 L" → 19.0
+     *
+     * @return float  0.0 cuando el XML no declara presentación
+     */
+    private function resolvePresentacion(string $unidad, string $descripcion): float
+    {
+        // ml/mL/L/lt/litro(s), g/gr/gramos, kg/kilo(s) — con separador opcional
+        $patron = '/(\d+(?:[.,]\d+)?)\s*\/?\s*'
+            . '(ml|mililitros?|l|lt|lts|litros?|g|gr|gramos?|kg|kgs|kilos?|kilogramos?)\b/iu';
+
+        foreach ([$unidad, $descripcion] as $fuente) {
+            $fuente = trim($fuente);
+            if ($fuente === '') {
+                continue;
+            }
+
+            if (preg_match($patron, $fuente, $m)) {
+                return (float) str_replace(',', '.', $m[1]);
+            }
+        }
+
+        return 0.0;
     }
 
     /**
